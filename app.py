@@ -5,6 +5,7 @@ import re
 import unicodedata
 from collections import defaultdict
 from datetime import datetime
+import os
 
 # ========== CONFIGURACIÓN DE PÁGINA ==========
 st.set_page_config(
@@ -19,52 +20,345 @@ st.set_page_config(
     }
 )
 
-# ========== CSS PERSONALIZADO CON COLOR #f60d2d ==========
-st.markdown("""
+# ========== INICIALIZAR VARIABLES DE SESIÓN ==========
+if 'color_principal' not in st.session_state:
+    st.session_state.color_principal = "#f60d2d"
+if 'color_fondo' not in st.session_state:
+    st.session_state.color_fondo = "#f8f9fa"
+if 'color_sidebar' not in st.session_state:
+    st.session_state.color_sidebar = "#1e1e1e"
+if 'color_card' not in st.session_state:
+    st.session_state.color_card = "#ffffff"
+if 'bordes' not in st.session_state:
+    st.session_state.bordes = 12
+
+# ========== BARRA LATERAL CON CONTROLES VISUALES ==========
+with st.sidebar:
+    st.markdown("### 🎨 Personalización")
+    
+    # Selector de color principal
+    nuevo_color = st.color_picker(
+        "🎨 Color principal",
+        value=st.session_state.color_principal,
+        help="Cambia el color de botones, acentos y bordes"
+    )
+    if nuevo_color != st.session_state.color_principal:
+        st.session_state.color_principal = nuevo_color
+        st.rerun()
+    
+    # Selector de color de fondo
+    nuevo_fondo = st.color_picker(
+        "📄 Color de fondo",
+        value=st.session_state.color_fondo,
+        help="Color del área principal"
+    )
+    if nuevo_fondo != st.session_state.color_fondo:
+        st.session_state.color_fondo = nuevo_fondo
+        st.rerun()
+    
+    # Selector de color de sidebar
+    nuevo_sidebar = st.color_picker(
+        "📁 Color de barra lateral",
+        value=st.session_state.color_sidebar,
+        help="Color de la barra lateral izquierda"
+    )
+    if nuevo_sidebar != st.session_state.color_sidebar:
+        st.session_state.color_sidebar = nuevo_sidebar
+        st.rerun()
+    
+    # Selector de color de tarjetas
+    nuevo_card = st.color_picker(
+        "💳 Color de tarjetas",
+        value=st.session_state.color_card,
+        help="Color de fondo de las tarjetas"
+    )
+    if nuevo_card != st.session_state.color_card:
+        st.session_state.color_card = nuevo_card
+        st.rerun()
+    
+    # Bordes redondeados
+    nuevo_bordes = st.slider(
+        "🔘 Redondez de bordes",
+        min_value=0,
+        max_value=30,
+        value=st.session_state.bordes,
+        help="Qué tan redondeados quieres los bordes"
+    )
+    if nuevo_bordes != st.session_state.bordes:
+        st.session_state.bordes = nuevo_bordes
+        st.rerun()
+    
+    st.markdown("---")
+    
+    # Subir logo
+    st.markdown("### 🖼️ Logo personalizado")
+    logo_file = st.file_uploader(
+        "Subir logo (PNG, JPG, SVG)",
+        type=['png', 'jpg', 'jpeg', 'svg'],
+        key="logo_uploader"
+    )
+    
+    if logo_file:
+        st.session_state.logo = logo_file.read()
+        st.image(logo_file, width=120)
+        st.success("✅ Logo cargado")
+    elif 'logo' not in st.session_state:
+        st.info("Sube un logo para personalizar tu app")
+    
+    st.markdown("---")
+    st.markdown("### ⚙️ Configuración")
+    
+    allow_soft = st.checkbox(
+        "Permitir coincidencias suaves (2/3 tokens)",
+        value=True,
+        help="Si está activado, permite matches con 2 de 3 tokens coincidentes"
+    )
+    
+    st.markdown("---")
+    st.markdown("### 📁 Subir archivos")
+    
+    ar_file = st.file_uploader("ARCollect_Age_Analysis.xlsx", type=['xlsx'], key="ar")
+    case_file = st.file_uploader("Case_Details.xlsx", type=['xlsx'], key="case")
+    closed_file = st.file_uploader("Casos Cerrados.xlsx", type=['xlsx'], key="closed")
+    
+    st.markdown("---")
+    st.caption("📌 Versión 2.0 | Personalizable")
+    st.caption("🔒 Datos procesados localmente")
+
+# ========== CSS DINÁMICO CON LOS COLORES SELECCIONADOS ==========
+st.markdown(f"""
 <style>
-    .stApp { background-color: #f8f9fa; }
-    h1 { color: #1a1a1a; font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem; }
-    h2, h3 { color: #2d2d2d; }
-    [data-testid="stSidebar"] { background-color: #1e1e1e; }
-    [data-testid="stSidebar"] * { color: #e0e0e0; }
+    /* Fondo principal */
+    .stApp {{
+        background-color: {st.session_state.color_fondo};
+    }}
+    
+    /* Barra lateral */
+    [data-testid="stSidebar"] {{
+        background-color: {st.session_state.color_sidebar};
+    }}
+    
+    [data-testid="stSidebar"] * {{
+        color: #e0e0e0;
+    }}
+    
     [data-testid="stSidebar"] .stMarkdown h1,
     [data-testid="stSidebar"] .stMarkdown h2,
-    [data-testid="stSidebar"] .stMarkdown h3 { color: #ffffff; }
-    [data-testid="stSidebar"] .stMarkdown { color: #cccccc; }
-    [data-testid="stSidebar"] hr { border-color: #3a3a3a; }
-    .stButton button { background-color: #f60d2d; color: white; font-weight: 600; border-radius: 8px; padding: 0.5rem 1rem; transition: all 0.3s ease; border: none; }
-    .stButton button:hover { background-color: #d40c27; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(246, 13, 45, 0.3); }
-    .stDownloadButton button { background-color: #2c2c2c; color: white; }
-    .stDownloadButton button:hover { background-color: #3a3a3a; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
-    .metric-card { background-color: white; border-radius: 12px; padding: 1.2rem; box-shadow: 0 2px 8px rgba(0,0,0,0.08); text-align: center; border-top: 4px solid #f60d2d; transition: all 0.3s ease; }
-    .metric-card:hover { transform: translateY(-3px); box-shadow: 0 6px 16px rgba(0,0,0,0.12); }
-    .metric-value { font-size: 2.2rem; font-weight: 700; color: #1a1a1a; }
-    .metric-label { font-size: 0.85rem; color: #666666; margin-top: 0.5rem; text-transform: uppercase; letter-spacing: 0.5px; }
-    .file-card { background-color: white; border-radius: 12px; padding: 1rem; text-align: center; box-shadow: 0 2px 6px rgba(0,0,0,0.05); border: 1px solid #eaeaea; }
-    .file-card-success { border-left: 4px solid #f60d2d; background-color: #ffffff; }
-    .file-card-pending { border-left: 4px solid #cccccc; background-color: #fafafa; }
-    .file-icon { font-size: 2rem; margin-bottom: 0.5rem; }
-    .file-title { font-weight: 600; color: #333333; }
-    .file-status { font-size: 0.8rem; color: #888888; margin-top: 0.25rem; }
-    .streamlit-expanderHeader { background-color: #f0f0f0; border-radius: 8px; font-weight: 600; color: #1a1a1a; }
-    .streamlit-expanderHeader:hover { background-color: #e8e8e8; }
-    .stTabs [data-baseweb="tab-list"] { gap: 0.5rem; background-color: #f0f0f0; border-radius: 12px; padding: 0.5rem; }
-    .stTabs [data-baseweb="tab"] { border-radius: 8px; padding: 0.5rem 1.2rem; font-weight: 500; color: #666666; }
-    .stTabs [aria-selected="true"] { background-color: #f60d2d; color: white; }
-    .success-banner { background-color: #fff5f5; border-left: 4px solid #f60d2d; padding: 1rem; border-radius: 8px; margin: 1rem 0; color: #1a1a1a; }
-    .info-banner { background-color: #f5f5f5; border-left: 4px solid #888888; padding: 1rem; border-radius: 8px; margin: 1rem 0; color: #555555; }
-    .dataframe { border-radius: 8px; overflow: hidden; }
-    [data-testid="stDataFrame"] { border: 1px solid #eaeaea; border-radius: 8px; }
-    .stCheckbox label { color: #e0e0e0; }
-    [data-testid="stSidebar"] .stFileUploader label { color: #cccccc; }
-    hr { margin: 1rem 0; border-color: #eaeaea; }
-    .footer { text-align: center; padding: 1rem; color: #888888; font-size: 0.75rem; border-top: 1px solid #eaeaea; margin-top: 2rem; }
-    .stSpinner > div { border-color: #f60d2d !important; }
+    [data-testid="stSidebar"] .stMarkdown h3 {{
+        color: #ffffff;
+    }}
+    
+    [data-testid="stSidebar"] .stMarkdown {{
+        color: #cccccc;
+    }}
+    
+    [data-testid="stSidebar"] hr {{
+        border-color: #3a3a3a;
+    }}
+    
+    [data-testid="stSidebar"] .stFileUploader label {{
+        color: #cccccc;
+    }}
+    
+    [data-testid="stSidebar"] .stCheckbox label {{
+        color: #e0e0e0;
+    }}
+    
+    /* Títulos */
+    h1 {{
+        color: #1a1a1a;
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }}
+    
+    h2, h3 {{
+        color: #2d2d2d;
+    }}
+    
+    /* Botón principal */
+    .stButton button {{
+        background-color: {st.session_state.color_principal};
+        color: white;
+        font-weight: 600;
+        border-radius: {st.session_state.bordes}px;
+        padding: 0.5rem 1rem;
+        transition: all 0.3s ease;
+        border: none;
+    }}
+    
+    .stButton button:hover {{
+        background-color: {st.session_state.color_principal}cc;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(246, 13, 45, 0.3);
+    }}
+    
+    /* Botón secundario */
+    .stDownloadButton button {{
+        background-color: #2c2c2c;
+        color: white;
+        border-radius: {st.session_state.bordes}px;
+    }}
+    
+    .stDownloadButton button:hover {{
+        background-color: #3a3a3a;
+        transform: translateY(-2px);
+    }}
+    
+    /* Tarjetas/métricas */
+    .metric-card {{
+        background-color: {st.session_state.color_card};
+        border-radius: {st.session_state.bordes}px;
+        padding: 1.2rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        text-align: center;
+        border-top: 4px solid {st.session_state.color_principal};
+        transition: all 0.3s ease;
+    }}
+    
+    .metric-card:hover {{
+        transform: translateY(-3px);
+        box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+    }}
+    
+    .metric-value {{
+        font-size: 2.2rem;
+        font-weight: 700;
+        color: #1a1a1a;
+    }}
+    
+    .metric-label {{
+        font-size: 0.85rem;
+        color: #666666;
+        margin-top: 0.5rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }}
+    
+    /* Tarjetas de archivos */
+    .file-card {{
+        background-color: {st.session_state.color_card};
+        border-radius: {st.session_state.bordes}px;
+        padding: 1rem;
+        text-align: center;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        border: 1px solid #eaeaea;
+    }}
+    
+    .file-card-success {{
+        border-left: 4px solid {st.session_state.color_principal};
+        background-color: {st.session_state.color_card};
+    }}
+    
+    .file-card-pending {{
+        border-left: 4px solid #cccccc;
+        background-color: #fafafa;
+    }}
+    
+    .file-icon {{
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+    }}
+    
+    .file-title {{
+        font-weight: 600;
+        color: #333333;
+    }}
+    
+    .file-status {{
+        font-size: 0.8rem;
+        color: #888888;
+        margin-top: 0.25rem;
+    }}
+    
+    /* Tabs */
+    .stTabs [data-baseweb="tab-list"] {{
+        gap: 0.5rem;
+        background-color: #f0f0f0;
+        border-radius: {st.session_state.bordes}px;
+        padding: 0.5rem;
+    }}
+    
+    .stTabs [data-baseweb="tab"] {{
+        border-radius: {st.session_state.bordes - 4}px;
+        padding: 0.5rem 1.2rem;
+        font-weight: 500;
+        color: #666666;
+    }}
+    
+    .stTabs [aria-selected="true"] {{
+        background-color: {st.session_state.color_principal};
+        color: white;
+    }}
+    
+    /* Banners */
+    .success-banner {{
+        background-color: {st.session_state.color_principal}10;
+        border-left: 4px solid {st.session_state.color_principal};
+        padding: 1rem;
+        border-radius: {st.session_state.bordes}px;
+        margin: 1rem 0;
+        color: #1a1a1a;
+    }}
+    
+    .info-banner {{
+        background-color: #f5f5f5;
+        border-left: 4px solid #888888;
+        padding: 1rem;
+        border-radius: {st.session_state.bordes}px;
+        margin: 1rem 0;
+        color: #555555;
+    }}
+    
+    /* Expander */
+    .streamlit-expanderHeader {{
+        background-color: #f0f0f0;
+        border-radius: {st.session_state.bordes}px;
+        font-weight: 600;
+        color: #1a1a1a;
+    }}
+    
+    /* DataFrames */
+    .dataframe {{
+        border-radius: {st.session_state.bordes}px;
+        overflow: hidden;
+    }}
+    
+    [data-testid="stDataFrame"] {{
+        border: 1px solid #eaeaea;
+        border-radius: {st.session_state.bordes}px;
+    }}
+    
+    /* Spinner */
+    .stSpinner > div {{
+        border-color: {st.session_state.color_principal} !important;
+    }}
+    
+    /* Footer */
+    .footer {{
+        text-align: center;
+        padding: 1rem;
+        color: #888888;
+        font-size: 0.75rem;
+        border-top: 1px solid #eaeaea;
+        margin-top: 2rem;
+    }}
 </style>
 """, unsafe_allow_html=True)
 
-# ========== FUNCIONES ORIGINALES (MODIFICADAS) ==========
+# ========== MOSTRAR LOGO EN LA BARRA LATERAL ==========
+with st.sidebar:
+    if 'logo' in st.session_state:
+        try:
+            from PIL import Image
+            import io as io_lib
+            img = Image.open(io_lib.BytesIO(st.session_state.logo))
+            st.image(img, width=120)
+        except:
+            st.image(io_lib.BytesIO(st.session_state.logo), width=120)
+    st.markdown("---")
 
+# ========== FUNCIONES DE PROCESAMIENTO ==========
 SPACE_CHARS = {
     '\u00A0', '\u2000', '\u2001', '\u2002', '\u2003', '\u2004', '\u2005',
     '\u2006', '\u2007', '\u2008', '\u2009', '\u200A', '\u202F', '\u205F', '\u3000'
@@ -134,7 +428,6 @@ def token_sets(a: str, b: str):
     return s1, s2, len(s1 & s2)
 
 def classify_match(a: str, b: str, allow_soft: bool = True):
-    """Clasifica coincidencia con parámetro allow_soft"""
     if not a or not b:
         return (False, "no", 0)
     if a == b:
@@ -168,8 +461,6 @@ def classify_match(a: str, b: str, allow_soft: bool = True):
     return (False, "no", inter)
 
 def process_data_with_files(AR_file, cl_file, cc_file, allow_soft=True):
-    """Procesa los archivos subidos y devuelve los resultados"""
-    
     AR = pd.read_excel(AR_file, header=0, engine='openpyxl')
     cl_file_df = pd.read_excel(cl_file, header=2, engine='openpyxl')
     cc_data = pd.read_excel(cc_file, header=0, engine='openpyxl')
@@ -306,40 +597,34 @@ def process_data_with_files(AR_file, cl_file, cc_file, allow_soft=True):
     
     return filtrados_rows, descartados_rows, log_rows
 
-# ========== INTERFAZ STREAMLIT CON COLOR #f60d2d ==========
+# ========== INTERFAZ PRINCIPAL ==========
 
-# Barra lateral - gris oscuro
-with st.sidebar:
-    st.markdown("### ⚖️ AR Collect")
-    st.markdown("# Procesador")
-    st.markdown("### de Clientes")
-    st.markdown("---")
-    st.markdown("#### ⚙️ Configuración")
-    
-    allow_soft = st.checkbox(
-        "Permitir coincidencias suaves (2/3 tokens)",
-        value=True,
-        help="Si está activado, permite matches con 2 de 3 tokens coincidentes"
-    )
-    
-    st.markdown("---")
-    st.markdown("#### 📁 Subir archivos")
-    
-    ar_file = st.file_uploader("ARCollect_Age_Analysis.xlsx", type=['xlsx'], key="ar")
-    case_file = st.file_uploader("Case_Details.xlsx", type=['xlsx'], key="case")
-    closed_file = st.file_uploader("Casos Cerrados.xlsx", type=['xlsx'], key="closed")
-    
-    st.markdown("---")
-    st.caption("📌 Versión 2.0")
-    st.caption("🔒 Datos procesados localmente")
-
-# Área principal
-col_logo, col_title = st.columns([1, 6])
-with col_logo:
-    st.markdown("# ⚖️")
-with col_title:
-    st.markdown("# Procesador de Clientes")
-    st.markdown("### AR Collect - Análisis y Filtrado Automático")
+# Banner con logo (si se subió)
+if 'logo' in st.session_state:
+    try:
+        from PIL import Image
+        import io as io_lib
+        img = Image.open(io_lib.BytesIO(st.session_state.logo))
+        col_logo, col_title = st.columns([1, 5])
+        with col_logo:
+            st.image(img, width=80)
+        with col_title:
+            st.markdown("# Procesador de Clientes")
+            st.markdown("### AR Collect - Análisis y Filtrado Automático")
+    except:
+        col_logo, col_title = st.columns([1, 5])
+        with col_logo:
+            st.markdown("# ⚖️")
+        with col_title:
+            st.markdown("# Procesador de Clientes")
+            st.markdown("### AR Collect - Análisis y Filtrado Automático")
+else:
+    col_logo, col_title = st.columns([1, 6])
+    with col_logo:
+        st.markdown("# ⚖️")
+    with col_title:
+        st.markdown("# Procesador de Clientes")
+        st.markdown("### AR Collect - Análisis y Filtrado Automático")
 
 st.markdown("---")
 
@@ -348,11 +633,11 @@ col1, col2, col3 = st.columns(3)
 
 with col1:
     if ar_file:
-        st.markdown("""
+        st.markdown(f"""
         <div class="file-card file-card-success">
             <div class="file-icon">📊</div>
             <div class="file-title">ARCollect</div>
-            <div class="file-status" style="color: #f60d2d;">✓ Archivo cargado</div>
+            <div class="file-status" style="color: {st.session_state.color_principal};">✓ Archivo cargado</div>
         </div>
         """, unsafe_allow_html=True)
     else:
@@ -366,11 +651,11 @@ with col1:
 
 with col2:
     if case_file:
-        st.markdown("""
+        st.markdown(f"""
         <div class="file-card file-card-success">
             <div class="file-icon">📋</div>
             <div class="file-title">Case Details</div>
-            <div class="file-status" style="color: #f60d2d;">✓ Archivo cargado</div>
+            <div class="file-status" style="color: {st.session_state.color_principal};">✓ Archivo cargado</div>
         </div>
         """, unsafe_allow_html=True)
     else:
@@ -384,11 +669,11 @@ with col2:
 
 with col3:
     if closed_file:
-        st.markdown("""
+        st.markdown(f"""
         <div class="file-card file-card-success">
             <div class="file-icon">📁</div>
             <div class="file-title">Casos Cerrados</div>
-            <div class="file-status" style="color: #f60d2d;">✓ Archivo cargado</div>
+            <div class="file-status" style="color: {st.session_state.color_principal};">✓ Archivo cargado</div>
         </div>
         """, unsafe_allow_html=True)
     else:
@@ -407,19 +692,17 @@ if ar_file and case_file and closed_file:
     if st.button("🚀 PROCESAR ARCHIVOS", type="primary", use_container_width=True):
         with st.spinner("Procesando archivos... Esto puede tomar unos segundos"):
             try:
-                # Pasar allow_soft como parámetro - SIN GLOBAL
                 filtrados, descartados, log = process_data_with_files(
                     ar_file, case_file, closed_file, allow_soft
                 )
                 
-                # Banner de éxito
                 st.markdown(f"""
                 <div class="success-banner">
                     ✅ <strong>Procesamiento completado exitosamente!</strong> Se procesaron {len(filtrados) + len(descartados)} registros.
                 </div>
                 """, unsafe_allow_html=True)
                 
-                # Métricas con tarjetas
+                # Métricas
                 col1, col2, col3, col4 = st.columns(4)
                 
                 with col1:
@@ -456,7 +739,7 @@ if ar_file and case_file and closed_file:
                     </div>
                     """, unsafe_allow_html=True)
                 
-                # Botón de descarga
+                # Descarga
                 output = io.BytesIO()
                 with pd.ExcelWriter(output, engine='openpyxl') as writer:
                     pd.DataFrame(filtrados).to_excel(writer, sheet_name="AR_filtrada", index=False)
@@ -480,16 +763,14 @@ if ar_file and case_file and closed_file:
                 
                 with tab1:
                     if filtrados:
-                        df_filtrados = pd.DataFrame(filtrados)
-                        st.dataframe(df_filtrados.head(20), use_container_width=True)
+                        st.dataframe(pd.DataFrame(filtrados).head(20), use_container_width=True)
                         st.caption(f"Mostrando 20 de {len(filtrados)} registros")
                     else:
                         st.info("No hay registros mantenidos")
                 
                 with tab2:
                     if descartados:
-                        df_descartados = pd.DataFrame(descartados)
-                        st.dataframe(df_descartados.head(20), use_container_width=True)
+                        st.dataframe(pd.DataFrame(descartados).head(20), use_container_width=True)
                         st.caption(f"Mostrando 20 de {len(descartados)} registros")
                     else:
                         st.info("No hay registros descartados")
@@ -516,9 +797,11 @@ else:
 
 # Pie de página
 st.markdown("---")
-st.markdown("""
+st.markdown(f"""
 <div class="footer">
     <span>⚖️ Procesador de Clientes | AR Collect</span>
+    <span style="margin: 0 1rem">•</span>
+    <span>🎨 Colores personalizables</span>
     <span style="margin: 0 1rem">•</span>
     <span>🔒 Datos procesados localmente</span>
     <span style="margin: 0 1rem">•</span>
