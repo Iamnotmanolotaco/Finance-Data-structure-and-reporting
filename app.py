@@ -15,7 +15,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# === TODAS TUS FUNCIONES ORIGINALES (copiadas exactamente) ===
+# === TODAS TUS FUNCIONES ORIGINALES ===
 # Configuración
 ALLOW_TWO_OF_THREE_SOFT = True
 
@@ -123,10 +123,10 @@ def classify_match(a: str, b: str):
 def process_data_with_files(AR_file, cl_file, cc_file):
     """Procesa los archivos subidos y devuelve los resultados"""
     
-    # Cargar los DataFrames
-    AR = pd.read_excel(AR_file, header=0, engine='calamine')
-    cl_file_df = pd.read_excel(cl_file, header=2, engine='calamine')
-    cc_data = pd.read_excel(cc_file, header=0, engine='calamine')
+    # CORREGIDO: Cambiado engine='calamine' por engine='openpyxl'
+    AR = pd.read_excel(AR_file, header=0, engine='openpyxl')
+    cl_file_df = pd.read_excel(cl_file, header=2, engine='openpyxl')
+    cc_data = pd.read_excel(cc_file, header=0, engine='openpyxl')
     
     # Normalizar nombres
     if 'Customer' not in AR.columns:
