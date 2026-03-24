@@ -6,6 +6,7 @@ import unicodedata
 from collections import defaultdict
 from datetime import datetime
 import os
+import hashlib
 
 # ========== CONFIGURACIÓN DE PÁGINA ==========
 st.set_page_config(
@@ -20,7 +21,15 @@ st.set_page_config(
     }
 )
 
+# ========== CONTRASEÑA PARA EDITOR (CAMBIA ESTO) ==========
+EDITOR_PASSWORD = "admin123"  # CAMBIA ESTA CONTRASEÑA
+PASSWORD_HASH = hashlib.sha256(EDITOR_PASSWORD.encode()).hexdigest()
+
 # ========== INICIALIZAR VARIABLES DE SESIÓN ==========
+if 'modo_editor' not in st.session_state:
+    st.session_state.modo_editor = False
+if 'password_correcta' not in st.session_state:
+    st.session_state.password_correcta = False
 if 'color_principal' not in st.session_state:
     st.session_state.color_principal = "#f60d2d"
 if 'color_fondo' not in st.session_state:
@@ -32,81 +41,27 @@ if 'color_card' not in st.session_state:
 if 'bordes' not in st.session_state:
     st.session_state.bordes = 12
 
-# ========== BARRA LATERAL CON CONTROLES VISUALES ==========
+# ========== FUNCIÓN PARA VERIFICAR CONTRASEÑA ==========
+def verificar_password(password):
+    return hashlib.sha256(password.encode()).hexdigest() == PASSWORD_HASH
+
+# ========== BARRA LATERAL ==========
 with st.sidebar:
-    st.markdown("### 🎨 Personalización")
+    # Mostrar logo si existe en sesión
+    if 'logo' in st.session_state:
+        try:
+            from PIL import Image
+            import io as io_lib
+            img = Image.open(io_lib.BytesIO(st.session_state.logo))
+            st.image(img, width=120)
+        except:
+            st.image(io_lib.BytesIO(st.session_state.logo), width=120)
     
-    # Selector de color principal
-    nuevo_color = st.color_picker(
-        "🎨 Color principal",
-        value=st.session_state.color_principal,
-        help="Cambia el color de botones, acentos y bordes"
-    )
-    if nuevo_color != st.session_state.color_principal:
-        st.session_state.color_principal = nuevo_color
-        st.rerun()
-    
-    # Selector de color de fondo
-    nuevo_fondo = st.color_picker(
-        "📄 Color de fondo",
-        value=st.session_state.color_fondo,
-        help="Color del área principal"
-    )
-    if nuevo_fondo != st.session_state.color_fondo:
-        st.session_state.color_fondo = nuevo_fondo
-        st.rerun()
-    
-    # Selector de color de sidebar
-    nuevo_sidebar = st.color_picker(
-        "📁 Color de barra lateral",
-        value=st.session_state.color_sidebar,
-        help="Color de la barra lateral izquierda"
-    )
-    if nuevo_sidebar != st.session_state.color_sidebar:
-        st.session_state.color_sidebar = nuevo_sidebar
-        st.rerun()
-    
-    # Selector de color de tarjetas
-    nuevo_card = st.color_picker(
-        "💳 Color de tarjetas",
-        value=st.session_state.color_card,
-        help="Color de fondo de las tarjetas"
-    )
-    if nuevo_card != st.session_state.color_card:
-        st.session_state.color_card = nuevo_card
-        st.rerun()
-    
-    # Bordes redondeados
-    nuevo_bordes = st.slider(
-        "🔘 Redondez de bordes",
-        min_value=0,
-        max_value=30,
-        value=st.session_state.bordes,
-        help="Qué tan redondeados quieres los bordes"
-    )
-    if nuevo_bordes != st.session_state.bordes:
-        st.session_state.bordes = nuevo_bordes
-        st.rerun()
-    
+    st.markdown("### ⚖️ AR Collect")
     st.markdown("---")
     
-    # Subir logo
-    st.markdown("### 🖼️ Logo personalizado")
-    logo_file = st.file_uploader(
-        "Subir logo (PNG, JPG, SVG)",
-        type=['png', 'jpg', 'jpeg', 'svg'],
-        key="logo_uploader"
-    )
-    
-    if logo_file:
-        st.session_state.logo = logo_file.read()
-        st.image(logo_file, width=120)
-        st.success("✅ Logo cargado")
-    elif 'logo' not in st.session_state:
-        st.info("Sube un logo para personalizar tu app")
-    
-    st.markdown("---")
-    st.markdown("### ⚙️ Configuración")
+    # ========== SECCIÓN DE CONFIGURACIÓN (SIEMPRE VISIBLE) ==========
+    st.markdown("#### ⚙️ Configuración")
     
     allow_soft = st.checkbox(
         "Permitir coincidencias suaves (2/3 tokens)",
@@ -115,14 +70,119 @@ with st.sidebar:
     )
     
     st.markdown("---")
-    st.markdown("### 📁 Subir archivos")
+    
+    # ========== SECCIÓN DE SUBIR ARCHIVOS ==========
+    st.markdown("#### 📁 Subir archivos")
     
     ar_file = st.file_uploader("ARCollect_Age_Analysis.xlsx", type=['xlsx'], key="ar")
     case_file = st.file_uploader("Case_Details.xlsx", type=['xlsx'], key="case")
     closed_file = st.file_uploader("Casos Cerrados.xlsx", type=['xlsx'], key="closed")
     
     st.markdown("---")
-    st.caption("📌 Versión 2.0 | Personalizable")
+    
+    # ========== SECCIÓN DE PERSONALIZACIÓN (PROTEGIDA) ==========
+    with st.expander("🎨 Personalización (Administrador)", expanded=False):
+        st.markdown("⚠️ **Acceso restringido**")
+        
+        if not st.session_state.password_correcta:
+            # Mostrar campo de contraseña
+            password_input = st.text_input(
+                "Contraseña de administrador",
+                type="password",
+                key="password_input",
+                placeholder="Ingresa la contraseña para editar colores"
+            )
+            
+            if st.button("🔓 Acceder", key="btn_acceder"):
+                if verificar_password(password_input):
+                    st.session_state.password_correcta = True
+                    st.session_state.modo_editor = True
+                    st.success("✅ Acceso concedido")
+                    st.rerun()
+                else:
+                    st.error("❌ Contraseña incorrecta")
+            
+            st.caption("🔒 Solo administradores pueden modificar colores y logos")
+            
+        else:
+            # Panel de edición visible
+            st.success("✅ Modo editor activado")
+            
+            # Selector de color principal
+            nuevo_color = st.color_picker(
+                "🎨 Color principal",
+                value=st.session_state.color_principal,
+                help="Cambia el color de botones, acentos y bordes"
+            )
+            if nuevo_color != st.session_state.color_principal:
+                st.session_state.color_principal = nuevo_color
+                st.rerun()
+            
+            # Selector de color de fondo
+            nuevo_fondo = st.color_picker(
+                "📄 Color de fondo",
+                value=st.session_state.color_fondo,
+                help="Color del área principal"
+            )
+            if nuevo_fondo != st.session_state.color_fondo:
+                st.session_state.color_fondo = nuevo_fondo
+                st.rerun()
+            
+            # Selector de color de sidebar
+            nuevo_sidebar = st.color_picker(
+                "📁 Color de barra lateral",
+                value=st.session_state.color_sidebar,
+                help="Color de la barra lateral izquierda"
+            )
+            if nuevo_sidebar != st.session_state.color_sidebar:
+                st.session_state.color_sidebar = nuevo_sidebar
+                st.rerun()
+            
+            # Selector de color de tarjetas
+            nuevo_card = st.color_picker(
+                "💳 Color de tarjetas",
+                value=st.session_state.color_card,
+                help="Color de fondo de las tarjetas"
+            )
+            if nuevo_card != st.session_state.color_card:
+                st.session_state.color_card = nuevo_card
+                st.rerun()
+            
+            # Bordes redondeados
+            nuevo_bordes = st.slider(
+                "🔘 Redondez de bordes",
+                min_value=0,
+                max_value=30,
+                value=st.session_state.bordes,
+                help="Qué tan redondeados quieres los bordes"
+            )
+            if nuevo_bordes != st.session_state.bordes:
+                st.session_state.bordes = nuevo_bordes
+                st.rerun()
+            
+            st.markdown("---")
+            
+            # Subir logo
+            st.markdown("### 🖼️ Logo personalizado")
+            logo_file = st.file_uploader(
+                "Subir logo (PNG, JPG, SVG)",
+                type=['png', 'jpg', 'jpeg', 'svg'],
+                key="logo_uploader_admin"
+            )
+            
+            if logo_file:
+                st.session_state.logo = logo_file.read()
+                st.image(logo_file, width=120)
+                st.success("✅ Logo cargado")
+            
+            # Botón para salir del modo editor
+            if st.button("🚪 Salir modo editor", key="btn_salir"):
+                st.session_state.password_correcta = False
+                st.session_state.modo_editor = False
+                st.rerun()
+    
+    st.markdown("---")
+    st.caption("📌 Versión 2.0 | Protegido")
     st.caption("🔒 Datos procesados localmente")
 
 # ========== CSS DINÁMICO CON LOS COLORES SELECCIONADOS ==========
@@ -345,18 +405,6 @@ st.markdown(f"""
     }}
 </style>
 """, unsafe_allow_html=True)
-
-# ========== MOSTRAR LOGO EN LA BARRA LATERAL ==========
-with st.sidebar:
-    if 'logo' in st.session_state:
-        try:
-            from PIL import Image
-            import io as io_lib
-            img = Image.open(io_lib.BytesIO(st.session_state.logo))
-            st.image(img, width=120)
-        except:
-            st.image(io_lib.BytesIO(st.session_state.logo), width=120)
-    st.markdown("---")
 
 # ========== FUNCIONES DE PROCESAMIENTO ==========
 SPACE_CHARS = {
@@ -599,7 +647,7 @@ def process_data_with_files(AR_file, cl_file, cc_file, allow_soft=True):
 
 # ========== INTERFAZ PRINCIPAL ==========
 
-# Banner con logo (si se subió)
+# Mostrar logo si existe en la parte superior
 if 'logo' in st.session_state:
     try:
         from PIL import Image
@@ -800,8 +848,6 @@ st.markdown("---")
 st.markdown(f"""
 <div class="footer">
     <span>⚖️ Procesador de Clientes | AR Collect</span>
-    <span style="margin: 0 1rem">•</span>
-    <span>🎨 Colores personalizables</span>
     <span style="margin: 0 1rem">•</span>
     <span>🔒 Datos procesados localmente</span>
     <span style="margin: 0 1rem">•</span>
