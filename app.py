@@ -1,22 +1,258 @@
 import streamlit as st
 import pandas as pd
 import io
-import os
 import re
 import unicodedata
 from collections import defaultdict
 from datetime import datetime
 
-# Configurar página
+# ========== CONFIGURACIÓN DE PÁGINA ==========
 st.set_page_config(
-    page_title="Procesador de Clientes",
-    page_icon="📊",
+    page_title="Procesador de Clientes | AR Collect",
+    page_icon="⚖️",
     layout="wide",
-    initial_sidebar_state="expanded"
+    initial_sidebar_state="expanded",
+    menu_items={
+        'Get Help': None,
+        'Report a bug': None,
+        'About': "### Procesador de Clientes\nVersión 2.0\nProcesa automáticamente reportes AR Collect"
+    }
 )
 
-# === TODAS TUS FUNCIONES ORIGINALES ===
-# Configuración
+# ========== CSS PERSONALIZADO CON COLOR #f60d2d ==========
+st.markdown("""
+<style>
+    /* Fondo principal gris claro */
+    .stApp {
+        background-color: #f8f9fa;
+    }
+    
+    /* Títulos */
+    h1 {
+        color: #1a1a1a;
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+    
+    h2, h3 {
+        color: #2d2d2d;
+    }
+    
+    /* Barra lateral - gris oscuro */
+    [data-testid="stSidebar"] {
+        background-color: #1e1e1e;
+    }
+    
+    [data-testid="stSidebar"] * {
+        color: #e0e0e0;
+    }
+    
+    [data-testid="stSidebar"] .stMarkdown h1,
+    [data-testid="stSidebar"] .stMarkdown h2,
+    [data-testid="stSidebar"] .stMarkdown h3 {
+        color: #ffffff;
+    }
+    
+    [data-testid="stSidebar"] .stMarkdown {
+        color: #cccccc;
+    }
+    
+    [data-testid="stSidebar"] hr {
+        border-color: #3a3a3a;
+    }
+    
+    /* Botón principal */
+    .stButton button {
+        background-color: #f60d2d;
+        color: white;
+        font-weight: 600;
+        border-radius: 8px;
+        padding: 0.5rem 1rem;
+        transition: all 0.3s ease;
+        border: none;
+    }
+    
+    .stButton button:hover {
+        background-color: #d40c27;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(246, 13, 45, 0.3);
+    }
+    
+    /* Botón secundario (descarga) */
+    .stDownloadButton button {
+        background-color: #2c2c2c;
+        color: white;
+    }
+    
+    .stDownloadButton button:hover {
+        background-color: #3a3a3a;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    
+    /* Tarjetas/métricas */
+    .metric-card {
+        background-color: white;
+        border-radius: 12px;
+        padding: 1.2rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        text-align: center;
+        border-top: 4px solid #f60d2d;
+        transition: all 0.3s ease;
+    }
+    
+    .metric-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+    }
+    
+    .metric-value {
+        font-size: 2.2rem;
+        font-weight: 700;
+        color: #1a1a1a;
+    }
+    
+    .metric-label {
+        font-size: 0.85rem;
+        color: #666666;
+        margin-top: 0.5rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    /* Tarjeta de estado de archivos */
+    .file-card {
+        background-color: white;
+        border-radius: 12px;
+        padding: 1rem;
+        text-align: center;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        border: 1px solid #eaeaea;
+    }
+    
+    .file-card-success {
+        border-left: 4px solid #f60d2d;
+        background-color: #ffffff;
+    }
+    
+    .file-card-pending {
+        border-left: 4px solid #cccccc;
+        background-color: #fafafa;
+    }
+    
+    .file-icon {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .file-title {
+        font-weight: 600;
+        color: #333333;
+    }
+    
+    .file-status {
+        font-size: 0.8rem;
+        color: #888888;
+        margin-top: 0.25rem;
+    }
+    
+    /* Expander */
+    .streamlit-expanderHeader {
+        background-color: #f0f0f0;
+        border-radius: 8px;
+        font-weight: 600;
+        color: #1a1a1a;
+    }
+    
+    .streamlit-expanderHeader:hover {
+        background-color: #e8e8e8;
+    }
+    
+    /* Tabs */
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 0.5rem;
+        background-color: #f0f0f0;
+        border-radius: 12px;
+        padding: 0.5rem;
+    }
+    
+    .stTabs [data-baseweb="tab"] {
+        border-radius: 8px;
+        padding: 0.5rem 1.2rem;
+        font-weight: 500;
+        color: #666666;
+    }
+    
+    .stTabs [aria-selected="true"] {
+        background-color: #f60d2d;
+        color: white;
+    }
+    
+    /* Banners */
+    .success-banner {
+        background-color: #fff5f5;
+        border-left: 4px solid #f60d2d;
+        padding: 1rem;
+        border-radius: 8px;
+        margin: 1rem 0;
+        color: #1a1a1a;
+    }
+    
+    .info-banner {
+        background-color: #f5f5f5;
+        border-left: 4px solid #888888;
+        padding: 1rem;
+        border-radius: 8px;
+        margin: 1rem 0;
+        color: #555555;
+    }
+    
+    /* DataFrames */
+    .dataframe {
+        border-radius: 8px;
+        overflow: hidden;
+    }
+    
+    [data-testid="stDataFrame"] {
+        border: 1px solid #eaeaea;
+        border-radius: 8px;
+    }
+    
+    /* Checkbox */
+    .stCheckbox label {
+        color: #e0e0e0;
+    }
+    
+    /* File uploader en sidebar */
+    [data-testid="stSidebar"] .stFileUploader label {
+        color: #cccccc;
+    }
+    
+    /* Separadores */
+    hr {
+        margin: 1rem 0;
+        border-color: #eaeaea;
+    }
+    
+    /* Pie de página */
+    .footer {
+        text-align: center;
+        padding: 1rem;
+        color: #888888;
+        font-size: 0.75rem;
+        border-top: 1px solid #eaeaea;
+        margin-top: 2rem;
+    }
+    
+    /* Spinner */
+    .stSpinner > div {
+        border-color: #f60d2d !important;
+    }
+</style>
+""", unsafe_allow_html=True)
+
+# ========== FUNCIONES ORIGINALES ==========
 ALLOW_TWO_OF_THREE_SOFT = True
 
 SPACE_CHARS = {
@@ -123,12 +359,10 @@ def classify_match(a: str, b: str):
 def process_data_with_files(AR_file, cl_file, cc_file):
     """Procesa los archivos subidos y devuelve los resultados"""
     
-    # CORREGIDO: Cambiado engine='calamine' por engine='openpyxl'
     AR = pd.read_excel(AR_file, header=0, engine='openpyxl')
     cl_file_df = pd.read_excel(cl_file, header=2, engine='openpyxl')
     cc_data = pd.read_excel(cc_file, header=0, engine='openpyxl')
     
-    # Normalizar nombres
     if 'Customer' not in AR.columns:
         for col in AR.columns:
             if 'customer' in str(col).lower():
@@ -140,11 +374,9 @@ def process_data_with_files(AR_file, cl_file, cc_file):
     else:
         return [], [], []
     
-    # Normalizar Case_Details
     if not cl_file_df.empty and 'Client Name' in cl_file_df.columns:
         cl_file_df["normalized_name"] = cl_file_df["Client Name"].apply(normalize_name)
         cl_norms_unique = cl_file_df["normalized_name"].dropna().unique().tolist()
-        
         cl_index = defaultdict(list)
         for i, r in cl_file_df.iterrows():
             cl_index[r["normalized_name"]].append(i)
@@ -152,16 +384,13 @@ def process_data_with_files(AR_file, cl_file, cc_file):
         cl_norms_unique = []
         cl_index = defaultdict(list)
     
-    # Normalizar Casos Cerrados
     if not cc_data.empty:
         cc_data["normalized_name"] = cc_data.iloc[:, 0].apply(normalize_name)
         cc_norms = cc_data["normalized_name"].dropna().unique().tolist()
     else:
         cc_norms = []
     
-    # Calcular balances
     aging_cols = ["1 - 30 days", "31 - 60 days", "61 - 90 days", "91 - 120 days", "121+ days"]
-    
     for col in aging_cols:
         if col in AR.columns:
             AR[col] = pd.to_numeric(AR[col], errors="coerce").fillna(0)
@@ -169,7 +398,6 @@ def process_data_with_files(AR_file, cl_file, cc_file):
             AR[col] = 0
     
     AR["Total_Balance_Calculated"] = AR[aging_cols].sum(axis=1)
-    
     AR_pos_balance = AR[AR["Total_Balance_Calculated"] > 0].copy()
     AR_zero_balance = AR[AR["Total_Balance_Calculated"] == 0].copy()
     
@@ -177,7 +405,6 @@ def process_data_with_files(AR_file, cl_file, cc_file):
     descartados_rows = []
     log_rows = []
     
-    # Procesar balance cero
     for _, row in AR_zero_balance.iterrows():
         row_out = row.copy()
         row_out["Estado_final"] = "Balance = 0"
@@ -186,11 +413,9 @@ def process_data_with_files(AR_file, cl_file, cc_file):
         row_out["Case_Number"] = ""
         descartados_rows.append(row_out)
     
-    # Procesar balance positivo
     for _, ar_row in AR_pos_balance.iterrows():
         cliente = ar_row["Customer"]
         norm_cliente = ar_row["normalized_name"]
-        
         best_match_original = ""
         case_statuses = ""
         case_numbers = ""
@@ -204,39 +429,29 @@ def process_data_with_files(AR_file, cl_file, cc_file):
             matched_normals = []
             match_types = {}
             match_inters = {}
-            
             for cand in cl_norms_unique:
                 ok, label, inter = classify_match(norm_cliente, cand)
                 if ok:
                     matched_normals.append(cand)
                     match_types[cand] = label
                     match_inters[cand] = inter
-            
             if matched_normals:
-                best_match_norm = max(
-                    matched_normals,
-                    key=lambda c: (match_inters.get(c, 0), len(c.split()))
-                )
+                best_match_norm = max(matched_normals, key=lambda c: (match_inters.get(c, 0), len(c.split())))
                 best_label = match_types.get(best_match_norm, "")
                 best_inter = match_inters.get(best_match_norm, 0)
-                
                 matched_indices = cl_index.get(best_match_norm, [])
                 if matched_indices:
                     best_df = cl_file_df.loc[matched_indices].copy()
-                    
                     case_statuses = "; ".join(sorted(set(best_df["Case Status"].astype(str))))
                     case_numbers = "; ".join(sorted(set(best_df["Case Number"].astype(str))))
                     best_originals = best_df["Client Name"].astype(str).unique().tolist()
                     best_match_original = best_originals[0] if best_originals else ""
-                    
                     statuses_upper = []
                     for cs in best_df["Case Status"]:
                         for s in str(cs).split(";"):
                             statuses_upper.append(s.strip().upper())
-                    
                     discard_statuses = {"CLOSED", "DELETED", "WITHDRAWING", "WITHDRAWN", "READY_FOR_CLOSING"}
                     all_discardable = all(s in discard_statuses for s in statuses_upper)
-                    
                     if all_discardable:
                         if cc_norms:
                             cc_match = any(classify_match(norm_cliente, cc)[0] for cc in cc_norms)
@@ -258,14 +473,12 @@ def process_data_with_files(AR_file, cl_file, cc_file):
         row_out["Estado_final"] = estado
         row_out["Case_Status"] = case_statuses
         row_out["Case_Number"] = case_numbers
-        
         if accion == "Mantener":
             row_out["En_proceso_de_cierre"] = (estado == "En proceso de cierre")
             filtrados_rows.append(row_out)
         else:
             row_out["Motivo_descartado"] = "Cerrado confirmado"
             descartados_rows.append(row_out)
-        
         log_rows.append({
             "Cliente_AR": cliente,
             "Nombre_Normalizado_AR": norm_cliente,
@@ -282,189 +495,222 @@ def process_data_with_files(AR_file, cl_file, cc_file):
     
     return filtrados_rows, descartados_rows, log_rows
 
-# === INTERFAZ STREAMLIT ===
-def main():
-    st.title("📊 Procesador de Clientes")
-    st.markdown("""
-    ### Sube los archivos necesarios y genera el reporte automáticamente
-    
-    **Archivos requeridos:**
-    1. **ARCollect_Age_Analysis.xlsx** - Datos de aging de clientes
-    2. **Case_Details.xlsx** - Detalles de casos
-    3. **Casos Cerrados.xlsx** - Lista de casos cerrados
-    """)
-    
-    st.markdown("---")
-    
-    # Sidebar para configuraciones
-    with st.sidebar:
-        st.header("⚙️ Configuración")
-        
-        allow_soft = st.checkbox(
-            "Permitir coincidencias suaves (2/3 tokens)",
-            value=True,
-            help="Si está activado, permite matches con 2 de 3 tokens coincidentes"
-        )
-        
-        st.markdown("---")
-        st.header("📁 Subir archivos")
-        
-        # Subida de archivos
-        ar_file = st.file_uploader(
-            "1. ARCollect_Age_Analysis.xlsx",
-            type=['xlsx'],
-            help="Archivo con el análisis de aging"
-        )
-        
-        case_file = st.file_uploader(
-            "2. Case_Details.xlsx",
-            type=['xlsx'],
-            help="Archivo con detalles de casos"
-        )
-        
-        closed_file = st.file_uploader(
-            "3. Casos Cerrados.xlsx",
-            type=['xlsx'],
-            help="Archivo con casos cerrados"
-        )
-    
-    # Mostrar estado de archivos
-    col1, col2, col3 = st.columns(3)
-    
-    with col1:
-        if ar_file:
-            st.success("✅ ARCollect cargado")
-        else:
-            st.info("⏳ Esperando ARCollect")
-    
-    with col2:
-        if case_file:
-            st.success("✅ Case Details cargado")
-        else:
-            st.info("⏳ Esperando Case Details")
-    
-    with col3:
-        if closed_file:
-            st.success("✅ Casos Cerrados cargado")
-        else:
-            st.info("⏳ Esperando Casos Cerrados")
-    
-    st.markdown("---")
-    
-    # Botón para procesar
-    if ar_file and case_file and closed_file:
-        if st.button("🚀 Procesar Archivos", type="primary", use_container_width=True):
-            
-            # Mostrar spinner mientras procesa
-            with st.spinner("Procesando archivos... Esto puede tomar unos segundos"):
-                try:
-                    # Actualizar configuración global
-                    global ALLOW_TWO_OF_THREE_SOFT
-                    ALLOW_TWO_OF_THREE_SOFT = allow_soft
-                    
-                    # Procesar
-                    filtrados, descartados, log = process_data_with_files(
-                        ar_file, case_file, closed_file
-                    )
-                    
-                    # Mostrar resultados
-                    st.success("✅ Procesamiento completado!")
-                    
-                    # Métricas
-                    col1, col2, col3 = st.columns(3)
-                    with col1:
-                        st.metric("Total mantenidos", len(filtrados))
-                    with col2:
-                        st.metric("Total descartados", len(descartados))
-                    with col3:
-                        st.metric("Total procesados", len(filtrados) + len(descartados))
-                    
-                    # Crear archivo Excel
-                    output = io.BytesIO()
-                    with pd.ExcelWriter(output, engine='openpyxl') as writer:
-                        pd.DataFrame(filtrados).to_excel(writer, sheet_name="AR_filtrada", index=False)
-                        pd.DataFrame(descartados).to_excel(writer, sheet_name="AR_descartados", index=False)
-                        pd.DataFrame(log).to_excel(writer, sheet_name="Match_log", index=False)
-                    
-                    output.seek(0)
-                    
-                    # Botón de descarga
-                    st.download_button(
-                        label="📥 Descargar Reporte Excel",
-                        data=output,
-                        file_name=f"reporte_clientes_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx",
-                        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                        use_container_width=True
-                    )
-                    
-                    # Mostrar vista previa
-                    st.markdown("---")
-                    st.subheader("📋 Vista previa de resultados")
-                    
-                    tab1, tab2, tab3 = st.tabs(["Mantenidos", "Descartados", "Log de Matches"])
-                    
-                    with tab1:
-                        if filtrados:
-                            df_filtrados = pd.DataFrame(filtrados)
-                            st.dataframe(df_filtrados.head(20), use_container_width=True)
-                            st.caption(f"Mostrando 20 de {len(filtrados)} registros")
-                        else:
-                            st.info("No hay registros mantenidos")
-                    
-                    with tab2:
-                        if descartados:
-                            df_descartados = pd.DataFrame(descartados)
-                            st.dataframe(df_descartados.head(20), use_container_width=True)
-                            st.caption(f"Mostrando 20 de {len(descartados)} registros")
-                        else:
-                            st.info("No hay registros descartados")
-                    
-                    with tab3:
-                        if log:
-                            df_log = pd.DataFrame(log)
-                            st.dataframe(df_log.head(20), use_container_width=True)
-                            st.caption(f"Mostrando 20 de {len(log)} registros")
-                            
-                            # Mostrar resumen de tipos de match
-                            if 'Best_Match_Type' in df_log.columns:
-                                st.markdown("**Resumen de tipos de match:**")
-                                st.dataframe(
-                                    df_log['Best_Match_Type'].value_counts().reset_index(),
-                                    use_container_width=True,
-                                    hide_index=True
-                                )
-                        else:
-                            st.info("No hay registros en el log")
-                    
-                except Exception as e:
-                    st.error(f"❌ Error durante el procesamiento: {str(e)}")
-                    st.exception(e)
-    else:
-        st.info("📂 Por favor, sube los 3 archivos para comenzar el procesamiento")
-    
-    # Instrucciones
-    with st.expander("ℹ️ Instrucciones detalladas"):
-        st.markdown("""
-        ### Cómo usar esta aplicación:
-        
-        1. **Prepara los archivos** necesarios en tu computadora
-        2. **Usa la barra lateral** para subir cada archivo
-        3. **Ajusta la configuración** si es necesario (coincidencias suaves)
-        4. **Haz clic en "Procesar Archivos"**
-        5. **Descarga el resultado** cuando termine
-        
-        ### Formato esperado de archivos:
-        
-        - **ARCollect_Age_Analysis.xlsx**: Debe contener columna 'Customer' y columnas de aging
-        - **Case_Details.xlsx**: Debe tener headers en fila 3, con columna 'Client Name'
-        - **Casos Cerrados.xlsx**: Primera columna con nombres de clientes cerrados
-        
-        ### Resultados:
-        
-        - **AR_filtrada**: Clientes con balance positivo y casos activos
-        - **AR_descartados**: Clientes descartados (balance cero o casos cerrados)
-        - **Match_log**: Registro detallado de todas las coincidencias encontradas
-        """)
+# ========== INTERFAZ STREAMLIT CON COLOR #f60d2d ==========
 
-if __name__ == "__main__":
-    main()
+# Barra lateral - gris oscuro
+with st.sidebar:
+    st.markdown("### ⚖️ AR Collect")
+    st.markdown("# Procesador")
+    st.markdown("### de Clientes")
+    st.markdown("---")
+    st.markdown("#### ⚙️ Configuración")
+    
+    allow_soft = st.checkbox(
+        "Permitir coincidencias suaves (2/3 tokens)",
+        value=True,
+        help="Si está activado, permite matches con 2 de 3 tokens coincidentes"
+    )
+    
+    st.markdown("---")
+    st.markdown("#### 📁 Subir archivos")
+    
+    ar_file = st.file_uploader("ARCollect_Age_Analysis.xlsx", type=['xlsx'], key="ar")
+    case_file = st.file_uploader("Case_Details.xlsx", type=['xlsx'], key="case")
+    closed_file = st.file_uploader("Casos Cerrados.xlsx", type=['xlsx'], key="closed")
+    
+    st.markdown("---")
+    st.caption("📌 Versión 2.0")
+    st.caption("🔒 Datos procesados localmente")
+
+# Área principal
+col_logo, col_title = st.columns([1, 6])
+with col_logo:
+    st.markdown("# ⚖️")
+with col_title:
+    st.markdown("# Procesador de Clientes")
+    st.markdown("### AR Collect - Análisis y Filtrado Automático")
+
+st.markdown("---")
+
+# Tarjetas de estado de archivos (estilo moderno)
+col1, col2, col3 = st.columns(3)
+
+with col1:
+    if ar_file:
+        st.markdown("""
+        <div class="file-card file-card-success">
+            <div class="file-icon">📊</div>
+            <div class="file-title">ARCollect</div>
+            <div class="file-status" style="color: #f60d2d;">✓ Archivo cargado</div>
+        </div>
+        """, unsafe_allow_html=True)
+    else:
+        st.markdown("""
+        <div class="file-card file-card-pending">
+            <div class="file-icon">📄</div>
+            <div class="file-title">ARCollect</div>
+            <div class="file-status">⏳ Esperando archivo</div>
+        </div>
+        """, unsafe_allow_html=True)
+
+with col2:
+    if case_file:
+        st.markdown("""
+        <div class="file-card file-card-success">
+            <div class="file-icon">📋</div>
+            <div class="file-title">Case Details</div>
+            <div class="file-status" style="color: #f60d2d;">✓ Archivo cargado</div>
+        </div>
+        """, unsafe_allow_html=True)
+    else:
+        st.markdown("""
+        <div class="file-card file-card-pending">
+            <div class="file-icon">📄</div>
+            <div class="file-title">Case Details</div>
+            <div class="file-status">⏳ Esperando archivo</div>
+        </div>
+        """, unsafe_allow_html=True)
+
+with col3:
+    if closed_file:
+        st.markdown("""
+        <div class="file-card file-card-success">
+            <div class="file-icon">📁</div>
+            <div class="file-title">Casos Cerrados</div>
+            <div class="file-status" style="color: #f60d2d;">✓ Archivo cargado</div>
+        </div>
+        """, unsafe_allow_html=True)
+    else:
+        st.markdown("""
+        <div class="file-card file-card-pending">
+            <div class="file-icon">📄</div>
+            <div class="file-title">Casos Cerrados</div>
+            <div class="file-status">⏳ Esperando archivo</div>
+        </div>
+        """, unsafe_allow_html=True)
+
+st.markdown("---")
+
+# Botón de procesamiento
+if ar_file and case_file and closed_file:
+    if st.button("🚀 PROCESAR ARCHIVOS", type="primary", use_container_width=True):
+        with st.spinner("Procesando archivos... Esto puede tomar unos segundos"):
+            try:
+                global ALLOW_TWO_OF_THREE_SOFT
+                ALLOW_TWO_OF_THREE_SOFT = allow_soft
+                
+                filtrados, descartados, log = process_data_with_files(ar_file, case_file, closed_file)
+                
+                # Banner de éxito
+                st.markdown(f"""
+                <div class="success-banner">
+                    ✅ <strong>Procesamiento completado exitosamente!</strong> Se procesaron {len(filtrados) + len(descartados)} registros.
+                </div>
+                """, unsafe_allow_html=True)
+                
+                # Métricas con tarjetas
+                col1, col2, col3, col4 = st.columns(4)
+                
+                with col1:
+                    st.markdown(f"""
+                    <div class="metric-card">
+                        <div class="metric-value">{len(filtrados):,}</div>
+                        <div class="metric-label">Mantenidos</div>
+                    </div>
+                    """, unsafe_allow_html=True)
+                
+                with col2:
+                    st.markdown(f"""
+                    <div class="metric-card">
+                        <div class="metric-value">{len(descartados):,}</div>
+                        <div class="metric-label">Descartados</div>
+                    </div>
+                    """, unsafe_allow_html=True)
+                
+                with col3:
+                    total = len(filtrados) + len(descartados)
+                    st.markdown(f"""
+                    <div class="metric-card">
+                        <div class="metric-value">{total:,}</div>
+                        <div class="metric-label">Total Procesados</div>
+                    </div>
+                    """, unsafe_allow_html=True)
+                
+                with col4:
+                    porcentaje = (len(filtrados) / total * 100) if total > 0 else 0
+                    st.markdown(f"""
+                    <div class="metric-card">
+                        <div class="metric-value">{porcentaje:.1f}%</div>
+                        <div class="metric-label">Tasa de retención</div>
+                    </div>
+                    """, unsafe_allow_html=True)
+                
+                # Botón de descarga
+                output = io.BytesIO()
+                with pd.ExcelWriter(output, engine='openpyxl') as writer:
+                    pd.DataFrame(filtrados).to_excel(writer, sheet_name="AR_filtrada", index=False)
+                    pd.DataFrame(descartados).to_excel(writer, sheet_name="AR_descartados", index=False)
+                    pd.DataFrame(log).to_excel(writer, sheet_name="Match_log", index=False)
+                output.seek(0)
+                
+                st.download_button(
+                    label="📥 DESCARGAR REPORTE EXCEL",
+                    data=output,
+                    file_name=f"reporte_clientes_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx",
+                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    use_container_width=True
+                )
+                
+                # Tabs con resultados
+                st.markdown("---")
+                st.markdown("### 📋 Vista previa de resultados")
+                
+                tab1, tab2, tab3 = st.tabs(["📌 MANTENIDOS", "🗑️ DESCARTADOS", "📝 LOG DE MATCHES"])
+                
+                with tab1:
+                    if filtrados:
+                        df_filtrados = pd.DataFrame(filtrados)
+                        st.dataframe(df_filtrados.head(20), use_container_width=True)
+                        st.caption(f"Mostrando 20 de {len(filtrados)} registros")
+                    else:
+                        st.info("No hay registros mantenidos")
+                
+                with tab2:
+                    if descartados:
+                        df_descartados = pd.DataFrame(descartados)
+                        st.dataframe(df_descartados.head(20), use_container_width=True)
+                        st.caption(f"Mostrando 20 de {len(descartados)} registros")
+                    else:
+                        st.info("No hay registros descartados")
+                
+                with tab3:
+                    if log:
+                        df_log = pd.DataFrame(log)
+                        st.dataframe(df_log.head(20), use_container_width=True)
+                        if 'Best_Match_Type' in df_log.columns:
+                            st.markdown("**Resumen de tipos de match:**")
+                            st.dataframe(df_log['Best_Match_Type'].value_counts().reset_index(), use_container_width=True, hide_index=True)
+                    else:
+                        st.info("No hay registros en el log")
+                        
+            except Exception as e:
+                st.error(f"❌ Error durante el procesamiento: {str(e)}")
+                st.exception(e)
+else:
+    st.markdown("""
+    <div class="info-banner">
+        📂 <strong>Para comenzar</strong>, sube los 3 archivos en la barra lateral izquierda
+    </div>
+    """, unsafe_allow_html=True)
+
+# Pie de página
+st.markdown("---")
+st.markdown("""
+<div class="footer">
+    <span>⚖️ Procesador de Clientes | AR Collect</span>
+    <span style="margin: 0 1rem">•</span>
+    <span>🔒 Datos procesados localmente</span>
+    <span style="margin: 0 1rem">•</span>
+    <span>📊 Versión 2.0</span>
+</div>
+""", unsafe_allow_html=True)
