@@ -21,7 +21,13 @@ st.set_page_config(
     }
 )
 
-# ========== CONTRASEÑA PARA EDITOR (CAMBIA ESTO) ==========
+# ========== CONFIGURACIÓN DE LOGO PERMANENTE ==========
+# CAMBIA ESTA URL CON LA URL DE TU LOGO EN GITHUB
+# Para obtener la URL raw: ve a tu repositorio > abre la imagen > copia "Raw" URL
+LOGO_URL = "https://raw.githubusercontent.com/TU-USUARIO/TU-REPO/main/assets/logo.png"
+LOGO_LOCAL = "assets/logo.png"  # Para desarrollo local
+
+# ========== CONTRASEÑA PARA EDITOR ==========
 EDITOR_PASSWORD = "admin123"  # CAMBIA ESTA CONTRASEÑA
 PASSWORD_HASH = hashlib.sha256(EDITOR_PASSWORD.encode()).hexdigest()
 
@@ -41,21 +47,30 @@ if 'color_card' not in st.session_state:
 if 'bordes' not in st.session_state:
     st.session_state.bordes = 12
 
-# ========== FUNCIÓN PARA VERIFICAR CONTRASEÑA ==========
+# ========== FUNCIÓN PARA MOSTRAR LOGO PERMANENTE ==========
+def mostrar_logo(tamaño=100):
+    """Muestra el logo permanente desde GitHub o local"""
+    try:
+        # Intentar cargar desde URL remota (producción)
+        st.image(LOGO_URL, width=tamaño)
+    except:
+        try:
+            # Intentar cargar desde archivo local (desarrollo)
+            if os.path.exists(LOGO_LOCAL):
+                st.image(LOGO_LOCAL, width=tamaño)
+            else:
+                # Si no hay logo, mostrar emoji
+                st.markdown(f"<h1 style='font-size: {tamaño//4}px;'>⚖️</h1>", unsafe_allow_html=True)
+        except:
+            st.markdown(f"<h1 style='font-size: {tamaño//4}px;'>⚖️</h1>", unsafe_allow_html=True)
+
 def verificar_password(password):
     return hashlib.sha256(password.encode()).hexdigest() == PASSWORD_HASH
 
 # ========== BARRA LATERAL ==========
 with st.sidebar:
-    # Mostrar logo si existe en sesión
-    if 'logo' in st.session_state:
-        try:
-            from PIL import Image
-            import io as io_lib
-            img = Image.open(io_lib.BytesIO(st.session_state.logo))
-            st.image(img, width=120)
-        except:
-            st.image(io_lib.BytesIO(st.session_state.logo), width=120)
+    # Logo permanente en la barra lateral
+    mostrar_logo(80)
     
     st.markdown("### ⚖️ AR Collect")
     st.markdown("---")
@@ -85,7 +100,6 @@ with st.sidebar:
         st.markdown("⚠️ **Acceso restringido**")
         
         if not st.session_state.password_correcta:
-            # Mostrar campo de contraseña
             password_input = st.text_input(
                 "Contraseña de administrador",
                 type="password",
@@ -93,19 +107,20 @@ with st.sidebar:
                 placeholder="Ingresa la contraseña para editar colores"
             )
             
-            if st.button("🔓 Acceder", key="btn_acceder"):
-                if verificar_password(password_input):
-                    st.session_state.password_correcta = True
-                    st.session_state.modo_editor = True
-                    st.success("✅ Acceso concedido")
-                    st.rerun()
-                else:
-                    st.error("❌ Contraseña incorrecta")
+            col1, col2 = st.columns(2)
+            with col1:
+                if st.button("🔓 Acceder", key="btn_acceder"):
+                    if verificar_password(password_input):
+                        st.session_state.password_correcta = True
+                        st.session_state.modo_editor = True
+                        st.success("✅ Acceso concedido")
+                        st.rerun()
+                    else:
+                        st.error("❌ Contraseña incorrecta")
             
-            st.caption("🔒 Solo administradores pueden modificar colores y logos")
+            st.caption("🔒 Solo administradores pueden modificar colores")
             
         else:
-            # Panel de edición visible
             st.success("✅ Modo editor activado")
             
             # Selector de color principal
@@ -161,19 +176,6 @@ with st.sidebar:
                 st.rerun()
             
             st.markdown("---")
-            
-            # Subir logo
-            st.markdown("### 🖼️ Logo personalizado")
-            logo_file = st.file_uploader(
-                "Subir logo (PNG, JPG, SVG)",
-                type=['png', 'jpg', 'jpeg', 'svg'],
-                key="logo_uploader_admin"
-            )
-            
-            if logo_file:
-                st.session_state.logo = logo_file.read()
-                st.image(logo_file, width=120)
-                st.success("✅ Logo cargado")
             
             # Botón para salir del modo editor
             if st.button("🚪 Salir modo editor", key="btn_salir"):
@@ -250,7 +252,7 @@ st.markdown(f"""
     .stButton button:hover {{
         background-color: {st.session_state.color_principal}cc;
         transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(246, 13, 45, 0.3);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     }}
     
     /* Botón secundario */
@@ -645,34 +647,15 @@ def process_data_with_files(AR_file, cl_file, cc_file, allow_soft=True):
     
     return filtrados_rows, descartados_rows, log_rows
 
-# ========== INTERFAZ PRINCIPAL ==========
+# ========== INTERFAZ PRINCIPAL CON LOGO PERMANENTE ==========
 
-# Mostrar logo si existe en la parte superior
-if 'logo' in st.session_state:
-    try:
-        from PIL import Image
-        import io as io_lib
-        img = Image.open(io_lib.BytesIO(st.session_state.logo))
-        col_logo, col_title = st.columns([1, 5])
-        with col_logo:
-            st.image(img, width=80)
-        with col_title:
-            st.markdown("# Procesador de Clientes")
-            st.markdown("### AR Collect - Análisis y Filtrado Automático")
-    except:
-        col_logo, col_title = st.columns([1, 5])
-        with col_logo:
-            st.markdown("# ⚖️")
-        with col_title:
-            st.markdown("# Procesador de Clientes")
-            st.markdown("### AR Collect - Análisis y Filtrado Automático")
-else:
-    col_logo, col_title = st.columns([1, 6])
-    with col_logo:
-        st.markdown("# ⚖️")
-    with col_title:
-        st.markdown("# Procesador de Clientes")
-        st.markdown("### AR Collect - Análisis y Filtrado Automático")
+# Banner superior con logo
+col_logo, col_title = st.columns([1, 5])
+with col_logo:
+    mostrar_logo(80)
+with col_title:
+    st.markdown("# Procesador de Clientes")
+    st.markdown("### AR Collect - Análisis y Filtrado Automático")
 
 st.markdown("---")
 
@@ -848,6 +831,8 @@ st.markdown("---")
 st.markdown(f"""
 <div class="footer">
     <span>⚖️ Procesador de Clientes | AR Collect</span>
+    <span style="margin: 0 1rem">•</span>
+    <span>🎨 Colores personalizables</span>
     <span style="margin: 0 1rem">•</span>
     <span>🔒 Datos procesados localmente</span>
     <span style="margin: 0 1rem">•</span>
