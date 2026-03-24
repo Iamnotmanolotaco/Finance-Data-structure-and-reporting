@@ -22,239 +22,48 @@ st.set_page_config(
 # ========== CSS PERSONALIZADO CON COLOR #f60d2d ==========
 st.markdown("""
 <style>
-    /* Fondo principal gris claro */
-    .stApp {
-        background-color: #f8f9fa;
-    }
-    
-    /* Títulos */
-    h1 {
-        color: #1a1a1a;
-        font-size: 2.5rem;
-        font-weight: 700;
-        margin-bottom: 0.5rem;
-    }
-    
-    h2, h3 {
-        color: #2d2d2d;
-    }
-    
-    /* Barra lateral - gris oscuro */
-    [data-testid="stSidebar"] {
-        background-color: #1e1e1e;
-    }
-    
-    [data-testid="stSidebar"] * {
-        color: #e0e0e0;
-    }
-    
+    .stApp { background-color: #f8f9fa; }
+    h1 { color: #1a1a1a; font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem; }
+    h2, h3 { color: #2d2d2d; }
+    [data-testid="stSidebar"] { background-color: #1e1e1e; }
+    [data-testid="stSidebar"] * { color: #e0e0e0; }
     [data-testid="stSidebar"] .stMarkdown h1,
     [data-testid="stSidebar"] .stMarkdown h2,
-    [data-testid="stSidebar"] .stMarkdown h3 {
-        color: #ffffff;
-    }
-    
-    [data-testid="stSidebar"] .stMarkdown {
-        color: #cccccc;
-    }
-    
-    [data-testid="stSidebar"] hr {
-        border-color: #3a3a3a;
-    }
-    
-    /* Botón principal */
-    .stButton button {
-        background-color: #f60d2d;
-        color: white;
-        font-weight: 600;
-        border-radius: 8px;
-        padding: 0.5rem 1rem;
-        transition: all 0.3s ease;
-        border: none;
-    }
-    
-    .stButton button:hover {
-        background-color: #d40c27;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(246, 13, 45, 0.3);
-    }
-    
-    /* Botón secundario (descarga) */
-    .stDownloadButton button {
-        background-color: #2c2c2c;
-        color: white;
-    }
-    
-    .stDownloadButton button:hover {
-        background-color: #3a3a3a;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    }
-    
-    /* Tarjetas/métricas */
-    .metric-card {
-        background-color: white;
-        border-radius: 12px;
-        padding: 1.2rem;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        text-align: center;
-        border-top: 4px solid #f60d2d;
-        transition: all 0.3s ease;
-    }
-    
-    .metric-card:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 6px 16px rgba(0,0,0,0.12);
-    }
-    
-    .metric-value {
-        font-size: 2.2rem;
-        font-weight: 700;
-        color: #1a1a1a;
-    }
-    
-    .metric-label {
-        font-size: 0.85rem;
-        color: #666666;
-        margin-top: 0.5rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-    
-    /* Tarjeta de estado de archivos */
-    .file-card {
-        background-color: white;
-        border-radius: 12px;
-        padding: 1rem;
-        text-align: center;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-        border: 1px solid #eaeaea;
-    }
-    
-    .file-card-success {
-        border-left: 4px solid #f60d2d;
-        background-color: #ffffff;
-    }
-    
-    .file-card-pending {
-        border-left: 4px solid #cccccc;
-        background-color: #fafafa;
-    }
-    
-    .file-icon {
-        font-size: 2rem;
-        margin-bottom: 0.5rem;
-    }
-    
-    .file-title {
-        font-weight: 600;
-        color: #333333;
-    }
-    
-    .file-status {
-        font-size: 0.8rem;
-        color: #888888;
-        margin-top: 0.25rem;
-    }
-    
-    /* Expander */
-    .streamlit-expanderHeader {
-        background-color: #f0f0f0;
-        border-radius: 8px;
-        font-weight: 600;
-        color: #1a1a1a;
-    }
-    
-    .streamlit-expanderHeader:hover {
-        background-color: #e8e8e8;
-    }
-    
-    /* Tabs */
-    .stTabs [data-baseweb="tab-list"] {
-        gap: 0.5rem;
-        background-color: #f0f0f0;
-        border-radius: 12px;
-        padding: 0.5rem;
-    }
-    
-    .stTabs [data-baseweb="tab"] {
-        border-radius: 8px;
-        padding: 0.5rem 1.2rem;
-        font-weight: 500;
-        color: #666666;
-    }
-    
-    .stTabs [aria-selected="true"] {
-        background-color: #f60d2d;
-        color: white;
-    }
-    
-    /* Banners */
-    .success-banner {
-        background-color: #fff5f5;
-        border-left: 4px solid #f60d2d;
-        padding: 1rem;
-        border-radius: 8px;
-        margin: 1rem 0;
-        color: #1a1a1a;
-    }
-    
-    .info-banner {
-        background-color: #f5f5f5;
-        border-left: 4px solid #888888;
-        padding: 1rem;
-        border-radius: 8px;
-        margin: 1rem 0;
-        color: #555555;
-    }
-    
-    /* DataFrames */
-    .dataframe {
-        border-radius: 8px;
-        overflow: hidden;
-    }
-    
-    [data-testid="stDataFrame"] {
-        border: 1px solid #eaeaea;
-        border-radius: 8px;
-    }
-    
-    /* Checkbox */
-    .stCheckbox label {
-        color: #e0e0e0;
-    }
-    
-    /* File uploader en sidebar */
-    [data-testid="stSidebar"] .stFileUploader label {
-        color: #cccccc;
-    }
-    
-    /* Separadores */
-    hr {
-        margin: 1rem 0;
-        border-color: #eaeaea;
-    }
-    
-    /* Pie de página */
-    .footer {
-        text-align: center;
-        padding: 1rem;
-        color: #888888;
-        font-size: 0.75rem;
-        border-top: 1px solid #eaeaea;
-        margin-top: 2rem;
-    }
-    
-    /* Spinner */
-    .stSpinner > div {
-        border-color: #f60d2d !important;
-    }
+    [data-testid="stSidebar"] .stMarkdown h3 { color: #ffffff; }
+    [data-testid="stSidebar"] .stMarkdown { color: #cccccc; }
+    [data-testid="stSidebar"] hr { border-color: #3a3a3a; }
+    .stButton button { background-color: #f60d2d; color: white; font-weight: 600; border-radius: 8px; padding: 0.5rem 1rem; transition: all 0.3s ease; border: none; }
+    .stButton button:hover { background-color: #d40c27; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(246, 13, 45, 0.3); }
+    .stDownloadButton button { background-color: #2c2c2c; color: white; }
+    .stDownloadButton button:hover { background-color: #3a3a3a; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+    .metric-card { background-color: white; border-radius: 12px; padding: 1.2rem; box-shadow: 0 2px 8px rgba(0,0,0,0.08); text-align: center; border-top: 4px solid #f60d2d; transition: all 0.3s ease; }
+    .metric-card:hover { transform: translateY(-3px); box-shadow: 0 6px 16px rgba(0,0,0,0.12); }
+    .metric-value { font-size: 2.2rem; font-weight: 700; color: #1a1a1a; }
+    .metric-label { font-size: 0.85rem; color: #666666; margin-top: 0.5rem; text-transform: uppercase; letter-spacing: 0.5px; }
+    .file-card { background-color: white; border-radius: 12px; padding: 1rem; text-align: center; box-shadow: 0 2px 6px rgba(0,0,0,0.05); border: 1px solid #eaeaea; }
+    .file-card-success { border-left: 4px solid #f60d2d; background-color: #ffffff; }
+    .file-card-pending { border-left: 4px solid #cccccc; background-color: #fafafa; }
+    .file-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+    .file-title { font-weight: 600; color: #333333; }
+    .file-status { font-size: 0.8rem; color: #888888; margin-top: 0.25rem; }
+    .streamlit-expanderHeader { background-color: #f0f0f0; border-radius: 8px; font-weight: 600; color: #1a1a1a; }
+    .streamlit-expanderHeader:hover { background-color: #e8e8e8; }
+    .stTabs [data-baseweb="tab-list"] { gap: 0.5rem; background-color: #f0f0f0; border-radius: 12px; padding: 0.5rem; }
+    .stTabs [data-baseweb="tab"] { border-radius: 8px; padding: 0.5rem 1.2rem; font-weight: 500; color: #666666; }
+    .stTabs [aria-selected="true"] { background-color: #f60d2d; color: white; }
+    .success-banner { background-color: #fff5f5; border-left: 4px solid #f60d2d; padding: 1rem; border-radius: 8px; margin: 1rem 0; color: #1a1a1a; }
+    .info-banner { background-color: #f5f5f5; border-left: 4px solid #888888; padding: 1rem; border-radius: 8px; margin: 1rem 0; color: #555555; }
+    .dataframe { border-radius: 8px; overflow: hidden; }
+    [data-testid="stDataFrame"] { border: 1px solid #eaeaea; border-radius: 8px; }
+    .stCheckbox label { color: #e0e0e0; }
+    [data-testid="stSidebar"] .stFileUploader label { color: #cccccc; }
+    hr { margin: 1rem 0; border-color: #eaeaea; }
+    .footer { text-align: center; padding: 1rem; color: #888888; font-size: 0.75rem; border-top: 1px solid #eaeaea; margin-top: 2rem; }
+    .stSpinner > div { border-color: #f60d2d !important; }
 </style>
 """, unsafe_allow_html=True)
 
-# ========== FUNCIONES ORIGINALES ==========
-# Variable global al inicio del módulo
-ALLOW_TWO_OF_THREE_SOFT = True
+# ========== FUNCIONES ORIGINALES (MODIFICADAS) ==========
 
 SPACE_CHARS = {
     '\u00A0', '\u2000', '\u2001', '\u2002', '\u2003', '\u2004', '\u2005',
@@ -324,7 +133,8 @@ def token_sets(a: str, b: str):
     s2 = set(b.split())
     return s1, s2, len(s1 & s2)
 
-def classify_match(a: str, b: str):
+def classify_match(a: str, b: str, allow_soft: bool = True):
+    """Clasifica coincidencia con parámetro allow_soft"""
     if not a or not b:
         return (False, "no", 0)
     if a == b:
@@ -345,7 +155,7 @@ def classify_match(a: str, b: str):
     if nmin == 3 and nmax >= 3:
         if inter == 3:
             return (True, "3/3 tokens", inter)
-        if inter == 2 and ALLOW_TWO_OF_THREE_SOFT:
+        if inter == 2 and allow_soft:
             return (True, "2/3 tokens (soft)", inter)
         return (False, "no", inter)
 
@@ -357,7 +167,7 @@ def classify_match(a: str, b: str):
 
     return (False, "no", inter)
 
-def process_data_with_files(AR_file, cl_file, cc_file):
+def process_data_with_files(AR_file, cl_file, cc_file, allow_soft=True):
     """Procesa los archivos subidos y devuelve los resultados"""
     
     AR = pd.read_excel(AR_file, header=0, engine='openpyxl')
@@ -431,7 +241,7 @@ def process_data_with_files(AR_file, cl_file, cc_file):
             match_types = {}
             match_inters = {}
             for cand in cl_norms_unique:
-                ok, label, inter = classify_match(norm_cliente, cand)
+                ok, label, inter = classify_match(norm_cliente, cand, allow_soft)
                 if ok:
                     matched_normals.append(cand)
                     match_types[cand] = label
@@ -455,7 +265,7 @@ def process_data_with_files(AR_file, cl_file, cc_file):
                     all_discardable = all(s in discard_statuses for s in statuses_upper)
                     if all_discardable:
                         if cc_norms:
-                            cc_match = any(classify_match(norm_cliente, cc)[0] for cc in cc_norms)
+                            cc_match = any(classify_match(norm_cliente, cc, allow_soft)[0] for cc in cc_norms)
                             if cc_match:
                                 estado = "Cerrado confirmado"
                                 accion = "Descartar"
@@ -533,7 +343,7 @@ with col_title:
 
 st.markdown("---")
 
-# Tarjetas de estado de archivos (estilo moderno)
+# Tarjetas de estado de archivos
 col1, col2, col3 = st.columns(3)
 
 with col1:
@@ -597,11 +407,10 @@ if ar_file and case_file and closed_file:
     if st.button("🚀 PROCESAR ARCHIVOS", type="primary", use_container_width=True):
         with st.spinner("Procesando archivos... Esto puede tomar unos segundos"):
             try:
-                # CORREGIDO: Declarar global antes de asignar
-                global ALLOW_TWO_OF_THREE_SOFT
-                ALLOW_TWO_OF_THREE_SOFT = allow_soft
-                
-                filtrados, descartados, log = process_data_with_files(ar_file, case_file, closed_file)
+                # Pasar allow_soft como parámetro - SIN GLOBAL
+                filtrados, descartados, log = process_data_with_files(
+                    ar_file, case_file, closed_file, allow_soft
+                )
                 
                 # Banner de éxito
                 st.markdown(f"""
