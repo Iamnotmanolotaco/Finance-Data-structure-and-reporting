@@ -24,7 +24,7 @@ st.set_page_config(
 # ========== CONFIGURACIÓN DE LOGO PERMANENTE ==========
 # CAMBIA ESTA URL CON LA URL DE TU LOGO EN GITHUB
 # Para obtener la URL raw: ve a tu repositorio > abre la imagen > copia "Raw" URL
-LOGO_URL = "https://raw.githubusercontent.com/TU-USUARIO/TU-REPO/main/assets/logo.png"
+LOGO_URL = "https://github.com/Iamnotmanolotaco/Finance-Data-structure-and-reporting/blob/main/assets/image.png"
 LOGO_LOCAL = "assets/logo.png"  # Para desarrollo local
 
 # ========== CONTRASEÑA PARA EDITOR ==========
