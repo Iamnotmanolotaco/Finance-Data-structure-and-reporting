@@ -253,6 +253,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ========== FUNCIONES ORIGINALES ==========
+# Variable global al inicio del módulo
 ALLOW_TWO_OF_THREE_SOFT = True
 
 SPACE_CHARS = {
@@ -596,6 +597,7 @@ if ar_file and case_file and closed_file:
     if st.button("🚀 PROCESAR ARCHIVOS", type="primary", use_container_width=True):
         with st.spinner("Procesando archivos... Esto puede tomar unos segundos"):
             try:
+                # CORREGIDO: Declarar global antes de asignar
                 global ALLOW_TWO_OF_THREE_SOFT
                 ALLOW_TWO_OF_THREE_SOFT = allow_soft
                 
