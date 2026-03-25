@@ -297,6 +297,8 @@ def process_data_with_files(AR_file, cl_file, cc_file, allow_soft=True):
         row_out["Motivo_descartado"] = "Balance calculado = 0"
         row_out["Case_Status"] = ""
         row_out["Case_Number"] = ""
+        # Para balance cero, también poner el nombre original
+        row_out["Best_Match_cl_name"] = row["Customer"]
         descartados_rows.append(row_out)
     
     # Procesar balance positivo
@@ -356,20 +358,30 @@ def process_data_with_files(AR_file, cl_file, cc_file, allow_soft=True):
                         accion = "Mantener"
         
         row_out = ar_row.to_dict()
-        row_out["Best_Match_cl_name"] = best_match_original
+        
+        # ========== CORRECCIÓN: Si no hay match, usar el nombre original ==========
+        if best_match_original == "":
+            row_out["Best_Match_cl_name"] = cliente  # Usa el nombre original del AR
+            # Si prefieres usar el nombre normalizado, usa esta línea:
+            # row_out["Best_Match_cl_name"] = norm_cliente
+        else:
+            row_out["Best_Match_cl_name"] = best_match_original
+        
         row_out["Estado_final"] = estado
         row_out["Case_Status"] = case_statuses
         row_out["Case_Number"] = case_numbers
+        
         if accion == "Mantener":
             row_out["En_proceso_de_cierre"] = (estado == "En proceso de cierre")
             filtrados_rows.append(row_out)
         else:
             row_out["Motivo_descartado"] = "Cerrado confirmado"
             descartados_rows.append(row_out)
+        
         log_rows.append({
             "Cliente_AR": cliente,
             "Nombre_Normalizado_AR": norm_cliente,
-            "Best_Match_cl_name": best_match_original,
+            "Best_Match_cl_name": best_match_original if best_match_original else cliente,
             "Best_Match_cl_norm": best_match_norm if best_match_norm else norm_cliente,
             "Best_Match_Type": best_label,
             "Best_Match_OverlapTokens": best_inter,
