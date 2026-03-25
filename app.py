@@ -257,8 +257,8 @@ def process_data_with_files(AR_file, cl_file, cc_file, allow_soft=True):
     AR["normalized_name"] = AR["Customer"].astype(str).apply(normalize_name)
     
     # Procesar Case Details
-    if not cl_file_df.empty and 'Client Name' in cl_file_df.columns:
-        cl_file_df["normalized_name"] = cl_file_df["Client Name"].astype(str).apply(normalize_name)
+    if not cl_file_df.empty and 'Petitioner Name' in cl_file_df.columns:
+        cl_file_df["normalized_name"] = cl_file_df["Petitioner Name"].astype(str).apply(normalize_name)
         cl_norms_unique = cl_file_df["normalized_name"].dropna().unique().tolist()
         cl_index = defaultdict(list)
         for i, r in cl_file_df.iterrows():
