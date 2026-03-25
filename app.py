@@ -331,7 +331,7 @@ def process_data_with_files(AR_file, cl_file, cc_file, allow_soft=True):
                     best_df = cl_file_df.loc[matched_indices].copy()
                     case_statuses = "; ".join(sorted(set(best_df["Case Status"].astype(str))))
                     case_numbers = "; ".join(sorted(set(best_df["Case Number"].astype(str))))
-                    best_originals = best_df["Client Name"].astype(str).unique().tolist()
+                    best_originals = best_df["Petitioner Name"].astype(str).unique().tolist()
                     best_match_original = best_originals[0] if best_originals else ""
                     statuses_upper = []
                     for cs in best_df["Case Status"]:
