@@ -23,7 +23,7 @@ st.set_page_config(
 )
 
 # ========== CONTRASEÑA PARA EDITOR ==========
-EDITOR_PASSWORD = "admin123"
+EDITOR_PASSWORD = "manolotaco123"
 PASSWORD_HASH = hashlib.sha256(EDITOR_PASSWORD.encode()).hexdigest()
 
 # ========== INICIALIZAR VARIABLES DE SESIÓN ==========
