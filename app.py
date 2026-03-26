@@ -26,6 +26,11 @@ st.set_page_config(
 EDITOR_PASSWORD = "manolotaco123"
 PASSWORD_HASH = hashlib.sha256(EDITOR_PASSWORD.encode()).hexdigest()
 
+# ========== CONFIGURACIÓN DE IMÁGENES (CAMBIA ESTAS URLS) ==========
+# Sube tus imágenes a GitHub y pega las URLs raw aquí
+BANNER_URL = "https://raw.githubusercontent.com/TU-USUARIO/TU-REPO/main/assets/banner.jpg"
+LOGO_URL = "https://raw.githubusercontent.com/TU-USUARIO/TU-REPO/main/assets/logo.png"
+
 # ========== INICIALIZAR VARIABLES DE SESIÓN ==========
 if 'modo_editor' not in st.session_state:
     st.session_state.modo_editor = False
@@ -33,6 +38,10 @@ if 'password_correcta' not in st.session_state:
     st.session_state.password_correcta = False
 if 'logo_base64' not in st.session_state:
     st.session_state.logo_base64 = None
+if 'banner_base64' not in st.session_state:
+    st.session_state.banner_base64 = None
+
+# ========== COLORES PRINCIPALES ==========
 if 'color_principal' not in st.session_state:
     st.session_state.color_principal = "#f60d2d"
 if 'color_fondo' not in st.session_state:
@@ -41,50 +50,104 @@ if 'color_sidebar' not in st.session_state:
     st.session_state.color_sidebar = "#1e1e1e"
 if 'color_card' not in st.session_state:
     st.session_state.color_card = "#ffffff"
+
+# ========== COLORES DE TEXTOS ==========
+if 'color_texto_principal' not in st.session_state:
+    st.session_state.color_texto_principal = "#1a1a1a"
+if 'color_texto_secundario' not in st.session_state:
+    st.session_state.color_texto_secundario = "#666666"
+if 'color_texto_titulo' not in st.session_state:
+    st.session_state.color_texto_titulo = "#1a1a1a"
+if 'color_texto_sidebar' not in st.session_state:
+    st.session_state.color_texto_sidebar = "#e0e0e0"
+if 'color_texto_sidebar_titulo' not in st.session_state:
+    st.session_state.color_texto_sidebar_titulo = "#ffffff"
+
+# ========== ESTILOS VISUALES ==========
 if 'bordes' not in st.session_state:
     st.session_state.bordes = 12
+if 'sombra_tarjetas' not in st.session_state:
+    st.session_state.sombra_tarjetas = "0 2px 8px rgba(0,0,0,0.08)"
+if 'fuente_principal' not in st.session_state:
+    st.session_state.fuente_principal = "'Inter', 'Segoe UI', sans-serif"
 
-# ========== FUNCIONES PARA GUARDAR/CARGAR LOGO ==========
-LOGO_CONFIG_FILE = "logo_config.json"
+# ========== FUNCIONES PARA GUARDAR/CARGAR IMÁGENES ==========
+CONFIG_FILE = "app_config.json"
 
-def guardar_logo_en_archivo(logo_base64):
+def guardar_configuracion():
+    """Guarda toda la configuración en un archivo JSON"""
+    config = {
+        'logo_base64': st.session_state.logo_base64,
+        'banner_base64': st.session_state.banner_base64,
+        'color_principal': st.session_state.color_principal,
+        'color_fondo': st.session_state.color_fondo,
+        'color_sidebar': st.session_state.color_sidebar,
+        'color_card': st.session_state.color_card,
+        'color_texto_principal': st.session_state.color_texto_principal,
+        'color_texto_secundario': st.session_state.color_texto_secundario,
+        'color_texto_titulo': st.session_state.color_texto_titulo,
+        'color_texto_sidebar': st.session_state.color_texto_sidebar,
+        'color_texto_sidebar_titulo': st.session_state.color_texto_sidebar_titulo,
+        'bordes': st.session_state.bordes
+    }
     try:
-        with open(LOGO_CONFIG_FILE, 'w') as f:
-            json.dump({'logo': logo_base64}, f)
-        return True
-    except:
-        return False
-
-def cargar_logo_desde_archivo():
-    try:
-        if os.path.exists(LOGO_CONFIG_FILE):
-            with open(LOGO_CONFIG_FILE, 'r') as f:
-                data = json.load(f)
-                return data.get('logo')
+        with open(CONFIG_FILE, 'w') as f:
+            json.dump(config, f)
     except:
         pass
-    return None
+
+def cargar_configuracion():
+    """Carga la configuración desde archivo JSON"""
+    try:
+        if os.path.exists(CONFIG_FILE):
+            with open(CONFIG_FILE, 'r') as f:
+                config = json.load(f)
+                for key, value in config.items():
+                    if key in st.session_state:
+                        st.session_state[key] = value
+    except:
+        pass
+
+# Cargar configuración al iniciar
+cargar_configuracion()
+
+def mostrar_banner():
+    """Muestra el banner superior"""
+    if st.session_state.banner_base64:
+        try:
+            st.image(f"data:image/png;base64,{st.session_state.banner_base64}", use_container_width=True)
+        except:
+            st.markdown("---")
+    else:
+        # Banner por defecto
+        st.markdown(f"""
+        <div style="
+            background: linear-gradient(135deg, {st.session_state.color_principal} 0%, #b00a22 100%);
+            padding: 1.5rem;
+            border-radius: {st.session_state.bordes}px;
+            margin-bottom: 1rem;
+            text-align: center;
+        ">
+            <h1 style="color: white; margin: 0; font-size: 2rem;">⚖️ Procesador de Clientes</h1>
+            <p style="color: rgba(255,255,255,0.9); margin: 0.5rem 0 0 0;">AR Collect - Análisis Automático</p>
+        </div>
+        """, unsafe_allow_html=True)
 
 def mostrar_logo(tamaño=80):
-    if st.session_state.logo_base64 is None:
-        logo_guardado = cargar_logo_desde_archivo()
-        if logo_guardado:
-            st.session_state.logo_base64 = logo_guardado
-    
+    """Muestra el logo en la barra lateral"""
     if st.session_state.logo_base64:
         try:
             st.image(f"data:image/png;base64,{st.session_state.logo_base64}", width=tamaño)
         except:
-            st.markdown(f"<h1 style='font-size: {tamaño//4}px;'>⚖️</h1>", unsafe_allow_html=True)
+            st.markdown(f"<h1 style='font-size: {tamaño//4}px; color: {st.session_state.color_texto_sidebar_titulo}'>⚖️</h1>", unsafe_allow_html=True)
     else:
-        st.markdown(f"<h1 style='font-size: {tamaño//4}px;'>⚖️</h1>", unsafe_allow_html=True)
+        st.markdown(f"<h1 style='font-size: {tamaño//4}px; color: {st.session_state.color_texto_sidebar_titulo}'>⚖️</h1>", unsafe_allow_html=True)
 
 def verificar_password(password):
     return hashlib.sha256(password.encode()).hexdigest() == PASSWORD_HASH
 
 # ========== FUNCIÓN PARA LEER EXCEL CON HASH ==========
 def calcular_hash_archivo(file):
-    """Calcula el hash MD5 del archivo para verificar que es el mismo"""
     file.seek(0)
     hash_md5 = hashlib.md5()
     for chunk in iter(lambda: file.read(4096), b""):
@@ -93,17 +156,11 @@ def calcular_hash_archivo(file):
     return hash_md5.hexdigest()
 
 def leer_excel_seguro(file, header=0, nombre="archivo"):
-    """Lee archivos Excel de forma segura y devuelve hash"""
     try:
-        # Calcular hash del archivo original
         hash_archivo = calcular_hash_archivo(file)
-        
-        # Guardar en archivo temporal
         with tempfile.NamedTemporaryFile(delete=False, suffix='.xlsx') as tmp:
             tmp.write(file.read())
             tmp_path = tmp.name
-        
-        # Intentar leer
         try:
             df = pd.read_excel(tmp_path, header=header)
         except:
@@ -111,15 +168,11 @@ def leer_excel_seguro(file, header=0, nombre="archivo"):
                 df = pd.read_excel(tmp_path, header=header, engine='openpyxl')
             except:
                 df = pd.DataFrame()
-        
-        # Eliminar archivo temporal
         try:
             os.unlink(tmp_path)
         except:
             pass
-        
         return df, hash_archivo
-        
     except Exception as e:
         st.error(f"Error al leer {nombre}: {str(e)[:100]}")
         return pd.DataFrame(), None
@@ -198,11 +251,9 @@ def classify_match(a: str, b: str, allow_soft: bool = True):
         return (False, "no", 0)
     if a == b:
         return (True, "exact", len(set(a.split())))
-
     s1, s2, inter = token_sets(a, b)
     n1, n2 = len(s1), len(s2)
     nmin, nmax = min(n1, n2), max(n1, n2)
-
     if n1 >= 4 or n2 >= 4:
         if inter >= 3:
             return (True, "3+ tokens", inter)
@@ -210,31 +261,23 @@ def classify_match(a: str, b: str, allow_soft: bool = True):
             return (True, "2/4+ tokens (soft)", inter)
         else:
             return (False, "no", inter)
-
     if nmin == 3 and nmax >= 3:
         if inter == 3:
             return (True, "3/3 tokens", inter)
         if inter == 2 and allow_soft:
             return (True, "2/3 tokens (soft)", inter)
         return (False, "no", inter)
-
     if nmin == 2:
         return (inter == 2, "2/2 tokens" if inter == 2 else "no", inter)
-
     if nmin == 1:
         return (a == b, "1 token exact" if a == b else "no", inter)
-
     return (False, "no", inter)
 
 def process_data_with_files(AR_file, cl_file, cc_file, allow_soft=True):
-    """Procesa los archivos subidos con diagnóstico de hash"""
-    
-    # Leer archivos con hash
     AR, hash_ar = leer_excel_seguro(AR_file, header=0, nombre="ARCollect")
     cl_file_df, hash_cl = leer_excel_seguro(cl_file, header=2, nombre="Case Details")
     cc_data, hash_cc = leer_excel_seguro(cc_file, header=0, nombre="Casos Cerrados")
     
-    # Guardar hashes en session_state para diagnóstico
     st.session_state.hash_ar = hash_ar
     st.session_state.hash_cl = hash_cl
     st.session_state.hash_cc = hash_cc
@@ -243,7 +286,6 @@ def process_data_with_files(AR_file, cl_file, cc_file, allow_soft=True):
         st.error("No se pudo cargar el archivo ARCollect")
         return [], [], []
     
-    # Buscar columna Customer
     if 'Customer' not in AR.columns:
         for col in AR.columns:
             if 'customer' in str(col).lower():
@@ -256,7 +298,6 @@ def process_data_with_files(AR_file, cl_file, cc_file, allow_soft=True):
     
     AR["normalized_name"] = AR["Customer"].astype(str).apply(normalize_name)
     
-    # Procesar Case Details
     if not cl_file_df.empty and 'Petitioner Name' in cl_file_df.columns:
         cl_file_df["normalized_name"] = cl_file_df["Petitioner Name"].astype(str).apply(normalize_name)
         cl_norms_unique = cl_file_df["normalized_name"].dropna().unique().tolist()
@@ -267,14 +308,12 @@ def process_data_with_files(AR_file, cl_file, cc_file, allow_soft=True):
         cl_norms_unique = []
         cl_index = defaultdict(list)
     
-    # Procesar Casos Cerrados
     if not cc_data.empty:
         cc_data["normalized_name"] = cc_data.iloc[:, 0].astype(str).apply(normalize_name)
         cc_norms = cc_data["normalized_name"].dropna().unique().tolist()
     else:
         cc_norms = []
     
-    # Calcular balances
     aging_cols = ["1 - 30 days", "31 - 60 days", "61 - 90 days", "91 - 120 days", "121+ days"]
     for col in aging_cols:
         if col in AR.columns:
@@ -290,18 +329,15 @@ def process_data_with_files(AR_file, cl_file, cc_file, allow_soft=True):
     descartados_rows = []
     log_rows = []
     
-    # Procesar balance cero
     for _, row in AR_zero_balance.iterrows():
         row_out = row.to_dict()
         row_out["Estado_final"] = "Balance = 0"
         row_out["Motivo_descartado"] = "Balance calculado = 0"
         row_out["Case_Status"] = ""
         row_out["Case_Number"] = ""
-        # Para balance cero, también poner el nombre original
         row_out["Best_Match_cl_name"] = row["Customer"]
         descartados_rows.append(row_out)
     
-    # Procesar balance positivo
     for _, ar_row in AR_pos_balance.iterrows():
         cliente = ar_row["Customer"]
         norm_cliente = ar_row["normalized_name"]
@@ -359,11 +395,8 @@ def process_data_with_files(AR_file, cl_file, cc_file, allow_soft=True):
         
         row_out = ar_row.to_dict()
         
-        # ========== CORRECCIÓN: Si no hay match, usar el nombre original ==========
         if best_match_original == "":
-            row_out["Best_Match_cl_name"] = cliente  # Usa el nombre original del AR
-            # Si prefieres usar el nombre normalizado, usa esta línea:
-            # row_out["Best_Match_cl_name"] = norm_cliente
+            row_out["Best_Match_cl_name"] = cliente
         else:
             row_out["Best_Match_cl_name"] = best_match_original
         
@@ -392,93 +425,220 @@ def process_data_with_files(AR_file, cl_file, cc_file, allow_soft=True):
             "Revisar": best_label == "2/3 tokens (soft)" or best_label == "2/4+ tokens (soft)"
         })
     
-    # Guardar estadísticas en sesión para diagnóstico
     st.session_state.total_filtrados = len(filtrados_rows)
     st.session_state.total_descatados = len(descartados_rows)
     
     return filtrados_rows, descartados_rows, log_rows
 
-# ========== DIAGNÓSTICO EN BARRA LATERAL ==========
-with st.sidebar:
-    st.markdown("---")
-    with st.expander("🔧 Diagnóstico de Consistencia", expanded=False):
-        st.markdown("**Información del Sistema:**")
-        st.caption(f"Python: {sys.version[:40]}")
-        st.caption(f"Fecha servidor: {datetime.now().strftime('%Y-%m-%d %H:%M')}")
-        
-        if 'hash_ar' in st.session_state:
-            st.markdown("**Hash de archivos (MD5):**")
-            st.caption(f"ARCollect: {st.session_state.hash_ar[:8]}...")
-            st.caption(f"Case Details: {st.session_state.hash_cl[:8]}...")
-            st.caption(f"Casos Cerrados: {st.session_state.hash_cc[:8]}...")
-        
-        if 'total_filtrados' in st.session_state:
-            st.markdown("**Resultados de última ejecución:**")
-            st.caption(f"Mantenidos: {st.session_state.total_filtrados}")
-            st.caption(f"Descartados: {st.session_state.total_descatados}")
-
-# ========== CSS PERSONALIZADO ==========
+# ========== CSS PERSONALIZADO COMPLETO ==========
 st.markdown(f"""
 <style>
-    .stApp {{ background-color: {st.session_state.color_fondo}; }}
-    [data-testid="stSidebar"] {{ background-color: {st.session_state.color_sidebar}; }}
-    [data-testid="stSidebar"] * {{ color: #e0e0e0; }}
-    h1 {{ color: #1a1a1a; font-size: 2.5rem; font-weight: 700; }}
+    /* Importar fuente */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    
+    /* Estilos globales */
+    .stApp {{
+        background-color: {st.session_state.color_fondo};
+        font-family: {st.session_state.fuente_principal};
+    }}
+    
+    /* Barra lateral */
+    [data-testid="stSidebar"] {{
+        background-color: {st.session_state.color_sidebar};
+    }}
+    
+    [data-testid="stSidebar"] .stMarkdown {{
+        color: {st.session_state.color_texto_sidebar};
+    }}
+    
+    [data-testid="stSidebar"] h1, 
+    [data-testid="stSidebar"] h2, 
+    [data-testid="stSidebar"] h3 {{
+        color: {st.session_state.color_texto_sidebar_titulo};
+    }}
+    
+    [data-testid="stSidebar"] hr {{
+        border-color: #3a3a3a;
+    }}
+    
+    [data-testid="stSidebar"] .stCheckbox label {{
+        color: {st.session_state.color_texto_sidebar};
+    }}
+    
+    /* Títulos principales */
+    h1 {{
+        color: {st.session_state.color_texto_titulo};
+        font-size: 2.5rem;
+        font-weight: 700;
+        font-family: {st.session_state.fuente_principal};
+    }}
+    
+    h2, h3, h4 {{
+        color: {st.session_state.color_texto_principal};
+        font-family: {st.session_state.fuente_principal};
+    }}
+    
+    /* Texto normal */
+    p, li, .stMarkdown, .stCaption {{
+        color: {st.session_state.color_texto_principal};
+    }}
+    
+    /* Botón principal */
     .stButton button {{
         background-color: {st.session_state.color_principal};
         color: white;
         font-weight: 600;
         border-radius: {st.session_state.bordes}px;
         border: none;
+        transition: all 0.3s ease;
     }}
+    
     .stButton button:hover {{
         background-color: {st.session_state.color_principal}cc;
         transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     }}
+    
+    /* Botón secundario */
+    .stDownloadButton button {{
+        background-color: #2c2c2c;
+        color: white;
+        border-radius: {st.session_state.bordes}px;
+    }}
+    
+    .stDownloadButton button:hover {{
+        background-color: #3a3a3a;
+        transform: translateY(-2px);
+    }}
+    
+    /* Tarjetas/métricas */
     .metric-card {{
         background-color: {st.session_state.color_card};
         border-radius: {st.session_state.bordes}px;
         padding: 1.2rem;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        box-shadow: {st.session_state.sombra_tarjetas};
         text-align: center;
         border-top: 4px solid {st.session_state.color_principal};
+        transition: all 0.3s ease;
     }}
-    .metric-value {{ font-size: 2.2rem; font-weight: 700; color: #1a1a1a; }}
-    .metric-label {{ font-size: 0.85rem; color: #666666; }}
+    
+    .metric-card:hover {{
+        transform: translateY(-3px);
+        box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+    }}
+    
+    .metric-value {{
+        font-size: 2.2rem;
+        font-weight: 700;
+        color: {st.session_state.color_texto_principal};
+    }}
+    
+    .metric-label {{
+        font-size: 0.85rem;
+        color: {st.session_state.color_texto_secundario};
+        margin-top: 0.5rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }}
+    
+    /* Tarjetas de archivos */
     .file-card {{
         background-color: {st.session_state.color_card};
         border-radius: {st.session_state.bordes}px;
         padding: 1rem;
         text-align: center;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.05);
         border: 1px solid #eaeaea;
+        transition: all 0.3s ease;
     }}
-    .file-card-success {{ border-left: 4px solid {st.session_state.color_principal}; }}
-    .file-card-pending {{ border-left: 4px solid #cccccc; }}
+    
+    .file-card-success {{
+        border-left: 4px solid {st.session_state.color_principal};
+    }}
+    
+    .file-card-pending {{
+        border-left: 4px solid #cccccc;
+        background-color: #fafafa;
+    }}
+    
+    .file-icon {{
+        font-size: 2rem;
+    }}
+    
+    .file-title {{
+        font-weight: 600;
+        color: {st.session_state.color_texto_principal};
+    }}
+    
+    .file-status {{
+        font-size: 0.8rem;
+        color: {st.session_state.color_texto_secundario};
+        margin-top: 0.25rem;
+    }}
+    
+    /* Tabs */
     .stTabs [data-baseweb="tab-list"] {{
+        gap: 0.5rem;
         background-color: #f0f0f0;
         border-radius: {st.session_state.bordes}px;
         padding: 0.5rem;
     }}
+    
+    .stTabs [data-baseweb="tab"] {{
+        border-radius: {st.session_state.bordes - 4}px;
+        padding: 0.5rem 1.2rem;
+        font-weight: 500;
+        color: {st.session_state.color_texto_secundario};
+    }}
+    
     .stTabs [aria-selected="true"] {{
         background-color: {st.session_state.color_principal};
         color: white;
     }}
+    
+    /* Banners */
     .success-banner {{
         background-color: {st.session_state.color_principal}10;
         border-left: 4px solid {st.session_state.color_principal};
         padding: 1rem;
         border-radius: {st.session_state.bordes}px;
+        margin: 1rem 0;
+        color: {st.session_state.color_texto_principal};
     }}
+    
     .info-banner {{
         background-color: #f5f5f5;
         border-left: 4px solid #888888;
         padding: 1rem;
         border-radius: {st.session_state.bordes}px;
+        margin: 1rem 0;
+        color: #555555;
     }}
+    
+    /* Expander */
+    .streamlit-expanderHeader {{
+        background-color: #f0f0f0;
+        border-radius: {st.session_state.bordes}px;
+        font-weight: 600;
+        color: {st.session_state.color_texto_principal};
+    }}
+    
+    /* DataFrames */
+    [data-testid="stDataFrame"] {{
+        border: 1px solid #eaeaea;
+        border-radius: {st.session_state.bordes}px;
+    }}
+    
+    /* Spinner */
+    .stSpinner > div {{
+        border-color: {st.session_state.color_principal} !important;
+    }}
+    
+    /* Footer */
     .footer {{
         text-align: center;
         padding: 1rem;
-        color: #888888;
+        color: {st.session_state.color_texto_secundario};
         font-size: 0.75rem;
         border-top: 1px solid #eaeaea;
         margin-top: 2rem;
@@ -486,7 +646,7 @@ st.markdown(f"""
 </style>
 """, unsafe_allow_html=True)
 
-# ========== BARRA LATERAL ==========
+# ========== DIAGNÓSTICO EN BARRA LATERAL ==========
 with st.sidebar:
     mostrar_logo(70)
     st.markdown("### ⚖️ AR Collect")
@@ -518,44 +678,150 @@ with st.sidebar:
                 else:
                     st.error("Contraseña incorrecta")
         else:
-            st.success("✅ Modo editor")
-            nuevo_color = st.color_picker("Color principal", st.session_state.color_principal)
+            st.success("✅ Modo editor activado")
+            
+            st.markdown("**🎨 Colores Principales**")
+            nuevo_color = st.color_picker("Color principal (botones)", st.session_state.color_principal)
             if nuevo_color != st.session_state.color_principal:
                 st.session_state.color_principal = nuevo_color
+                guardar_configuracion()
                 st.rerun()
             
-            nuevo_fondo = st.color_picker("Color de fondo", st.session_state.color_fondo)
+            nuevo_fondo = st.color_picker("Color de fondo página", st.session_state.color_fondo)
             if nuevo_fondo != st.session_state.color_fondo:
                 st.session_state.color_fondo = nuevo_fondo
+                guardar_configuracion()
                 st.rerun()
             
-            nuevo_bordes = st.slider("Bordes redondeados", 0, 30, st.session_state.bordes)
+            nuevo_sidebar = st.color_picker("Color barra lateral", st.session_state.color_sidebar)
+            if nuevo_sidebar != st.session_state.color_sidebar:
+                st.session_state.color_sidebar = nuevo_sidebar
+                guardar_configuracion()
+                st.rerun()
+            
+            nuevo_card = st.color_picker("Color tarjetas", st.session_state.color_card)
+            if nuevo_card != st.session_state.color_card:
+                st.session_state.color_card = nuevo_card
+                guardar_configuracion()
+                st.rerun()
+            
+            st.markdown("**📝 Colores de Textos**")
+            nuevo_texto_titulo = st.color_picker("Color títulos", st.session_state.color_texto_titulo)
+            if nuevo_texto_titulo != st.session_state.color_texto_titulo:
+                st.session_state.color_texto_titulo = nuevo_texto_titulo
+                guardar_configuracion()
+                st.rerun()
+            
+            nuevo_texto_principal = st.color_picker("Color texto principal", st.session_state.color_texto_principal)
+            if nuevo_texto_principal != st.session_state.color_texto_principal:
+                st.session_state.color_texto_principal = nuevo_texto_principal
+                guardar_configuracion()
+                st.rerun()
+            
+            nuevo_texto_secundario = st.color_picker("Color texto secundario", st.session_state.color_texto_secundario)
+            if nuevo_texto_secundario != st.session_state.color_texto_secundario:
+                st.session_state.color_texto_secundario = nuevo_texto_secundario
+                guardar_configuracion()
+                st.rerun()
+            
+            nuevo_texto_sidebar = st.color_picker("Color texto sidebar", st.session_state.color_texto_sidebar)
+            if nuevo_texto_sidebar != st.session_state.color_texto_sidebar:
+                st.session_state.color_texto_sidebar = nuevo_texto_sidebar
+                guardar_configuracion()
+                st.rerun()
+            
+            st.markdown("**🔘 Estilos Visuales**")
+            nuevo_bordes = st.slider("Redondez de bordes", 0, 30, st.session_state.bordes)
             if nuevo_bordes != st.session_state.bordes:
                 st.session_state.bordes = nuevo_bordes
+                guardar_configuracion()
                 st.rerun()
             
-            logo_file = st.file_uploader("Logo", type=['png', 'jpg'], key="logo_admin")
+            st.markdown("**🖼️ Imágenes**")
+            
+            # Subir logo
+            logo_file = st.file_uploader("Logo (barra lateral)", type=['png', 'jpg'], key="logo_admin")
             if logo_file:
                 logo_base64 = base64.b64encode(logo_file.read()).decode()
                 st.session_state.logo_base64 = logo_base64
-                guardar_logo_en_archivo(logo_base64)
+                guardar_configuracion()
+                st.image(logo_file, width=100)
+                st.success("✅ Logo guardado")
                 st.rerun()
             
-            if st.button("🚪 Salir"):
+            # Subir banner
+            banner_file = st.file_uploader("Banner superior", type=['png', 'jpg'], key="banner_admin")
+            if banner_file:
+                banner_base64 = base64.b64encode(banner_file.read()).decode()
+                st.session_state.banner_base64 = banner_base64
+                guardar_configuracion()
+                st.image(banner_file, use_container_width=True)
+                st.success("✅ Banner guardado")
+                st.rerun()
+            
+            # Botones para resetear
+            col1, col2 = st.columns(2)
+            with col1:
+                if st.button("🔄 Resetear colores"):
+                    st.session_state.color_principal = "#f60d2d"
+                    st.session_state.color_fondo = "#f8f9fa"
+                    st.session_state.color_sidebar = "#1e1e1e"
+                    st.session_state.color_card = "#ffffff"
+                    st.session_state.color_texto_titulo = "#1a1a1a"
+                    st.session_state.color_texto_principal = "#1a1a1a"
+                    st.session_state.color_texto_secundario = "#666666"
+                    st.session_state.color_texto_sidebar = "#e0e0e0"
+                    st.session_state.bordes = 12
+                    guardar_configuracion()
+                    st.rerun()
+            
+            with col2:
+                if st.button("🗑️ Eliminar imágenes"):
+                    st.session_state.logo_base64 = None
+                    st.session_state.banner_base64 = None
+                    guardar_configuracion()
+                    st.rerun()
+            
+            st.markdown("---")
+            
+            if st.button("🚪 Salir modo editor"):
                 st.session_state.password_correcta = False
                 st.rerun()
     
-    st.caption("📌 Versión 3.0 | Robusta")
+    with st.expander("🔧 Diagnóstico", expanded=False):
+        st.markdown("**Información del Sistema:**")
+        st.caption(f"Python: {sys.version[:40]}")
+        st.caption(f"Fecha servidor: {datetime.now().strftime('%Y-%m-%d %H:%M')}")
+        if 'hash_ar' in st.session_state:
+            st.markdown("**Hash de archivos (MD5):**")
+            st.caption(f"ARCollect: {st.session_state.hash_ar[:8]}...")
+            st.caption(f"Case Details: {st.session_state.hash_cl[:8]}...")
+            st.caption(f"Casos Cerrados: {st.session_state.hash_cc[:8]}...")
+        if 'total_filtrados' in st.session_state:
+            st.markdown("**Resultados última ejecución:**")
+            st.caption(f"Mantenidos: {st.session_state.total_filtrados}")
+            st.caption(f"Descartados: {st.session_state.total_descatados}")
+    
+    st.caption("📌 Versión 4.0 | Personalizable")
     st.caption("🔒 Resultados consistentes")
 
-# ========== ÁREA PRINCIPAL ==========
+# ========== ÁREA PRINCIPAL CON BANNER ==========
+
+# Mostrar banner
+mostrar_banner()
+
+# Título y subtítulo
 col_logo, col_title = st.columns([1, 5])
 with col_logo:
-    mostrar_logo(80)
+    if st.session_state.logo_base64:
+        try:
+            st.image(f"data:image/png;base64,{st.session_state.logo_base64}", width=60)
+        except:
+            st.markdown("⚖️")
 with col_title:
     st.markdown("# Procesador de Clientes")
     st.markdown("### AR Collect - Análisis y Filtrado Automático")
-    st.caption(f"🕐 Última actualización del servidor: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    st.caption(f"🕐 Servidor: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
 st.markdown("---")
 
@@ -621,7 +887,7 @@ st.markdown("---")
 # Botón de procesamiento
 if ar_file and case_file and closed_file:
     if st.button("🚀 PROCESAR ARCHIVOS", type="primary", use_container_width=True):
-        with st.spinner("Procesando archivos... Esto puede tomar unos segundos"):
+        with st.spinner("Procesando archivos..."):
             try:
                 filtrados, descartados, log = process_data_with_files(
                     ar_file, case_file, closed_file, allow_soft
@@ -633,7 +899,6 @@ if ar_file and case_file and closed_file:
                 </div>
                 """, unsafe_allow_html=True)
                 
-                # Métricas
                 col1, col2, col3, col4 = st.columns(4)
                 
                 with col1:
@@ -670,7 +935,6 @@ if ar_file and case_file and closed_file:
                     </div>
                     """, unsafe_allow_html=True)
                 
-                # Descarga
                 output = io.BytesIO()
                 with pd.ExcelWriter(output, engine='openpyxl') as writer:
                     pd.DataFrame(filtrados).to_excel(writer, sheet_name="AR_filtrada", index=False)
@@ -686,7 +950,6 @@ if ar_file and case_file and closed_file:
                     use_container_width=True
                 )
                 
-                # Tabs con resultados
                 st.markdown("---")
                 st.markdown("### 📋 Vista previa de resultados")
                 
@@ -714,7 +977,7 @@ if ar_file and case_file and closed_file:
                         
             except Exception as e:
                 st.error(f"❌ Error: {str(e)[:300]}")
-                st.info("💡 Si el error persiste, intenta abrir los archivos en Excel y guardarlos nuevamente.")
+                st.info("💡 Si el error persiste, abre los archivos en Excel y guárdalos nuevamente.")
 else:
     st.markdown("""
     <div class="info-banner">
@@ -728,8 +991,10 @@ st.markdown("""
 <div class="footer">
     <span>⚖️ Procesador de Clientes | AR Collect</span>
     <span style="margin: 0 1rem">•</span>
+    <span>🎨 Totalmente personalizable</span>
+    <span style="margin: 0 1rem">•</span>
     <span>🔒 Resultados consistentes</span>
     <span style="margin: 0 1rem">•</span>
-    <span>📊 Versión 3.0 Robusta</span>
+    <span>📊 Versión 4.0</span>
 </div>
 """, unsafe_allow_html=True)
