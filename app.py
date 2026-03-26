@@ -384,7 +384,7 @@ def process_data_with_files(AR_file, cl_file, cc_file, allow_soft=True):
     
     return filtrados_rows, descartados_rows, log_rows
 
-# ========== CSS PERSONALIZADO CON COLORES FIJOS ==========
+# ========== CSS PERSONALIZADO CON BARRA LATERAL LEGIBLE ==========
 st.markdown(f"""
 <style>
     /* Importar fuente */
@@ -420,63 +420,35 @@ st.markdown(f"""
         font-weight: 700 !important;
     }}
     
-    /* ========== TEXTO NORMAL EN BARRA LATERAL ========== */
-    /* Todo el texto que no sea título - color #dddcdc */
-    [data-testid="stSidebar"] .stMarkdown,
-    [data-testid="stSidebar"] .stMarkdown p,
-    [data-testid="stSidebar"] .stCheckbox label,
-    [data-testid="stSidebar"] .stCaption,
-    [data-testid="stSidebar"] .stTextInput label,
-    [data-testid="stSidebar"] .stSelectbox label,
-    [data-testid="stSidebar"] .stNumberInput label,
-    [data-testid="stSidebar"] .stDateInput label,
-    [data-testid="stSidebar"] .stTimeInput label,
-    [data-testid="stSidebar"] .stTextArea label,
-    [data-testid="stSidebar"] .stSlider label,
-    [data-testid="stSidebar"] .stRadio label,
-    [data-testid="stSidebar"] .stMultiSelect label,
-    [data-testid="stSidebar"] .stForm label {{
+    /* ========== FORZAR TODO EL TEXTO NORMAL A #dddcdc ========== */
+    /* Esto aplica a TODO excepto títulos */
+    [data-testid="stSidebar"] *:not(h1):not(h2):not(h3):not(h4) {{
         color: #dddcdc !important;
     }}
     
-    /* ========== EXCEPCIÓN: TARJETAS EN BARRA LATERAL ========== */
-    /* Las tarjetas mantienen sus colores originales */
+    /* Excepción para las tarjetas que deben mantener su color */
     [data-testid="stSidebar"] .metric-card,
     [data-testid="stSidebar"] .file-card,
-    [data-testid="stSidebar"] [data-testid="stMetric"] {{
+    [data-testid="stSidebar"] .metric-card *,
+    [data-testid="stSidebar"] .file-card * {{
         color: inherit !important;
     }}
     
-    [data-testid="stSidebar"] .metric-card .metric-value,
-    [data-testid="stSidebar"] .metric-card .metric-label,
-    [data-testid="stSidebar"] .file-card .file-title,
-    [data-testid="stSidebar"] .file-card .file-status {{
-        color: inherit !important;
-    }}
-    
-    /* ========== FILE UPLOADER EN BARRA LATERAL ========== */
+    /* Asegurar que los labels de file_uploader tengan el color correcto */
     [data-testid="stSidebar"] .stFileUploader label {{
         color: #dddcdc !important;
         font-weight: 500;
-        font-size: 0.9rem;
     }}
     
     [data-testid="stSidebar"] .stFileUploader p {{
         color: #dddcdc !important;
-        font-size: 0.8rem;
-        opacity: 0.8;
     }}
     
     [data-testid="stSidebar"] .stFileUploader div[data-testid="stMarkdownContainer"] p {{
         color: #dddcdc !important;
-        opacity: 0.7;
     }}
     
-    [data-testid="stSidebar"] .stFileUploader div[data-testid="stMarkdownContainer"] p {{
-        color: #dddcdc !important;
-        font-weight: 500;
-    }}
-    
+    /* Botón de file_uploader */
     [data-testid="stSidebar"] .stFileUploader button {{
         border-radius: {st.session_state.bordes}px !important;
         background-color: #4a4a4a !important;
@@ -489,6 +461,7 @@ st.markdown(f"""
         background-color: #5a5a5a !important;
     }}
     
+    /* Alertas en barra lateral */
     [data-testid="stSidebar"] .stAlert {{
         background-color: #4a4a4a !important;
         color: #dddcdc !important;
@@ -499,8 +472,7 @@ st.markdown(f"""
         color: #dddcdc !important;
     }}
     
-    /* ========== EXPANDERS EN BARRA LATERAL ========== */
-    /* Título del expander */
+    /* Expandors en barra lateral */
     [data-testid="stSidebar"] .streamlit-expanderHeader {{
         color: #dddcdc !important;
         background-color: #4a4a4a !important;
@@ -512,68 +484,37 @@ st.markdown(f"""
         color: #01bba7 !important;
     }}
     
-    /* Contenido dentro del expander */
     [data-testid="stSidebar"] .streamlit-expanderContent {{
         color: #dddcdc !important;
     }}
     
-    [data-testid="stSidebar"] .streamlit-expanderContent .stMarkdown,
-    [data-testid="stSidebar"] .streamlit-expanderContent .stMarkdown p,
-    [data-testid="stSidebar"] .streamlit-expanderContent .stText,
-    [data-testid="stSidebar"] .streamlit-expanderContent .stCaption,
-    [data-testid="stSidebar"] .streamlit-expanderContent .stInfo,
-    [data-testid="stSidebar"] .streamlit-expanderContent .stSuccess,
-    [data-testid="stSidebar"] .streamlit-expanderContent .stWarning,
-    [data-testid="stSidebar"] .streamlit-expanderContent .stError {{
+    [data-testid="stSidebar"] .streamlit-expanderContent * {{
         color: #dddcdc !important;
     }}
     
-    /* Labels dentro de expanders */
-    [data-testid="stSidebar"] .streamlit-expanderContent label {{
+    /* Checkbox en barra lateral */
+    [data-testid="stSidebar"] .stCheckbox label {{
         color: #dddcdc !important;
     }}
     
-    /* Texto de ayuda dentro de expanders */
-    [data-testid="stSidebar"] .streamlit-expanderContent .stMarkdown small,
-    [data-testid="stSidebar"] .streamlit-expanderContent .stCaption {{
+    /* Selectores y otros inputs */
+    [data-testid="stSidebar"] label {{
+        color: #dddcdc !important;
+    }}
+    
+    /* Texto de ayuda */
+    [data-testid="stSidebar"] .stCaption,
+    [data-testid="stSidebar"] .stMarkdown small {{
         color: #aaa !important;
     }}
     
-    /* Color picker dentro de expanders */
-    [data-testid="stSidebar"] .streamlit-expanderContent .stColorPicker label {{
-        color: #dddcdc !important;
-    }}
-    
-    /* Slider dentro de expanders */
-    [data-testid="stSidebar"] .streamlit-expanderContent .stSlider label {{
-        color: #dddcdc !important;
-    }}
-    
-    /* Botones dentro de expanders */
-    [data-testid="stSidebar"] .streamlit-expanderContent .stButton button {{
-        background-color: #5a5a5a !important;
-        color: white !important;
-        border: none !important;
-        border-radius: {st.session_state.bordes}px !important;
-    }}
-    
-    [data-testid="stSidebar"] .streamlit-expanderContent .stButton button:hover {{
-        background-color: #6a6a6a !important;
-        border-color: {st.session_state.color_principal} !important;
-    }}
-    
     /* Código dentro de expanders */
-    [data-testid="stSidebar"] .streamlit-expanderContent code {{
+    [data-testid="stSidebar"] code {{
         color: #01bba7 !important;
         background-color: #2a2a2a !important;
     }}
     
-    /* Imagen caption dentro de expanders */
-    [data-testid="stSidebar"] .streamlit-expanderContent .stImage figcaption {{
-        color: #dddcdc !important;
-    }}
-    
-    /* Separadores en barra lateral */
+    /* Separadores */
     [data-testid="stSidebar"] hr {{
         border-color: #5a5a5a !important;
     }}
