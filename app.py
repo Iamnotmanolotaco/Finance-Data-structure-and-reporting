@@ -384,7 +384,7 @@ def process_data_with_files(AR_file, cl_file, cc_file, allow_soft=True):
     
     return filtrados_rows, descartados_rows, log_rows
 
-# ========== CSS PERSONALIZADO CON COLORES FIJOS Y BARRA LATERAL LEGIBLE ==========
+# ========== CSS PERSONALIZADO COMPLETO ==========
 st.markdown(f"""
 <style>
     /* Importar fuente */
@@ -439,52 +439,69 @@ st.markdown(f"""
     }}
     
     /* ========== FILE UPLOADER EN BARRA LATERAL ========== */
+    /* Área de drag and drop - fondo #393939 */
+    [data-testid="stSidebar"] .stFileUploader {{
+        background-color: #393939 !important;
+        border-radius: {st.session_state.bordes}px !important;
+        padding: 0.5rem !important;
+        border: 1px solid #5a5a5a !important;
+    }}
+    
+    /* Texto del drag and drop */
+    [data-testid="stSidebar"] .stFileUploader div[data-testid="stMarkdownContainer"] p {{
+        color: #dddcdc !important;
+        font-weight: 500 !important;
+    }}
+    
+    /* Labels de file_uploader */
     [data-testid="stSidebar"] .stFileUploader label {{
         color: #dddcdc !important;
         font-weight: 500;
         font-size: 0.9rem;
     }}
     
+    /* Texto de ayuda/información */
     [data-testid="stSidebar"] .stFileUploader p {{
         color: #dddcdc !important;
         font-size: 0.8rem;
-        opacity: 0.8;
+        opacity: 0.9;
     }}
     
-    [data-testid="stSidebar"] .stFileUploader div[data-testid="stMarkdownContainer"] p {{
-        color: #dddcdc !important;
-        opacity: 0.7;
-    }}
-    
-    [data-testid="stSidebar"] .stFileUploader div[data-testid="stMarkdownContainer"] p {{
-        color: #dddcdc !important;
-        font-weight: 500;
-    }}
-    
+    /* Botón de "Browse files" */
     [data-testid="stSidebar"] .stFileUploader button {{
         border-radius: {st.session_state.bordes}px !important;
-        background-color: #4a4a4a !important;
-        color: white !important;
-        border: 1px solid #5a5a5a !important;
+        background-color: #ffffff !important;
+        color: #1a1a1a !important;
+        border: 1px solid #dddddd !important;
     }}
     
     [data-testid="stSidebar"] .stFileUploader button:hover {{
+        background-color: #f0f0f0 !important;
         border-color: {st.session_state.color_principal} !important;
-        background-color: #5a5a5a !important;
     }}
     
+    /* ========== NOMBRE DEL ARCHIVO YA CARGADO ========== */
+    [data-testid="stSidebar"] .stFileUploader div[data-testid="stMarkdownContainer"] {{
+        background-color: #393939 !important;
+        border-radius: {st.session_state.bordes}px !important;
+        padding: 0.5rem !important;
+        margin-top: 0.5rem !important;
+        border: 1px solid #5a5a5a !important;
+    }}
+    
+    [data-testid="stSidebar"] .stFileUploader div[data-testid="stMarkdownContainer"] p {{
+        color: #dddcdc !important;
+        font-weight: 500 !important;
+    }}
+    
+    /* Alertas en barra lateral */
     [data-testid="stSidebar"] .stAlert {{
         background-color: #4a4a4a !important;
         color: #dddcdc !important;
         border-left-color: {st.session_state.color_principal} !important;
     }}
     
-    [data-testid="stSidebar"] .stAlert div {{
-        color: #dddcdc !important;
-    }}
-    
-    /* ========== EXPANDERS EN BARRA LATERAL ========== */
-    /* Título del expander */
+    /* Expandors en barra lateral */
     [data-testid="stSidebar"] .streamlit-expanderHeader {{
         color: #dddcdc !important;
         background-color: #4a4a4a !important;
@@ -496,68 +513,11 @@ st.markdown(f"""
         color: #01bba7 !important;
     }}
     
-    /* Contenido dentro del expander */
     [data-testid="stSidebar"] .streamlit-expanderContent {{
         color: #dddcdc !important;
     }}
     
-    [data-testid="stSidebar"] .streamlit-expanderContent .stMarkdown,
-    [data-testid="stSidebar"] .streamlit-expanderContent .stMarkdown p,
-    [data-testid="stSidebar"] .streamlit-expanderContent .stText,
-    [data-testid="stSidebar"] .streamlit-expanderContent .stCaption,
-    [data-testid="stSidebar"] .streamlit-expanderContent .stInfo,
-    [data-testid="stSidebar"] .streamlit-expanderContent .stSuccess,
-    [data-testid="stSidebar"] .streamlit-expanderContent .stWarning,
-    [data-testid="stSidebar"] .streamlit-expanderContent .stError {{
-        color: #dddcdc !important;
-    }}
-    
-    /* Labels dentro de expanders */
-    [data-testid="stSidebar"] .streamlit-expanderContent label {{
-        color: #dddcdc !important;
-    }}
-    
-    /* Texto de ayuda dentro de expanders */
-    [data-testid="stSidebar"] .streamlit-expanderContent .stMarkdown small,
-    [data-testid="stSidebar"] .streamlit-expanderContent .stCaption {{
-        color: #aaa !important;
-    }}
-    
-    /* Color picker dentro de expanders */
-    [data-testid="stSidebar"] .streamlit-expanderContent .stColorPicker label {{
-        color: #dddcdc !important;
-    }}
-    
-    /* Slider dentro de expanders */
-    [data-testid="stSidebar"] .streamlit-expanderContent .stSlider label {{
-        color: #dddcdc !important;
-    }}
-    
-    /* Botones dentro de expanders */
-    [data-testid="stSidebar"] .streamlit-expanderContent .stButton button {{
-        background-color: #5a5a5a !important;
-        color: white !important;
-        border: none !important;
-        border-radius: {st.session_state.bordes}px !important;
-    }}
-    
-    [data-testid="stSidebar"] .streamlit-expanderContent .stButton button:hover {{
-        background-color: #6a6a6a !important;
-        border-color: {st.session_state.color_principal} !important;
-    }}
-    
-    /* Código dentro de expanders */
-    [data-testid="stSidebar"] .streamlit-expanderContent code {{
-        color: #01bba7 !important;
-        background-color: #2a2a2a !important;
-    }}
-    
-    /* Imagen caption dentro de expanders */
-    [data-testid="stSidebar"] .streamlit-expanderContent .stImage figcaption {{
-        color: #dddcdc !important;
-    }}
-    
-    /* Separadores en barra lateral */
+    /* Separadores */
     [data-testid="stSidebar"] hr {{
         border-color: #5a5a5a !important;
     }}
@@ -571,18 +531,21 @@ st.markdown(f"""
         text-align: center;
         box-shadow: {st.session_state.sombra_tarjetas};
         transition: all 0.3s ease;
-    }}
-    
-    .metric-card {{
-        border-top: 4px solid {st.session_state.color_principal};
+        border: none !important;
     }}
     
     .file-card-success {{
-        border-left: 4px solid {st.session_state.color_principal};
+        border-left: none !important;
+        background-color: #dddcdc !important;
     }}
     
     .file-card-pending {{
-        border-left: 4px solid #cccccc;
+        border-left: none !important;
+        background-color: #fafafa !important;
+    }}
+    
+    .metric-card {{
+        border-top: none !important;
     }}
     
     .metric-value {{
@@ -631,7 +594,7 @@ st.markdown(f"""
         color: #1a1a1a;
     }}
     
-    /* ========== BOTÓN PRINCIPAL (ROJO #f60d2d) ========== */
+    /* ========== BOTÓN PRINCIPAL ========== */
     .stButton button {{
         background-color: {st.session_state.color_principal};
         color: white;
@@ -647,12 +610,12 @@ st.markdown(f"""
         box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     }}
     
-    /* Botón de descarga */
+    /* ========== BOTÓN DE DESCARGA ========== */
     .stDownloadButton button {{
         background-color: #2c2c2c !important;
         color: white !important;
         border-radius: {st.session_state.bordes}px !important;
-        border: 1px solid #444444 !important;
+        border: 1px solid #5a5a5a !important;
         transition: all 0.3s ease;
     }}
     
@@ -730,7 +693,6 @@ st.markdown(f"""
         margin-top: 2rem;
     }}
     
-    /* Separadores */
     hr {{
         border-color: #eaeaea;
     }}
@@ -825,7 +787,6 @@ with st.sidebar:
             st.caption(f"Descartados: {st.session_state.total_descatados}")
     
     st.caption("📌 Versión 6.0 | Colores fijos")
-    st.caption("🎨 Títulos barra: #01bba7 bold | Texto: #dddcdc")
 
 # ========== ÁREA PRINCIPAL CON BANNER ==========
 
@@ -843,7 +804,7 @@ with col_title:
 
 st.markdown("---")
 
-# Tarjetas de estado
+# Tarjetas de estado - ÁREA PRINCIPAL
 col1, col2, col3 = st.columns(3)
 
 with col1:
@@ -852,7 +813,7 @@ with col1:
         <div class="file-card file-card-success">
             <div class="file-icon">📊</div>
             <div class="file-title">ARCollect</div>
-            <div class="file-status" style="color: {st.session_state.color_principal};">✓ Archivo cargado</div>
+            <div class="file-status">✓ Archivo cargado</div>
         </div>
         """, unsafe_allow_html=True)
     else:
@@ -870,7 +831,7 @@ with col2:
         <div class="file-card file-card-success">
             <div class="file-icon">📋</div>
             <div class="file-title">Case Details</div>
-            <div class="file-status" style="color: {st.session_state.color_principal};">✓ Archivo cargado</div>
+            <div class="file-status">✓ Archivo cargado</div>
         </div>
         """, unsafe_allow_html=True)
     else:
@@ -888,7 +849,7 @@ with col3:
         <div class="file-card file-card-success">
             <div class="file-icon">📁</div>
             <div class="file-title">Casos Cerrados</div>
-            <div class="file-status" style="color: {st.session_state.color_principal};">✓ Archivo cargado</div>
+            <div class="file-status">✓ Archivo cargado</div>
         </div>
         """, unsafe_allow_html=True)
     else:
@@ -1008,8 +969,6 @@ st.markdown("---")
 st.markdown("""
 <div class="footer">
     <span>⚖️ Procesador de Clientes | AR Collect</span>
-    <span style="margin: 0 1rem">•</span>
-    <span>🎨 Títulos barra: #01bba7 bold | Texto: #dddcdc</span>
     <span style="margin: 0 1rem">•</span>
     <span>📊 Versión 6.0</span>
 </div>
