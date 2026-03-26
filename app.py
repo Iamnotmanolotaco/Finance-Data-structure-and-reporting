@@ -24,7 +24,7 @@ st.set_page_config(
 
 # ========== CONFIGURACIÓN DE IMÁGENES FIJAS (URL RAW DE GITHUB) ==========
 # VERIFICADO: Pega estas URLs en tu navegador para confirmar que funcionan
-BANNER_URL = "https://raw.githubusercontent.com/Iamnotmanolotaco/Finance-Data-structure-and-reporting/main/assets/image.png"
+BANNER_URL = "https://raw.githubusercontent.com/Iamnotmanolotaco/Finance-Data-structure-and-reporting/main/assets/banner.png"
 LOGO_URL = "https://raw.githubusercontent.com/Iamnotmanolotaco/Finance-Data-structure-and-reporting/main/assets/image.png"
 
 # ========== CONTRASEÑA PARA EDITOR ==========
