@@ -23,7 +23,7 @@ st.set_page_config(
 )
 
 # ========== CONFIGURACIÓN DE IMÁGENES FIJAS ==========
-BANNER_URL = "https://raw.githubusercontent.com/Iamnotmanolotaco/Finance-Data-structure-and-reporting/main/assets/banner.png"
+BANNER_URL = "https://raw.githubusercontent.com/Iamnotmanolotaco/Finance-Data-structure-and-reporting/main/assets/image.png"
 LOGO_URL = "https://raw.githubusercontent.com/Iamnotmanolotaco/Finance-Data-structure-and-reporting/main/assets/image.png"
 
 # ========== CONTRASEÑA PARA EDITOR ==========
@@ -384,7 +384,7 @@ def process_data_with_files(AR_file, cl_file, cc_file, allow_soft=True):
     
     return filtrados_rows, descartados_rows, log_rows
 
-# ========== CSS PERSONALIZADO CON COLORES ESPECÍFICOS ==========
+# ========== CSS PERSONALIZADO CON COLORES DIFERENCIADOS ==========
 st.markdown(f"""
 <style>
     /* Importar fuente */
@@ -401,30 +401,82 @@ st.markdown(f"""
         background-color: #feffff !important;
     }}
     
-    /* Barra lateral - MISMO COLOR PARA AMBOS TEMAS (#393939) */
+    /* ========== BARRA LATERAL ========== */
     [data-testid="stSidebar"] {{
         background-color: #393939 !important;
     }}
     
-    /* Textos de la barra lateral */
+    /* Títulos en barra lateral (h1, h2, h3, h4) */
+    [data-testid="stSidebar"] h1, 
+    [data-testid="stSidebar"] h2, 
+    [data-testid="stSidebar"] h3,
+    [data-testid="stSidebar"] h4 {{
+        color: #dddcdc !important;
+        font-weight: 600;
+    }}
+    
+    /* Texto normal, subtítulos, párrafos, checkboxes */
     [data-testid="stSidebar"] .stMarkdown,
     [data-testid="stSidebar"] .stCheckbox label,
     [data-testid="stSidebar"] p,
-    [data-testid="stSidebar"] li {{
-        color: #dddcdc !important;
+    [data-testid="stSidebar"] li,
+    [data-testid="stSidebar"] .stMarkdown p {{
+        color: #aaa9a9 !important;
     }}
     
-    [data-testid="stSidebar"] h1, 
-    [data-testid="stSidebar"] h2, 
-    [data-testid="stSidebar"] h3 {{
-        color: #dddcdc !important;
-    }}
-    
+    /* Separador */
     [data-testid="stSidebar"] hr {{
         border-color: #555555 !important;
     }}
     
-    /* Tarjetas de la página principal */
+    /* ========== FILE UPLOADER EN SIDEBAR ========== */
+    [data-testid="stSidebar"] .stFileUploader label {{
+        color: #dddcdc !important;
+        font-weight: 500;
+        font-size: 0.9rem;
+    }}
+    
+    [data-testid="stSidebar"] .stFileUploader p {{
+        color: #aaa9a9 !important;
+        font-size: 0.8rem;
+    }}
+    
+    [data-testid="stSidebar"] .stFileUploader div[data-testid="stMarkdownContainer"] p {{
+        color: #aaa9a9 !important;
+    }}
+    
+    [data-testid="stSidebar"] .stFileUploader div[data-testid="stMarkdownContainer"] {{
+        color: #dddcdc !important;
+    }}
+    
+    [data-testid="stSidebar"] .stFileUploader div[data-testid="stMarkdownContainer"] p {{
+        color: #dddcdc !important;
+        font-weight: 500;
+    }}
+    
+    [data-testid="stSidebar"] .stAlert {{
+        background-color: #4a4a4a !important;
+        color: #dddcdc !important;
+        border-left-color: {st.session_state.color_principal} !important;
+    }}
+    
+    [data-testid="stSidebar"] .stAlert div {{
+        color: #dddcdc !important;
+    }}
+    
+    [data-testid="stSidebar"] .stFileUploader button {{
+        color: #dddcdc !important;
+        background-color: #4a4a4a !important;
+        border: 1px solid #666666 !important;
+        border-radius: {st.session_state.bordes}px !important;
+    }}
+    
+    [data-testid="stSidebar"] .stFileUploader button:hover {{
+        background-color: #555555 !important;
+        border-color: {st.session_state.color_principal} !important;
+    }}
+    
+    /* ========== TARJETAS PRINCIPALES ========== */
     .metric-card, .file-card {{
         background-color: #dddcdc !important;
         border-radius: {st.session_state.bordes}px;
@@ -476,57 +528,7 @@ st.markdown(f"""
         border-left: 4px solid #999999;
     }}
     
-    /* ========== FILE UPLOADER EN SIDEBAR ========== */
-    [data-testid="stSidebar"] .stFileUploader label {{
-        color: #dddcdc !important;
-        font-weight: 500;
-        font-size: 0.9rem;
-    }}
-    
-    [data-testid="stSidebar"] .stFileUploader p {{
-        color: #dddcdc !important;
-        font-size: 0.8rem;
-        opacity: 0.8;
-    }}
-    
-    [data-testid="stSidebar"] .stFileUploader div[data-testid="stMarkdownContainer"] p {{
-        color: #dddcdc !important;
-        opacity: 0.7;
-    }}
-    
-    [data-testid="stSidebar"] .stFileUploader div[data-testid="stMarkdownContainer"] {{
-        color: #dddcdc !important;
-    }}
-    
-    [data-testid="stSidebar"] .stFileUploader div[data-testid="stMarkdownContainer"] p {{
-        color: #dddcdc !important;
-        font-weight: 500;
-    }}
-    
-    [data-testid="stSidebar"] .stAlert {{
-        background-color: #4a4a4a !important;
-        color: #dddcdc !important;
-        border-left-color: {st.session_state.color_principal} !important;
-    }}
-    
-    [data-testid="stSidebar"] .stAlert div {{
-        color: #dddcdc !important;
-    }}
-    
-    [data-testid="stSidebar"] .stFileUploader button {{
-        color: #dddcdc !important;
-        background-color: #4a4a4a !important;
-        border: 1px solid #666666 !important;
-        border-radius: {st.session_state.bordes}px !important;
-    }}
-    
-    [data-testid="stSidebar"] .stFileUploader button:hover {{
-        background-color: #555555 !important;
-        border-color: {st.session_state.color_principal} !important;
-    }}
-    
     /* ========== BOTONES Y ELEMENTOS ROJOS ========== */
-    /* Botón principal */
     .stButton button {{
         background-color: {st.session_state.color_principal} !important;
         color: white !important;
@@ -542,7 +544,6 @@ st.markdown(f"""
         box-shadow: 0 4px 12px rgba(246, 13, 45, 0.3);
     }}
     
-    /* Botón de descarga */
     .stDownloadButton button {{
         background-color: {st.session_state.color_principal} !important;
         color: white !important;
@@ -556,13 +557,11 @@ st.markdown(f"""
         transform: translateY(-2px);
     }}
     
-    /* Tabs seleccionados */
     .stTabs [aria-selected="true"] {{
         background-color: {st.session_state.color_principal} !important;
         color: white !important;
     }}
     
-    /* Bordes de éxito */
     .success-banner {{
         background-color: {st.session_state.color_principal}10;
         border-left: 4px solid {st.session_state.color_principal};
@@ -572,7 +571,6 @@ st.markdown(f"""
         color: #1a1a1a;
     }}
     
-    /* Spinner */
     .stSpinner > div {{
         border-color: {st.session_state.color_principal} !important;
     }}
@@ -681,11 +679,11 @@ with st.sidebar:
             st.success("✅ Modo editor activado")
             
             st.markdown("**🎨 Personalización**")
-            st.info("💡 Los colores de la app están fijos según tu diseño:")
-            st.info("• Página principal: #feffff")
-            st.info("• Barra lateral: #393939 (fijo para ambos temas)")
+            st.info("💡 Colores fijos según tu diseño:")
+            st.info("• Barra lateral: #393939")
+            st.info("• Títulos barra: #dddcdc")
+            st.info("• Texto barra: #aaa9a9")
             st.info("• Tarjetas: #dddcdc")
-            st.info("• Texto barra lateral: #dddcdc")
             st.info("• Color principal: #f60d2d")
             
             nuevo_color = st.color_picker("Color principal (botones)", st.session_state.color_principal)
@@ -739,7 +737,7 @@ with st.sidebar:
             st.caption(f"Descartados: {st.session_state.total_descatados}")
     
     st.caption("📌 Versión 5.0 | Colores personalizados")
-    st.caption("🔒 Barra lateral #393939 | Texto #dddcdc")
+    st.caption("🔒 Títulos #dddcdc | Texto #aaa9a9")
 
 # ========== ÁREA PRINCIPAL CON BANNER ==========
 
@@ -925,7 +923,7 @@ st.markdown("""
     <span style="margin: 0 1rem">•</span>
     <span>🎨 Diseño personalizado</span>
     <span style="margin: 0 1rem">•</span>
-    <span>🔒 Barra lateral #393939</span>
+    <span>🔒 Títulos #dddcdc | Texto #aaa9a9</span>
     <span style="margin: 0 1rem">•</span>
     <span>📊 Versión 5.0</span>
 </div>
