@@ -14,7 +14,7 @@ import sys
 import platform
 from PIL import Image
 
-# ========== CONFIGURACIÓN DE PÁGINA CON IMAGEN COMO ICONO ==========
+# ========== CONFIGURACIÓN DE PÁGINA ==========
 st.set_page_config(
     page_title="Procesador de Clientes | AR Collect",
     page_icon="https://raw.githubusercontent.com/Iamnotmanolotaco/Finance-Data-structure-and-reporting/main/assets/image.png",
@@ -23,7 +23,7 @@ st.set_page_config(
 )
 
 # ========== CONFIGURACIÓN DE IMÁGENES FIJAS ==========
-BANNER_URL = "https://raw.githubusercontent.com/Iamnotmanolotaco/Finance-Data-structure-and-reporting/main/assets/image.png"
+BANNER_URL = "https://raw.githubusercontent.com/Iamnotmanolotaco/Finance-Data-structure-and-reporting/main/assets/banner.png"
 LOGO_URL = "https://raw.githubusercontent.com/Iamnotmanolotaco/Finance-Data-structure-and-reporting/main/assets/image.png"
 
 # ========== CONTRASEÑA PARA EDITOR ==========
@@ -95,7 +95,7 @@ def mostrar_logo(tamaño=80):
     try:
         st.image(LOGO_URL, width=tamaño)
     except:
-        st.markdown(f"<h1 style='font-size: {tamaño//4}px; color: #dddcdc;'>⚖️</h1>", unsafe_allow_html=True)
+        st.markdown(f"<h1 style='font-size: {tamaño//4}px; color: #01bba7;'>⚖️</h1>", unsafe_allow_html=True)
 
 def verificar_password(password):
     return hashlib.sha256(password.encode()).hexdigest() == PASSWORD_HASH
@@ -384,7 +384,7 @@ def process_data_with_files(AR_file, cl_file, cc_file, allow_soft=True):
     
     return filtrados_rows, descartados_rows, log_rows
 
-# ========== CSS PERSONALIZADO CON COLORES DIFERENCIADOS ==========
+# ========== CSS PERSONALIZADO CON COLORES ESPECÍFICOS ==========
 st.markdown(f"""
 <style>
     /* Importar fuente */
@@ -395,38 +395,39 @@ st.markdown(f"""
         font-family: {st.session_state.fuente_principal};
     }}
     
-    /* ========== COLORES PRINCIPALES ========== */
-    /* Fondo de la página principal */
+    /* ========== FONDO PRINCIPAL ========== */
     .stApp {{
         background-color: #feffff !important;
     }}
     
-    /* ========== BARRA LATERAL ========== */
+    /* ========== BARRA LATERAL (AMBOS TEMAS - FIJO #393939) ========== */
     [data-testid="stSidebar"] {{
         background-color: #393939 !important;
     }}
     
-    /* Títulos en barra lateral (h1, h2, h3, h4) */
+    /* Títulos en la barra lateral */
     [data-testid="stSidebar"] h1, 
     [data-testid="stSidebar"] h2, 
     [data-testid="stSidebar"] h3,
-    [data-testid="stSidebar"] h4 {{
-        color: #dddcdc !important;
+    [data-testid="stSidebar"] .stMarkdown h1,
+    [data-testid="stSidebar"] .stMarkdown h2,
+    [data-testid="stSidebar"] .stMarkdown h3 {{
+        color: #01bba7 !important;
         font-weight: 600;
     }}
     
-    /* Texto normal, subtítulos, párrafos, checkboxes */
+    /* Texto normal en la barra lateral */
     [data-testid="stSidebar"] .stMarkdown,
-    [data-testid="stSidebar"] .stCheckbox label,
-    [data-testid="stSidebar"] p,
-    [data-testid="stSidebar"] li,
-    [data-testid="stSidebar"] .stMarkdown p {{
-        color: #aaa9a9 !important;
+    [data-testid="stSidebar"] .stMarkdown p,
+    [data-testid="stSidebar"] .stMarkdown li,
+    [data-testid="stSidebar"] .stCheckbox label {{
+        color: #dddcdc !important;
     }}
     
-    /* Separador */
+    /* Separadores */
     [data-testid="stSidebar"] hr {{
-        border-color: #555555 !important;
+        border-color: #01bba7 !important;
+        opacity: 0.5;
     }}
     
     /* ========== FILE UPLOADER EN SIDEBAR ========== */
@@ -437,12 +438,14 @@ st.markdown(f"""
     }}
     
     [data-testid="stSidebar"] .stFileUploader p {{
-        color: #aaa9a9 !important;
+        color: #dddcdc !important;
         font-size: 0.8rem;
+        opacity: 0.8;
     }}
     
     [data-testid="stSidebar"] .stFileUploader div[data-testid="stMarkdownContainer"] p {{
-        color: #aaa9a9 !important;
+        color: #dddcdc !important;
+        opacity: 0.7;
     }}
     
     [data-testid="stSidebar"] .stFileUploader div[data-testid="stMarkdownContainer"] {{
@@ -455,42 +458,37 @@ st.markdown(f"""
     }}
     
     [data-testid="stSidebar"] .stAlert {{
-        background-color: #4a4a4a !important;
-        color: #dddcdc !important;
         border-left-color: {st.session_state.color_principal} !important;
-    }}
-    
-    [data-testid="stSidebar"] .stAlert div {{
+        background-color: #4a4a4a !important;
         color: #dddcdc !important;
     }}
     
     [data-testid="stSidebar"] .stFileUploader button {{
-        color: #dddcdc !important;
         background-color: #4a4a4a !important;
-        border: 1px solid #666666 !important;
+        color: #dddcdc !important;
+        border: 1px solid #01bba7 !important;
         border-radius: {st.session_state.bordes}px !important;
     }}
     
     [data-testid="stSidebar"] .stFileUploader button:hover {{
-        background-color: #555555 !important;
+        background-color: #5a5a5a !important;
         border-color: {st.session_state.color_principal} !important;
     }}
     
-    /* ========== TARJETAS PRINCIPALES ========== */
-    .metric-card, .file-card {{
+    /* ========== TARJETAS DE LA PÁGINA PRINCIPAL ========== */
+    .metric-card,
+    .file-card {{
         background-color: #dddcdc !important;
         border-radius: {st.session_state.bordes}px;
         padding: 1.2rem;
         box-shadow: {st.session_state.sombra_tarjetas};
         text-align: center;
+        border-top: 4px solid {st.session_state.color_principal};
         transition: all 0.3s ease;
     }}
     
-    .file-card {{
-        padding: 1rem;
-    }}
-    
-    .metric-card:hover, .file-card:hover {{
+    .metric-card:hover,
+    .file-card:hover {{
         transform: translateY(-3px);
         box-shadow: 0 6px 16px rgba(0,0,0,0.12);
     }}
@@ -498,12 +496,13 @@ st.markdown(f"""
     .metric-value {{
         font-size: 2.2rem;
         font-weight: 700;
-        color: #1a1a1a;
+        color: #393939;
     }}
     
     .metric-label {{
         font-size: 0.85rem;
-        color: #666666;
+        color: #393939;
+        opacity: 0.8;
         margin-top: 0.5rem;
         text-transform: uppercase;
         letter-spacing: 0.5px;
@@ -511,12 +510,13 @@ st.markdown(f"""
     
     .file-title {{
         font-weight: 600;
-        color: #1a1a1a;
+        color: #393939;
     }}
     
     .file-status {{
         font-size: 0.8rem;
-        color: #666666;
+        color: #393939;
+        opacity: 0.8;
         margin-top: 0.25rem;
     }}
     
@@ -525,13 +525,34 @@ st.markdown(f"""
     }}
     
     .file-card-pending {{
-        border-left: 4px solid #999999;
+        border-left: 4px solid #888888;
     }}
     
-    /* ========== BOTONES Y ELEMENTOS ROJOS ========== */
+    .file-icon {{
+        font-size: 2rem;
+    }}
+    
+    /* ========== TÍTULOS PRINCIPALES ========== */
+    h1 {{
+        color: #393939;
+        font-size: 2.5rem;
+        font-weight: 700;
+        font-family: {st.session_state.fuente_principal};
+    }}
+    
+    h2, h3, h4 {{
+        color: #393939;
+        font-family: {st.session_state.fuente_principal};
+    }}
+    
+    p, li, .stMarkdown, .stCaption {{
+        color: #393939;
+    }}
+    
+    /* ========== BOTÓN PRINCIPAL ========== */
     .stButton button {{
-        background-color: {st.session_state.color_principal} !important;
-        color: white !important;
+        background-color: {st.session_state.color_principal};
+        color: white;
         font-weight: 600;
         border-radius: {st.session_state.bordes}px;
         border: none;
@@ -539,13 +560,14 @@ st.markdown(f"""
     }}
     
     .stButton button:hover {{
-        background-color: #d40c27 !important;
+        background-color: {st.session_state.color_principal}cc;
         transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(246, 13, 45, 0.3);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     }}
     
+    /* ========== BOTÓN DE DESCARGA ========== */
     .stDownloadButton button {{
-        background-color: {st.session_state.color_principal} !important;
+        background-color: {st.session_state.color_principal};
         color: white !important;
         border-radius: {st.session_state.bordes}px !important;
         border: none !important;
@@ -553,49 +575,14 @@ st.markdown(f"""
     }}
     
     .stDownloadButton button:hover {{
-        background-color: #d40c27 !important;
+        background-color: {st.session_state.color_principal}cc !important;
         transform: translateY(-2px);
     }}
     
-    .stTabs [aria-selected="true"] {{
-        background-color: {st.session_state.color_principal} !important;
-        color: white !important;
-    }}
-    
-    .success-banner {{
-        background-color: {st.session_state.color_principal}10;
-        border-left: 4px solid {st.session_state.color_principal};
-        padding: 1rem;
-        border-radius: {st.session_state.bordes}px;
-        margin: 1rem 0;
-        color: #1a1a1a;
-    }}
-    
-    .stSpinner > div {{
-        border-color: {st.session_state.color_principal} !important;
-    }}
-    
-    /* ========== TÍTULOS Y TEXTOS PRINCIPALES ========== */
-    h1 {{
-        color: #1a1a1a;
-        font-size: 2.5rem;
-        font-weight: 700;
-        font-family: {st.session_state.fuente_principal};
-    }}
-    
-    h2, h3, h4 {{
-        color: #333333;
-        font-family: {st.session_state.fuente_principal};
-    }}
-    
-    p, li, .stMarkdown, .stCaption {{
-        color: #333333;
-    }}
-    
-    /* Tabs no seleccionados */
+    /* ========== TABS ========== */
     .stTabs [data-baseweb="tab-list"] {{
         gap: 0.5rem;
-        background-color: #eaeaea;
+        background-color: #e8e8e8;
         border-radius: {st.session_state.bordes}px;
         padding: 0.5rem;
     }}
@@ -604,42 +591,67 @@ st.markdown(f"""
         border-radius: {st.session_state.bordes - 4}px;
         padding: 0.5rem 1.2rem;
         font-weight: 500;
-        color: #666666;
+        color: #393939;
     }}
     
-    /* Expander */
-    .streamlit-expanderHeader {{
-        background-color: #eaeaea;
-        border-radius: {st.session_state.bordes}px;
-        font-weight: 600;
-        color: #333333;
+    .stTabs [aria-selected="true"] {{
+        background-color: {st.session_state.color_principal};
+        color: white;
     }}
     
-    /* DataFrames */
-    [data-testid="stDataFrame"] {{
-        border: 1px solid #dddddd;
-        border-radius: {st.session_state.bordes}px;
-        background-color: white;
-    }}
-    
-    /* Info banner */
-    .info-banner {{
-        background-color: #f5f5f5;
-        border-left: 4px solid #999999;
+    /* ========== BANNERS ========== */
+    .success-banner {{
+        background-color: {st.session_state.color_principal}10;
+        border-left: 4px solid {st.session_state.color_principal};
         padding: 1rem;
         border-radius: {st.session_state.bordes}px;
         margin: 1rem 0;
-        color: #555555;
+        color: #393939;
     }}
     
-    /* Footer */
+    .info-banner {{
+        background-color: #e8e8e8;
+        border-left: 4px solid #888888;
+        padding: 1rem;
+        border-radius: {st.session_state.bordes}px;
+        margin: 1rem 0;
+        color: #393939;
+    }}
+    
+    /* ========== EXPANDER ========== */
+    .streamlit-expanderHeader {{
+        background-color: #e8e8e8;
+        border-radius: {st.session_state.bordes}px;
+        font-weight: 600;
+        color: #393939;
+    }}
+    
+    /* ========== DATAFRAMES ========== */
+    [data-testid="stDataFrame"] {{
+        border: 1px solid #dddcdc;
+        border-radius: {st.session_state.bordes}px;
+    }}
+    
+    /* ========== SPINNER ========== */
+    .stSpinner > div {{
+        border-color: {st.session_state.color_principal} !important;
+    }}
+    
+    /* ========== FOOTER ========== */
     .footer {{
         text-align: center;
         padding: 1rem;
-        color: #888888;
+        color: #393939;
+        opacity: 0.6;
         font-size: 0.75rem;
-        border-top: 1px solid #dddddd;
+        border-top: 1px solid #dddcdc;
         margin-top: 2rem;
+    }}
+    
+    /* ========== SELECTBOX Y OTROS ========== */
+    .stSelectbox label,
+    .stNumberInput label {{
+        color: #393939 !important;
     }}
 </style>
 """, unsafe_allow_html=True)
@@ -679,14 +691,8 @@ with st.sidebar:
             st.success("✅ Modo editor activado")
             
             st.markdown("**🎨 Personalización**")
-            st.info("💡 Colores fijos según tu diseño:")
-            st.info("• Barra lateral: #393939")
-            st.info("• Títulos barra: #dddcdc")
-            st.info("• Texto barra: #aaa9a9")
-            st.info("• Tarjetas: #dddcdc")
-            st.info("• Color principal: #f60d2d")
             
-            nuevo_color = st.color_picker("Color principal (botones)", st.session_state.color_principal)
+            nuevo_color = st.color_picker("Color principal (rojo #f60d2d)", st.session_state.color_principal)
             if nuevo_color != st.session_state.color_principal:
                 st.session_state.color_principal = nuevo_color
                 guardar_configuracion()
@@ -698,6 +704,16 @@ with st.sidebar:
                 guardar_configuracion()
                 st.rerun()
             
+            st.markdown("---")
+            st.markdown("**🎨 Paleta de colores actual:**")
+            st.markdown("• **Página principal:** `#feffff`")
+            st.markdown("• **Barra lateral:** `#393939`")
+            st.markdown("• **Tarjetas:** `#dddcdc`")
+            st.markdown("• **Títulos sidebar:** `#01bba7`")
+            st.markdown("• **Texto sidebar:** `#dddcdc`")
+            st.markdown(f"• **Color principal:** `{st.session_state.color_principal}`")
+            
+            st.markdown("---")
             st.markdown("**🖼️ Imágenes Fijas**")
             st.caption("Logo y banner cargados desde GitHub")
             try:
@@ -737,7 +753,7 @@ with st.sidebar:
             st.caption(f"Descartados: {st.session_state.total_descatados}")
     
     st.caption("📌 Versión 5.0 | Colores personalizados")
-    st.caption("🔒 Títulos #dddcdc | Texto #aaa9a9")
+    st.caption("🎨 Barra lateral #393939 | Tarjetas #dddcdc")
 
 # ========== ÁREA PRINCIPAL CON BANNER ==========
 
@@ -921,9 +937,9 @@ st.markdown("""
 <div class="footer">
     <span>⚖️ Procesador de Clientes | AR Collect</span>
     <span style="margin: 0 1rem">•</span>
-    <span>🎨 Diseño personalizado</span>
+    <span>🎨 Colores personalizados</span>
     <span style="margin: 0 1rem">•</span>
-    <span>🔒 Títulos #dddcdc | Texto #aaa9a9</span>
+    <span>🔒 Barra lateral #393939 | Tarjetas #dddcdc</span>
     <span style="margin: 0 1rem">•</span>
     <span>📊 Versión 5.0</span>
 </div>
