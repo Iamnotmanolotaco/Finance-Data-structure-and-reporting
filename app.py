@@ -1055,8 +1055,9 @@ st.markdown("""
     <span style="margin: 0 1rem">•</span>
     <span> Resultados consistentes</span>
     <span style="margin: 0 1rem">•</span>
-    <span> Versión 4.0</span>
     <span> Powered by Manolo Taco Guancha</span>
+    <span> Versión 4.0</span>
     <span style="margin: 0 1rem">•</span>
+    
 </div>
 """, unsafe_allow_html=True)
