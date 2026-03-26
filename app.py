@@ -384,7 +384,7 @@ def process_data_with_files(AR_file, cl_file, cc_file, allow_soft=True):
     
     return filtrados_rows, descartados_rows, log_rows
 
-# ========== CSS PERSONALIZADO - COLORES FIJOS PARA BARRA LATERAL ==========
+# ========== CSS PERSONALIZADO - DINÁMICO CON VARIABLES NATIVAS ==========
 st.markdown(f"""
 <style>
     /* Importar fuente */
@@ -400,11 +400,10 @@ st.markdown(f"""
         background-color: #feffff !important;
     }}
     
-    /* ========== BARRA LATERAL - COLORES FIJOS ========== */
-    
-    /* Fondo de la barra lateral */
+    /* ========== BARRA LATERAL - USANDO VARIABLES NATIVAS ========== */
+    /* Fondo de la barra lateral - usa el color de fondo secundario de Streamlit */
     [data-testid="stSidebar"] {{
-        background-color: #393939 !important;
+        background-color: var(--secondary-background-color) !important;
     }}
     
     /* ========== TÍTULOS EN BARRA LATERAL ========== */
@@ -421,78 +420,78 @@ st.markdown(f"""
     }}
     
     /* ========== TODO EL TEXTO NORMAL EN BARRA LATERAL ========== */
-    /* Forzar que todo el texto que no sea título sea #dddcdc */
+    /* Usa el color de texto principal de Streamlit */
     [data-testid="stSidebar"] *:not(h1):not(h2):not(h3):not(h4) {{
-        color: #dddcdc !important;
+        color: var(--text-color) !important;
     }}
     
     /* ========== FILE UPLOADER EN BARRA LATERAL ========== */
-    /* Área de drag and drop - fondo gris oscuro fijo */
+    /* Área de drag and drop - usa fondo de la barra lateral */
     [data-testid="stSidebar"] .stFileUploader {{
-        background-color: #393939 !important;
+        background-color: var(--secondary-background-color) !important;
         border-radius: {st.session_state.bordes}px !important;
         padding: 0.5rem !important;
-        border: 1px solid #5a5a5a !important;
+        border: 1px solid var(--border-color) !important;
     }}
     
     /* Texto del drag and drop */
     [data-testid="stSidebar"] .stFileUploader div[data-testid="stMarkdownContainer"] p {{
-        color: #dddcdc !important;
+        color: var(--text-color) !important;
         font-weight: 500 !important;
     }}
     
     /* Labels de file_uploader */
     [data-testid="stSidebar"] .stFileUploader label {{
-        color: #dddcdc !important;
+        color: var(--text-color) !important;
         font-weight: 500;
         font-size: 0.9rem;
     }}
     
     /* Texto de ayuda/información */
     [data-testid="stSidebar"] .stFileUploader p {{
-        color: #dddcdc !important;
+        color: var(--text-color) !important;
         font-size: 0.8rem;
-        opacity: 0.9;
+        opacity: 0.8;
     }}
     
     /* Botón de "Browse files" */
     [data-testid="stSidebar"] .stFileUploader button {{
         border-radius: {st.session_state.bordes}px !important;
-        background-color: #4a4a4a !important;
-        color: #dddcdc !important;
-        border: 1px solid #5a5a5a !important;
+        background-color: var(--background-color) !important;
+        color: var(--text-color) !important;
+        border: 1px solid var(--border-color) !important;
     }}
     
     [data-testid="stSidebar"] .stFileUploader button:hover {{
-        background-color: #5a5a5a !important;
+        background-color: var(--secondary-background-color) !important;
         border-color: {st.session_state.color_principal} !important;
     }}
     
     /* Nombre del archivo ya cargado */
     [data-testid="stSidebar"] .stFileUploader div[data-testid="stMarkdownContainer"] {{
-        background-color: #393939 !important;
+        background-color: var(--secondary-background-color) !important;
         border-radius: {st.session_state.bordes}px !important;
         padding: 0.5rem !important;
         margin-top: 0.5rem !important;
-        border: 1px solid #5a5a5a !important;
+        border: 1px solid var(--border-color) !important;
     }}
     
     [data-testid="stSidebar"] .stFileUploader div[data-testid="stMarkdownContainer"] p {{
-        color: #dddcdc !important;
+        color: var(--text-color) !important;
         font-weight: 500 !important;
     }}
     
     /* Alertas en barra lateral */
     [data-testid="stSidebar"] .stAlert {{
-        background-color: #4a4a4a !important;
-        color: #dddcdc !important;
+        background-color: var(--secondary-background-color) !important;
+        color: var(--text-color) !important;
         border-left-color: {st.session_state.color_principal} !important;
     }}
     
     /* Expandors en barra lateral */
     [data-testid="stSidebar"] .streamlit-expanderHeader {{
-        color: #dddcdc !important;
-        background-color: #4a4a4a !important;
+        color: var(--text-color) !important;
+        background-color: var(--secondary-background-color) !important;
         font-weight: 500 !important;
         border-radius: {st.session_state.bordes}px !important;
     }}
@@ -502,17 +501,17 @@ st.markdown(f"""
     }}
     
     [data-testid="stSidebar"] .streamlit-expanderContent {{
-        color: #dddcdc !important;
+        color: var(--text-color) !important;
     }}
     
     /* Checkbox en barra lateral */
     [data-testid="stSidebar"] .stCheckbox label {{
-        color: #dddcdc !important;
+        color: var(--text-color) !important;
     }}
     
     /* Separadores */
     [data-testid="stSidebar"] hr {{
-        border-color: #5a5a5a !important;
+        border-color: var(--border-color) !important;
     }}
     
     /* ========== TARJETAS EN ÁREA PRINCIPAL ========== */
@@ -779,7 +778,8 @@ with st.sidebar:
             st.caption(f"Mantenidos: {st.session_state.total_filtrados}")
             st.caption(f"Descartados: {st.session_state.total_descatados}")
     
-    st.caption("📌 Versión 6.0 | Colores fijos")
+    st.caption("📌 Versión 6.0 | Adaptable al tema")
+    st.caption("🎨 Usa el botón ☀️/🌙 para cambiar el tema")
 
 # ========== ÁREA PRINCIPAL CON BANNER ==========
 
@@ -962,6 +962,8 @@ st.markdown("---")
 st.markdown("""
 <div class="footer">
     <span>⚖️ Procesador de Clientes | AR Collect</span>
+    <span style="margin: 0 1rem">•</span>
+    <span>🎨 Adaptable al tema de Streamlit</span>
     <span style="margin: 0 1rem">•</span>
     <span>📊 Versión 6.0</span>
 </div>
