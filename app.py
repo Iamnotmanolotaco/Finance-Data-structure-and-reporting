@@ -119,7 +119,7 @@ def mostrar_banner():
             text-align: center;
         ">
             <h1 style="color: white; margin: 0;"> Procesador de Clientes</h1>
-            <p style="color: rgba(255,255,255,0.9);">AR Collect - Análisis Automático</p>
+            <p style="color: rgba(255,255,255,0.9);">Finance Automation - Análisis Automático</p>
         </div>
         """, unsafe_allow_html=True)
 
@@ -417,7 +417,7 @@ def process_data_with_files(AR_file, cl_file, cc_file, allow_soft=True):
     
     return filtrados_rows, descartados_rows, log_rows
 
-# ========== CSS PERSONALIZADO COMPLETO CON TODAS LAS CORRECCIONES ==========
+# ========== CSS PERSONALIZADO COMPLETO CON TEMAS DINÁMICOS ==========
 st.markdown(f"""
 <style>
     /* Importar fuente */
@@ -453,58 +453,58 @@ st.markdown(f"""
         color: {st.session_state.color_texto_sidebar};
     }}
     
-    /* ========== FILE UPLOADER EN SIDEBAR (texto blanco) ========== */
+    /* ========== FILE UPLOADER EN SIDEBAR (COLOR DINÁMICO) ========== */
     /* Texto de los labels (títulos de los archivos) */
     [data-testid="stSidebar"] .stFileUploader label {{
-        color: #ffffff !important;
+        color: {st.session_state.color_texto_sidebar_titulo} !important;
         font-weight: 500;
         font-size: 0.9rem;
     }}
     
     /* Texto de ayuda/información */
     [data-testid="stSidebar"] .stFileUploader p {{
-        color: #cccccc !important;
+        color: {st.session_state.color_texto_sidebar} !important;
         font-size: 0.8rem;
     }}
     
     /* Texto del drag and drop */
     [data-testid="stSidebar"] .stFileUploader div[data-testid="stMarkdownContainer"] p {{
-        color: #cccccc !important;
+        color: {st.session_state.color_texto_sidebar} !important;
     }}
     
-    /* ========== CORRECCIÓN: Nombre del archivo cargado ========== */
+    /* Nombre del archivo cargado */
     [data-testid="stSidebar"] .stFileUploader div[data-testid="stMarkdownContainer"] {{
-        color: #ffffff !important;
+        color: {st.session_state.color_texto_sidebar_titulo} !important;
         background-color: transparent !important;
     }}
     
     [data-testid="stSidebar"] .stFileUploader div[data-testid="stMarkdownContainer"] p {{
-        color: #ffffff !important;
+        color: {st.session_state.color_texto_sidebar_titulo} !important;
         background-color: transparent !important;
         font-weight: 500;
     }}
     
     /* Mensaje de archivo cargado exitosamente */
     [data-testid="stSidebar"] .stAlert {{
-        background-color: #2a2a2a !important;
-        color: #ffffff !important;
+        background-color: {st.session_state.color_sidebar}cc !important;
+        color: {st.session_state.color_texto_sidebar_titulo} !important;
         border-left-color: {st.session_state.color_principal} !important;
     }}
     
     [data-testid="stSidebar"] .stAlert div {{
-        color: #ffffff !important;
+        color: {st.session_state.color_texto_sidebar_titulo} !important;
     }}
     
     /* Botón de "Browse files" */
     [data-testid="stSidebar"] .stFileUploader button {{
-        color: white !important;
-        background-color: #3a3a3a !important;
-        border: 1px solid #555555 !important;
+        color: {st.session_state.color_texto_sidebar_titulo} !important;
+        background-color: {st.session_state.color_sidebar}cc !important;
+        border: 1px solid {st.session_state.color_texto_sidebar} !important;
         border-radius: {st.session_state.bordes}px !important;
     }}
     
     [data-testid="stSidebar"] .stFileUploader button:hover {{
-        background-color: #4a4a4a !important;
+        background-color: {st.session_state.color_sidebar} !important;
         border-color: {st.session_state.color_principal} !important;
     }}
     
@@ -543,7 +543,7 @@ st.markdown(f"""
         box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     }}
     
-    /* ========== CORRECCIÓN: Botón de descarga ========== */
+    /* Botón de descarga */
     .stDownloadButton button {{
         background-color: #2c2c2c !important;
         color: white !important;
@@ -562,7 +562,6 @@ st.markdown(f"""
     .stDownloadButton button span {{
         color: white !important;
     }}
-    /* ========== FIN CORRECCIÓN BOTÓN DESCARGA ========== */
     
     /* Tarjetas/métricas */
     .metric-card {{
@@ -702,7 +701,7 @@ st.markdown(f"""
 # ========== BARRA LATERAL ==========
 with st.sidebar:
     mostrar_logo(70)
-    st.markdown("### ⚖️ AR Collect")
+    st.markdown("###  AR Collect")
     st.markdown("---")
     
     st.markdown("#### ⚙️ Configuración")
@@ -733,7 +732,37 @@ with st.sidebar:
         else:
             st.success("✅ Modo editor activado")
             
+            st.markdown("** Temas Rápidos**")
+            col_tema1, col_tema2 = st.columns(2)
+            with col_tema1:
+                if st.button("🌙 Tema Oscuro", use_container_width=True):
+                    st.session_state.color_sidebar = "#1e1e1e"
+                    st.session_state.color_texto_sidebar = "#e0e0e0"
+                    st.session_state.color_texto_sidebar_titulo = "#ffffff"
+                    st.session_state.color_fondo = "#f8f9fa"
+                    st.session_state.color_card = "#ffffff"
+                    st.session_state.color_texto_principal = "#1a1a1a"
+                    st.session_state.color_texto_secundario = "#666666"
+                    st.session_state.color_texto_titulo = "#1a1a1a"
+                    guardar_configuracion()
+                    st.rerun()
+            
+            with col_tema2:
+                if st.button("☀️ Tema Claro", use_container_width=True):
+                    st.session_state.color_sidebar = "#f0f0f0"
+                    st.session_state.color_texto_sidebar = "#333333"
+                    st.session_state.color_texto_sidebar_titulo = "#1a1a1a"
+                    st.session_state.color_fondo = "#ffffff"
+                    st.session_state.color_card = "#fafafa"
+                    st.session_state.color_texto_principal = "#1a1a1a"
+                    st.session_state.color_texto_secundario = "#666666"
+                    st.session_state.color_texto_titulo = "#1a1a1a"
+                    guardar_configuracion()
+                    st.rerun()
+            
+            st.markdown("---")
             st.markdown("** Colores Principales**")
+            
             nuevo_color = st.color_picker("Color principal (botones)", st.session_state.color_principal)
             if nuevo_color != st.session_state.color_principal:
                 st.session_state.color_principal = nuevo_color
@@ -758,8 +787,9 @@ with st.sidebar:
                 guardar_configuracion()
                 st.rerun()
             
-            st.markdown("**📝 Colores de Textos**")
-            nuevo_texto_titulo = st.color_picker("Color títulos", st.session_state.color_texto_titulo)
+            st.markdown("** Colores de Textos**")
+            
+            nuevo_texto_titulo = st.color_picker("Color títulos principales", st.session_state.color_texto_titulo)
             if nuevo_texto_titulo != st.session_state.color_texto_titulo:
                 st.session_state.color_texto_titulo = nuevo_texto_titulo
                 guardar_configuracion()
@@ -783,7 +813,7 @@ with st.sidebar:
                 guardar_configuracion()
                 st.rerun()
             
-            st.markdown("**🔘 Estilos Visuales**")
+            st.markdown("** Estilos Visuales**")
             nuevo_bordes = st.slider("Redondez de bordes", 0, 30, st.session_state.bordes)
             if nuevo_bordes != st.session_state.bordes:
                 st.session_state.bordes = nuevo_bordes
@@ -806,7 +836,7 @@ with st.sidebar:
             
             col1, col2 = st.columns(2)
             with col1:
-                if st.button("🔄 Resetear colores"):
+                if st.button("🔄 Resetear colores", use_container_width=True):
                     st.session_state.color_principal = "#f60d2d"
                     st.session_state.color_fondo = "#f8f9fa"
                     st.session_state.color_sidebar = "#1e1e1e"
@@ -815,11 +845,12 @@ with st.sidebar:
                     st.session_state.color_texto_principal = "#1a1a1a"
                     st.session_state.color_texto_secundario = "#666666"
                     st.session_state.color_texto_sidebar = "#e0e0e0"
+                    st.session_state.color_texto_sidebar_titulo = "#ffffff"
                     st.session_state.bordes = 12
                     guardar_configuracion()
                     st.rerun()
             
-            if st.button(" Salir modo editor"):
+            if st.button(" Salir modo editor", use_container_width=True):
                 st.session_state.password_correcta = False
                 st.rerun()
     
@@ -917,7 +948,7 @@ st.markdown("---")
 
 # Botón de procesamiento
 if ar_file and case_file and closed_file:
-    if st.button("🚀 PROCESAR ARCHIVOS", type="primary", use_container_width=True):
+    if st.button(" PROCESAR ARCHIVOS", type="primary", use_container_width=True):
         with st.spinner("Procesando archivos..."):
             try:
                 filtrados, descartados, log = process_data_with_files(
@@ -926,7 +957,7 @@ if ar_file and case_file and closed_file:
                 
                 st.markdown(f"""
                 <div class="success-banner">
-                     <strong>Procesamiento completado!</strong> Se procesaron {len(filtrados) + len(descartados)} registros.
+                    ✅ <strong>Procesamiento completado!</strong> Se procesaron {len(filtrados) + len(descartados)} registros.
                 </div>
                 """, unsafe_allow_html=True)
                 
@@ -982,7 +1013,7 @@ if ar_file and case_file and closed_file:
                 )
                 
                 st.markdown("---")
-                st.markdown("### 📋 Vista previa de resultados")
+                st.markdown("###  Vista previa de resultados")
                 
                 tab1, tab2, tab3 = st.tabs([" MANTENIDOS", " DESCARTADOS", " LOG DE MATCHES"])
                 
@@ -1020,12 +1051,12 @@ else:
 st.markdown("---")
 st.markdown("""
 <div class="footer">
-    <span>⚖️ Procesador de Clientes | AR Collect</span>
+    <span> Procesador de Clientes | AR Collect</span>
     <span style="margin: 0 1rem">•</span>
-    <span>🎨 Totalmente personalizable</span>
+    <span> Resultados consistentes</span>
     <span style="margin: 0 1rem">•</span>
-    <span>🔒 Resultados consistentes</span>
+    <span> Versión 4.0</span>
+    <span> Powered by Manolo Taco Guancha</span>
     <span style="margin: 0 1rem">•</span>
-    <span>📊 Versión 4.0</span>
 </div>
 """, unsafe_allow_html=True)
