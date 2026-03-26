@@ -17,7 +17,7 @@ from PIL import Image
 # ========== CONFIGURACIÓN DE PÁGINA ==========
 st.set_page_config(
     page_title="Procesador de Clientes | AR Collect",
-    page_icon="https://raw.githubusercontent.com/Iamnotmanolotaco/Finance-Data-structure-and-reporting/main/assets/favicon2.png",
+    page_icon="https://raw.githubusercontent.com/Iamnotmanolotaco/Finance-Data-structure-and-reporting/main/assets/favicon3.png",
     layout="wide",
     initial_sidebar_state="expanded"
 )
