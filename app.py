@@ -14,7 +14,7 @@ import sys
 import platform
 from PIL import Image
 
-# ========== CONFIGURACIÓN DE PÁGINA ==========
+# ========== CONFIGURACIÓN DE PÁGINA CON IMAGEN COMO ICONO ==========
 st.set_page_config(
     page_title="Procesador de Clientes | AR Collect",
     page_icon="https://raw.githubusercontent.com/Iamnotmanolotaco/Finance-Data-structure-and-reporting/main/assets/image.png",
@@ -22,8 +22,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# ========== CONFIGURACIÓN DE IMÁGENES FIJAS (URL RAW DE GITHUB) ==========
-# VERIFICADO: Pega estas URLs en tu navegador para confirmar que funcionan
+# ========== CONFIGURACIÓN DE IMÁGENES FIJAS ==========
 BANNER_URL = "https://raw.githubusercontent.com/Iamnotmanolotaco/Finance-Data-structure-and-reporting/main/assets/banner.png"
 LOGO_URL = "https://raw.githubusercontent.com/Iamnotmanolotaco/Finance-Data-structure-and-reporting/main/assets/image.png"
 
@@ -119,7 +118,7 @@ def mostrar_banner():
             margin-bottom: 1rem;
             text-align: center;
         ">
-            <h1 style="color: white; margin: 0;">⚖️ Procesador de Clientes</h1>
+            <h1 style="color: white; margin: 0;"> Procesador de Clientes</h1>
             <p style="color: rgba(255,255,255,0.9);">AR Collect - Análisis Automático</p>
         </div>
         """, unsafe_allow_html=True)
@@ -418,16 +417,19 @@ def process_data_with_files(AR_file, cl_file, cc_file, allow_soft=True):
     
     return filtrados_rows, descartados_rows, log_rows
 
-# ========== CSS PERSONALIZADO COMPLETO ==========
+# ========== CSS PERSONALIZADO COMPLETO CON CORRECCIÓN DE FILE UPLOADER ==========
 st.markdown(f"""
 <style>
+    /* Importar fuente */
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
     
+    /* Estilos globales */
     .stApp {{
         background-color: {st.session_state.color_fondo};
         font-family: {st.session_state.fuente_principal};
     }}
     
+    /* ========== BARRA LATERAL ========== */
     [data-testid="stSidebar"] {{
         background-color: {st.session_state.color_sidebar};
     }}
@@ -446,10 +448,50 @@ st.markdown(f"""
         border-color: #3a3a3a;
     }}
     
+    /* Checkbox en sidebar */
     [data-testid="stSidebar"] .stCheckbox label {{
         color: {st.session_state.color_texto_sidebar};
     }}
     
+    /* ========== CORRECCIÓN: FILE UPLOADER EN SIDEBAR (texto blanco) ========== */
+    /* Texto de los labels (títulos de los archivos) */
+    [data-testid="stSidebar"] .stFileUploader label {{
+        color: #ffffff !important;
+        font-weight: 500;
+        font-size: 0.9rem;
+    }}
+    
+    /* Texto de ayuda/información */
+    [data-testid="stSidebar"] .stFileUploader p {{
+        color: #cccccc !important;
+        font-size: 0.8rem;
+    }}
+    
+    /* Texto del drag and drop */
+    [data-testid="stSidebar"] .stFileUploader div[data-testid="stMarkdownContainer"] p {{
+        color: #cccccc !important;
+    }}
+    
+    /* Botón de "Browse files" */
+    [data-testid="stSidebar"] .stFileUploader button {{
+        color: white !important;
+        background-color: #3a3a3a !important;
+        border: 1px solid #555555 !important;
+        border-radius: {st.session_state.bordes}px !important;
+    }}
+    
+    [data-testid="stSidebar"] .stFileUploader button:hover {{
+        background-color: #4a4a4a !important;
+        border-color: {st.session_state.color_principal} !important;
+    }}
+    
+    /* Mensaje de archivo cargado */
+    [data-testid="stSidebar"] .stFileUploader div[data-testid="stMarkdownContainer"] {{
+        color: #cccccc !important;
+    }}
+    /* ========== FIN CORRECCIÓN FILE UPLOADER ========== */
+    
+    /* Títulos principales */
     h1 {{
         color: {st.session_state.color_texto_titulo};
         font-size: 2.5rem;
@@ -466,6 +508,7 @@ st.markdown(f"""
         color: {st.session_state.color_texto_principal};
     }}
     
+    /* Botón principal */
     .stButton button {{
         background-color: {st.session_state.color_principal};
         color: white;
@@ -481,6 +524,7 @@ st.markdown(f"""
         box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     }}
     
+    /* Botón de descarga */
     .stDownloadButton button {{
         background-color: #2c2c2c;
         color: white;
@@ -492,6 +536,7 @@ st.markdown(f"""
         transform: translateY(-2px);
     }}
     
+    /* Tarjetas/métricas */
     .metric-card {{
         background-color: {st.session_state.color_card};
         border-radius: {st.session_state.bordes}px;
@@ -521,6 +566,7 @@ st.markdown(f"""
         letter-spacing: 0.5px;
     }}
     
+    /* Tarjetas de archivos */
     .file-card {{
         background-color: {st.session_state.color_card};
         border-radius: {st.session_state.bordes}px;
@@ -555,6 +601,7 @@ st.markdown(f"""
         margin-top: 0.25rem;
     }}
     
+    /* Tabs */
     .stTabs [data-baseweb="tab-list"] {{
         gap: 0.5rem;
         background-color: #f0f0f0;
@@ -574,6 +621,7 @@ st.markdown(f"""
         color: white;
     }}
     
+    /* Banners */
     .success-banner {{
         background-color: {st.session_state.color_principal}10;
         border-left: 4px solid {st.session_state.color_principal};
@@ -592,6 +640,7 @@ st.markdown(f"""
         color: #555555;
     }}
     
+    /* Expander */
     .streamlit-expanderHeader {{
         background-color: #f0f0f0;
         border-radius: {st.session_state.bordes}px;
@@ -599,15 +648,18 @@ st.markdown(f"""
         color: {st.session_state.color_texto_principal};
     }}
     
+    /* DataFrames */
     [data-testid="stDataFrame"] {{
         border: 1px solid #eaeaea;
         border-radius: {st.session_state.bordes}px;
     }}
     
+    /* Spinner */
     .stSpinner > div {{
         border-color: {st.session_state.color_principal} !important;
     }}
     
+    /* Footer */
     .footer {{
         text-align: center;
         padding: 1rem;
@@ -633,7 +685,7 @@ with st.sidebar:
     )
     
     st.markdown("---")
-    st.markdown("#### 📁 Subir archivos")
+    st.markdown("####  Subir archivos")
     
     ar_file = st.file_uploader("ARCollect_Age_Analysis.xlsx", type=['xlsx', 'xls'], key="ar")
     case_file = st.file_uploader("Case_Details.xlsx", type=['xlsx', 'xls'], key="case")
@@ -641,7 +693,7 @@ with st.sidebar:
     
     st.markdown("---")
     
-    with st.expander("🎨 Personalización (Administrador)", expanded=False):
+    with st.expander(" Personalización (Administrador)", expanded=False):
         if not st.session_state.password_correcta:
             password_input = st.text_input("Contraseña", type="password", placeholder="Contraseña de admin")
             if st.button("🔓 Acceder"):
@@ -678,7 +730,7 @@ with st.sidebar:
                 guardar_configuracion()
                 st.rerun()
             
-            st.markdown("**📝 Colores de Textos**")
+            st.markdown("** Colores de Textos**")
             nuevo_texto_titulo = st.color_picker("Color títulos", st.session_state.color_texto_titulo)
             if nuevo_texto_titulo != st.session_state.color_texto_titulo:
                 st.session_state.color_texto_titulo = nuevo_texto_titulo
@@ -703,14 +755,14 @@ with st.sidebar:
                 guardar_configuracion()
                 st.rerun()
             
-            st.markdown("**🔘 Estilos Visuales**")
+            st.markdown("** Estilos Visuales**")
             nuevo_bordes = st.slider("Redondez de bordes", 0, 30, st.session_state.bordes)
             if nuevo_bordes != st.session_state.bordes:
                 st.session_state.bordes = nuevo_bordes
                 guardar_configuracion()
                 st.rerun()
             
-            st.markdown("**🖼️ Imágenes Fijas**")
+            st.markdown("** Imágenes Fijas**")
             st.caption("Logo y banner cargados desde GitHub")
             try:
                 st.image(LOGO_URL, width=80, caption="Logo actual")
@@ -739,11 +791,11 @@ with st.sidebar:
                     guardar_configuracion()
                     st.rerun()
             
-            if st.button("🚪 Salir modo editor"):
+            if st.button(" Salir modo editor"):
                 st.session_state.password_correcta = False
                 st.rerun()
     
-    with st.expander("🔧 Diagnóstico", expanded=False):
+    with st.expander(" Diagnóstico", expanded=False):
         st.markdown("**Información del Sistema:**")
         st.caption(f"Python: {sys.version[:40]}")
         st.caption(f"Fecha servidor: {datetime.now().strftime('%Y-%m-%d %H:%M')}")
@@ -757,8 +809,8 @@ with st.sidebar:
             st.caption(f"Mantenidos: {st.session_state.total_filtrados}")
             st.caption(f"Descartados: {st.session_state.total_descatados}")
     
-    st.caption("📌 Versión 4.0 | Personalizable")
-    st.caption("🔒 Resultados consistentes")
+    st.caption(" Versión 4.0 | Personalizable")
+    st.caption(" Resultados consistentes")
 
 # ========== ÁREA PRINCIPAL CON BANNER ==========
 
@@ -902,9 +954,9 @@ if ar_file and case_file and closed_file:
                 )
                 
                 st.markdown("---")
-                st.markdown("### 📋 Vista previa de resultados")
+                st.markdown("###  Vista previa de resultados")
                 
-                tab1, tab2, tab3 = st.tabs(["📌 MANTENIDOS", "🗑️ DESCARTADOS", "📝 LOG DE MATCHES"])
+                tab1, tab2, tab3 = st.tabs([" MANTENIDOS", " DESCARTADOS", " LOG DE MATCHES"])
                 
                 with tab1:
                     if filtrados:
@@ -940,12 +992,12 @@ else:
 st.markdown("---")
 st.markdown("""
 <div class="footer">
-    <span>⚖️ Procesador de Clientes | AR Collect</span>
+    <span> Procesador de Clientes | AR Collect</span>
     <span style="margin: 0 1rem">•</span>
-    <span>🎨 Totalmente personalizable</span>
+    <span> Totalmente personalizable</span>
     <span style="margin: 0 1rem">•</span>
-    <span>🔒 Resultados consistentes</span>
+    <span> Resultados consistentes</span>
     <span style="margin: 0 1rem">•</span>
-    <span>📊 Versión 4.0</span>
+    <span> Versión 4.0</span>
 </div>
 """, unsafe_allow_html=True)
