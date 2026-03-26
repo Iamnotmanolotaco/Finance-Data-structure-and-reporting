@@ -417,7 +417,7 @@ def process_data_with_files(AR_file, cl_file, cc_file, allow_soft=True):
     
     return filtrados_rows, descartados_rows, log_rows
 
-# ========== CSS PERSONALIZADO COMPLETO CON CORRECCIÓN DE FILE UPLOADER ==========
+# ========== CSS PERSONALIZADO COMPLETO CON TODAS LAS CORRECCIONES ==========
 st.markdown(f"""
 <style>
     /* Importar fuente */
@@ -453,7 +453,7 @@ st.markdown(f"""
         color: {st.session_state.color_texto_sidebar};
     }}
     
-    /* ========== CORRECCIÓN: FILE UPLOADER EN SIDEBAR (texto blanco) ========== */
+    /* ========== FILE UPLOADER EN SIDEBAR (texto blanco) ========== */
     /* Texto de los labels (títulos de los archivos) */
     [data-testid="stSidebar"] .stFileUploader label {{
         color: #ffffff !important;
@@ -472,6 +472,29 @@ st.markdown(f"""
         color: #cccccc !important;
     }}
     
+    /* ========== CORRECCIÓN: Nombre del archivo cargado ========== */
+    [data-testid="stSidebar"] .stFileUploader div[data-testid="stMarkdownContainer"] {{
+        color: #ffffff !important;
+        background-color: transparent !important;
+    }}
+    
+    [data-testid="stSidebar"] .stFileUploader div[data-testid="stMarkdownContainer"] p {{
+        color: #ffffff !important;
+        background-color: transparent !important;
+        font-weight: 500;
+    }}
+    
+    /* Mensaje de archivo cargado exitosamente */
+    [data-testid="stSidebar"] .stAlert {{
+        background-color: #2a2a2a !important;
+        color: #ffffff !important;
+        border-left-color: {st.session_state.color_principal} !important;
+    }}
+    
+    [data-testid="stSidebar"] .stAlert div {{
+        color: #ffffff !important;
+    }}
+    
     /* Botón de "Browse files" */
     [data-testid="stSidebar"] .stFileUploader button {{
         color: white !important;
@@ -485,10 +508,6 @@ st.markdown(f"""
         border-color: {st.session_state.color_principal} !important;
     }}
     
-    /* Mensaje de archivo cargado */
-    [data-testid="stSidebar"] .stFileUploader div[data-testid="stMarkdownContainer"] {{
-        color: #cccccc !important;
-    }}
     /* ========== FIN CORRECCIÓN FILE UPLOADER ========== */
     
     /* Títulos principales */
@@ -524,17 +543,26 @@ st.markdown(f"""
         box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     }}
     
-    /* Botón de descarga */
+    /* ========== CORRECCIÓN: Botón de descarga ========== */
     .stDownloadButton button {{
-        background-color: #2c2c2c;
-        color: white;
-        border-radius: {st.session_state.bordes}px;
+        background-color: #2c2c2c !important;
+        color: white !important;
+        border-radius: {st.session_state.bordes}px !important;
+        border: 1px solid #444444 !important;
+        transition: all 0.3s ease;
     }}
     
     .stDownloadButton button:hover {{
-        background-color: #3a3a3a;
+        background-color: #3a3a3a !important;
+        border-color: {st.session_state.color_principal} !important;
         transform: translateY(-2px);
     }}
+    
+    .stDownloadButton button p,
+    .stDownloadButton button span {{
+        color: white !important;
+    }}
+    /* ========== FIN CORRECCIÓN BOTÓN DESCARGA ========== */
     
     /* Tarjetas/métricas */
     .metric-card {{
@@ -705,7 +733,7 @@ with st.sidebar:
         else:
             st.success("✅ Modo editor activado")
             
-            st.markdown("**🎨 Colores Principales**")
+            st.markdown("** Colores Principales**")
             nuevo_color = st.color_picker("Color principal (botones)", st.session_state.color_principal)
             if nuevo_color != st.session_state.color_principal:
                 st.session_state.color_principal = nuevo_color
@@ -730,7 +758,7 @@ with st.sidebar:
                 guardar_configuracion()
                 st.rerun()
             
-            st.markdown("** Colores de Textos**")
+            st.markdown("**📝 Colores de Textos**")
             nuevo_texto_titulo = st.color_picker("Color títulos", st.session_state.color_texto_titulo)
             if nuevo_texto_titulo != st.session_state.color_texto_titulo:
                 st.session_state.color_texto_titulo = nuevo_texto_titulo
@@ -755,7 +783,7 @@ with st.sidebar:
                 guardar_configuracion()
                 st.rerun()
             
-            st.markdown("** Estilos Visuales**")
+            st.markdown("**🔘 Estilos Visuales**")
             nuevo_bordes = st.slider("Redondez de bordes", 0, 30, st.session_state.bordes)
             if nuevo_bordes != st.session_state.bordes:
                 st.session_state.bordes = nuevo_bordes
@@ -795,7 +823,7 @@ with st.sidebar:
                 st.session_state.password_correcta = False
                 st.rerun()
     
-    with st.expander(" Diagnóstico", expanded=False):
+    with st.expander("🔧 Diagnóstico", expanded=False):
         st.markdown("**Información del Sistema:**")
         st.caption(f"Python: {sys.version[:40]}")
         st.caption(f"Fecha servidor: {datetime.now().strftime('%Y-%m-%d %H:%M')}")
@@ -898,7 +926,7 @@ if ar_file and case_file and closed_file:
                 
                 st.markdown(f"""
                 <div class="success-banner">
-                    ✅ <strong>Procesamiento completado!</strong> Se procesaron {len(filtrados) + len(descartados)} registros.
+                     <strong>Procesamiento completado!</strong> Se procesaron {len(filtrados) + len(descartados)} registros.
                 </div>
                 """, unsafe_allow_html=True)
                 
@@ -946,7 +974,7 @@ if ar_file and case_file and closed_file:
                 output.seek(0)
                 
                 st.download_button(
-                    label="📥 DESCARGAR REPORTE EXCEL",
+                    label=" DESCARGAR REPORTE EXCEL",
                     data=output,
                     file_name=f"reporte_clientes_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx",
                     mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
@@ -954,7 +982,7 @@ if ar_file and case_file and closed_file:
                 )
                 
                 st.markdown("---")
-                st.markdown("###  Vista previa de resultados")
+                st.markdown("### 📋 Vista previa de resultados")
                 
                 tab1, tab2, tab3 = st.tabs([" MANTENIDOS", " DESCARTADOS", " LOG DE MATCHES"])
                 
@@ -992,12 +1020,12 @@ else:
 st.markdown("---")
 st.markdown("""
 <div class="footer">
-    <span> Procesador de Clientes | AR Collect</span>
+    <span>⚖️ Procesador de Clientes | AR Collect</span>
     <span style="margin: 0 1rem">•</span>
-    <span> Totalmente personalizable</span>
+    <span>🎨 Totalmente personalizable</span>
     <span style="margin: 0 1rem">•</span>
-    <span> Resultados consistentes</span>
+    <span>🔒 Resultados consistentes</span>
     <span style="margin: 0 1rem">•</span>
-    <span> Versión 4.0</span>
+    <span>📊 Versión 4.0</span>
 </div>
 """, unsafe_allow_html=True)
