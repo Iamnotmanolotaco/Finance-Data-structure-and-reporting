@@ -420,26 +420,14 @@ st.markdown(f"""
         font-weight: 700 !important;
     }}
     
-    /* ========== TEXTO NORMAL EN BARRA LATERAL ========== */
-    [data-testid="stSidebar"] .stMarkdown,
-    [data-testid="stSidebar"] .stMarkdown p,
-    [data-testid="stSidebar"] .stCheckbox label,
-    [data-testid="stSidebar"] .stCaption,
-    [data-testid="stSidebar"] .stTextInput label,
-    [data-testid="stSidebar"] .stSelectbox label,
-    [data-testid="stSidebar"] .stNumberInput label,
-    [data-testid="stSidebar"] .stDateInput label,
-    [data-testid="stSidebar"] .stTimeInput label,
-    [data-testid="stSidebar"] .stTextArea label,
-    [data-testid="stSidebar"] .stSlider label,
-    [data-testid="stSidebar"] .stRadio label,
-    [data-testid="stSidebar"] .stMultiSelect label,
-    [data-testid="stSidebar"] .stForm label {{
+    /* ========== TODO EL TEXTO NORMAL EN BARRA LATERAL ========== */
+    /* Forzar que todo el texto que no sea título sea #dddcdc */
+    [data-testid="stSidebar"] *:not(h1):not(h2):not(h3):not(h4) {{
         color: #dddcdc !important;
     }}
     
     /* ========== FILE UPLOADER EN BARRA LATERAL ========== */
-    /* Área de drag and drop - fondo #393939 */
+    /* Área de drag and drop */
     [data-testid="stSidebar"] .stFileUploader {{
         background-color: #393939 !important;
         border-radius: {st.session_state.bordes}px !important;
@@ -470,17 +458,17 @@ st.markdown(f"""
     /* Botón de "Browse files" */
     [data-testid="stSidebar"] .stFileUploader button {{
         border-radius: {st.session_state.bordes}px !important;
-        background-color: #ffffff !important;
-        color: #1a1a1a !important;
-        border: 1px solid #dddddd !important;
+        background-color: #4a4a4a !important;
+        color: #dddcdc !important;
+        border: 1px solid #5a5a5a !important;
     }}
     
     [data-testid="stSidebar"] .stFileUploader button:hover {{
-        background-color: #f0f0f0 !important;
+        background-color: #5a5a5a !important;
         border-color: {st.session_state.color_principal} !important;
     }}
     
-    /* ========== NOMBRE DEL ARCHIVO YA CARGADO ========== */
+    /* Nombre del archivo ya cargado */
     [data-testid="stSidebar"] .stFileUploader div[data-testid="stMarkdownContainer"] {{
         background-color: #393939 !important;
         border-radius: {st.session_state.bordes}px !important;
@@ -514,6 +502,11 @@ st.markdown(f"""
     }}
     
     [data-testid="stSidebar"] .streamlit-expanderContent {{
+        color: #dddcdc !important;
+    }}
+    
+    /* Checkbox en barra lateral */
+    [data-testid="stSidebar"] .stCheckbox label {{
         color: #dddcdc !important;
     }}
     
