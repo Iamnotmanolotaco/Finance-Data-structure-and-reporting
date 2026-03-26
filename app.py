@@ -23,7 +23,7 @@ st.set_page_config(
 )
 
 # ========== CONFIGURACIÓN DE IMÁGENES FIJAS ==========
-BANNER_URL = "https://raw.githubusercontent.com/Iamnotmanolotaco/Finance-Data-structure-and-reporting/main/assets/banner.png"
+BANNER_URL = "https://raw.githubusercontent.com/Iamnotmanolotaco/Finance-Data-structure-and-reporting/main/assets/banner6.png"
 LOGO_URL = "https://raw.githubusercontent.com/Iamnotmanolotaco/Finance-Data-structure-and-reporting/main/assets/image.png"
 
 # ========== CONTRASEÑA PARA EDITOR ==========
