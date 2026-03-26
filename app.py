@@ -38,11 +38,7 @@ if 'password_correcta' not in st.session_state:
 
 # ========== COLORES PRINCIPALES ==========
 if 'color_principal' not in st.session_state:
-    st.session_state.color_principal = "#f60d2d"  # Rojo principal
-if 'color_texto_titulo_sidebar' not in st.session_state:
-    st.session_state.color_texto_titulo_sidebar = "#01bba7"  # Verde azulado para títulos
-if 'color_texto_subtitulo_sidebar' not in st.session_state:
-    st.session_state.color_texto_subtitulo_sidebar = "#dddddd"  # Gris claro para subtítulos
+    st.session_state.color_principal = "#f60d2d"
 if 'bordes' not in st.session_state:
     st.session_state.bordes = 12
 if 'sombra_tarjetas' not in st.session_state:
@@ -56,8 +52,6 @@ CONFIG_FILE = "app_config.json"
 def guardar_configuracion():
     config = {
         'color_principal': st.session_state.color_principal,
-        'color_texto_titulo_sidebar': st.session_state.color_texto_titulo_sidebar,
-        'color_texto_subtitulo_sidebar': st.session_state.color_texto_subtitulo_sidebar,
         'bordes': st.session_state.bordes
     }
     try:
@@ -73,10 +67,6 @@ def cargar_configuracion():
                 config = json.load(f)
                 if 'color_principal' in config:
                     st.session_state.color_principal = config['color_principal']
-                if 'color_texto_titulo_sidebar' in config:
-                    st.session_state.color_texto_titulo_sidebar = config['color_texto_titulo_sidebar']
-                if 'color_texto_subtitulo_sidebar' in config:
-                    st.session_state.color_texto_subtitulo_sidebar = config['color_texto_subtitulo_sidebar']
                 if 'bordes' in config:
                     st.session_state.bordes = config['bordes']
     except:
@@ -105,7 +95,7 @@ def mostrar_logo(tamaño=80):
     try:
         st.image(LOGO_URL, width=tamaño)
     except:
-        st.markdown(f"<h1 style='font-size: {tamaño//4}px; color: {st.session_state.color_texto_titulo_sidebar};'>⚖️</h1>", unsafe_allow_html=True)
+        st.markdown(f"<h1 style='font-size: {tamaño//4}px; color: #01bba7;'>⚖️</h1>", unsafe_allow_html=True)
 
 def verificar_password(password):
     return hashlib.sha256(password.encode()).hexdigest() == PASSWORD_HASH
@@ -394,7 +384,7 @@ def process_data_with_files(AR_file, cl_file, cc_file, allow_soft=True):
     
     return filtrados_rows, descartados_rows, log_rows
 
-# ========== CSS PERSONALIZADO CON COLORES FIJOS ==========
+# ========== CSS PERSONALIZADO CON COLORES CORREGIDOS ==========
 st.markdown(f"""
 <style>
     /* Importar fuente */
@@ -405,65 +395,79 @@ st.markdown(f"""
         font-family: {st.session_state.fuente_principal};
     }}
     
-    /* ========== COLORES FIJOS - NO DEPENDEN DEL TEMA ========== */
-    
-    /* Página principal */
+    /* ========== PÁGINA PRINCIPAL ========== */
     .stApp {{
         background-color: #feffff !important;
     }}
     
-    /* Barra lateral - color fijo #393939 */
+    /* ========== BARRA LATERAL - COLORES FIJOS ========== */
+    
+    /* Fondo de la barra lateral */
     [data-testid="stSidebar"] {{
         background-color: #393939 !important;
     }}
     
-    /* Títulos en barra lateral - color #01bba7 en negrita */
+    /* ========== TÍTULOS EN BARRA LATERAL ========== */
+    /* Todos los títulos (h1, h2, h3, h4) en barra lateral - #01bba7 en negrita */
     [data-testid="stSidebar"] h1,
     [data-testid="stSidebar"] h2,
     [data-testid="stSidebar"] h3,
+    [data-testid="stSidebar"] h4,
     [data-testid="stSidebar"] .stMarkdown h1,
     [data-testid="stSidebar"] .stMarkdown h2,
-    [data-testid="stSidebar"] .stMarkdown h3 {{
-        color: {st.session_state.color_texto_titulo_sidebar} !important;
+    [data-testid="stSidebar"] .stMarkdown h3,
+    [data-testid="stSidebar"] .stMarkdown h4 {{
+        color: #01bba7 !important;
         font-weight: 700 !important;
     }}
     
-    /* Texto normal en barra lateral (subtítulos, etc.) - color #dddcdc */
+    /* ========== TEXTO NORMAL EN BARRA LATERAL ========== */
+    /* Todo el texto que no sea título - color #dddcdc */
     [data-testid="stSidebar"] .stMarkdown,
     [data-testid="stSidebar"] .stMarkdown p,
     [data-testid="stSidebar"] .stCheckbox label,
     [data-testid="stSidebar"] .stCaption,
-    [data-testid="stSidebar"] .stTextInput label {{
+    [data-testid="stSidebar"] .stTextInput label,
+    [data-testid="stSidebar"] .stSelectbox label,
+    [data-testid="stSidebar"] .stNumberInput label,
+    [data-testid="stSidebar"] .stDateInput label,
+    [data-testid="stSidebar"] .stTimeInput label,
+    [data-testid="stSidebar"] .stTextArea label,
+    [data-testid="stSidebar"] .stSlider label,
+    [data-testid="stSidebar"] .stRadio label,
+    [data-testid="stSidebar"] .stMultiSelect label,
+    [data-testid="stSidebar"] .stForm label {{
         color: #dddcdc !important;
     }}
     
     /* ========== FILE UPLOADER EN BARRA LATERAL ========== */
+    /* Labels de file_uploader - color #dddcdc */
     [data-testid="stSidebar"] .stFileUploader label {{
         color: #dddcdc !important;
         font-weight: 500;
         font-size: 0.9rem;
     }}
     
+    /* Texto de ayuda/información de file_uploader */
     [data-testid="stSidebar"] .stFileUploader p {{
         color: #dddcdc !important;
         font-size: 0.8rem;
         opacity: 0.8;
     }}
     
+    /* Texto del drag and drop */
     [data-testid="stSidebar"] .stFileUploader div[data-testid="stMarkdownContainer"] p {{
         color: #dddcdc !important;
         opacity: 0.7;
     }}
     
+    /* Nombre del archivo cargado */
     [data-testid="stSidebar"] .stFileUploader div[data-testid="stMarkdownContainer"] p {{
         color: #dddcdc !important;
         font-weight: 500;
     }}
     
-    [data-testid="stSidebar"] .stAlert {{
-        border-left-color: {st.session_state.color_principal} !important;
-    }}
-    
+    /* Botón de "Browse files" */
     [data-testid="stSidebar"] .stFileUploader button {{
         border-radius: {st.session_state.bordes}px !important;
         background-color: #4a4a4a !important;
@@ -474,6 +478,32 @@ st.markdown(f"""
     [data-testid="stSidebar"] .stFileUploader button:hover {{
         border-color: {st.session_state.color_principal} !important;
         background-color: #5a5a5a !important;
+    }}
+    
+    /* Mensaje de archivo cargado exitosamente */
+    [data-testid="stSidebar"] .stAlert {{
+        background-color: #4a4a4a !important;
+        color: #dddcdc !important;
+        border-left-color: {st.session_state.color_principal} !important;
+    }}
+    
+    [data-testid="stSidebar"] .stAlert div {{
+        color: #dddcdc !important;
+    }}
+    
+    /* Expander en barra lateral */
+    [data-testid="stSidebar"] .streamlit-expanderHeader {{
+        color: #dddcdc !important;
+        background-color: #4a4a4a !important;
+    }}
+    
+    [data-testid="stSidebar"] .streamlit-expanderHeader:hover {{
+        color: #01bba7 !important;
+    }}
+    
+    /* Separadores en barra lateral */
+    [data-testid="stSidebar"] hr {{
+        border-color: #5a5a5a !important;
     }}
     
     /* ========== TARJETAS EN ÁREA PRINCIPAL ========== */
@@ -685,17 +715,11 @@ with st.sidebar:
         else:
             st.success("✅ Modo editor activado")
             
-            st.markdown("**🎨 Personalización de Colores**")
+            st.markdown("**🎨 Personalización**")
             
             nuevo_color = st.color_picker("Color principal (botones)", st.session_state.color_principal)
             if nuevo_color != st.session_state.color_principal:
                 st.session_state.color_principal = nuevo_color
-                guardar_configuracion()
-                st.rerun()
-            
-            nuevo_titulo = st.color_picker("Color títulos barra lateral", st.session_state.color_texto_titulo_sidebar)
-            if nuevo_titulo != st.session_state.color_texto_titulo_sidebar:
-                st.session_state.color_texto_titulo_sidebar = nuevo_titulo
                 guardar_configuracion()
                 st.rerun()
             
@@ -722,7 +746,6 @@ with st.sidebar:
             
             if st.button("🔄 Resetear colores", use_container_width=True):
                 st.session_state.color_principal = "#f60d2d"
-                st.session_state.color_texto_titulo_sidebar = "#01bba7"
                 st.session_state.bordes = 12
                 guardar_configuracion()
                 st.rerun()
@@ -746,7 +769,7 @@ with st.sidebar:
             st.caption(f"Descartados: {st.session_state.total_descatados}")
     
     st.caption("📌 Versión 6.0 | Colores fijos")
-    st.caption("🎨 Barra lateral #393939 | Tarjetas #dddcdc")
+    st.caption("🎨 Títulos barra: #01bba7 bold | Texto: #dddcdc")
 
 # ========== ÁREA PRINCIPAL CON BANNER ==========
 
@@ -930,9 +953,7 @@ st.markdown("""
 <div class="footer">
     <span>⚖️ Procesador de Clientes | AR Collect</span>
     <span style="margin: 0 1rem">•</span>
-    <span>🎨 Colores fijos</span>
-    <span style="margin: 0 1rem">•</span>
-    <span>🔒 Barra lateral #393939 | Tarjetas #dddcdc</span>
+    <span>🎨 Títulos barra: #01bba7 bold | Texto: #dddcdc</span>
     <span style="margin: 0 1rem">•</span>
     <span>📊 Versión 6.0</span>
 </div>
