@@ -29,7 +29,7 @@ PASSWORD_HASH = hashlib.sha256(EDITOR_PASSWORD.encode()).hexdigest()
 # ========== CONFIGURACIÓN DE IMÁGENES (CAMBIA ESTAS URLS) ==========
 # Sube tus imágenes a GitHub y pega las URLs raw aquí
 BANNER_URL = "https://raw.githubusercontent.com/TU-USUARIO/TU-REPO/main/assets/banner.jpg"
-LOGO_URL = "https://raw.githubusercontent.com/TU-USUARIO/TU-REPO/main/assets/logo.png"
+LOGO_URL = "https://github.com/Iamnotmanolotaco/Finance-Data-structure-and-reporting/blob/main/assets/image.png"
 
 # ========== INICIALIZAR VARIABLES DE SESIÓN ==========
 if 'modo_editor' not in st.session_state:
