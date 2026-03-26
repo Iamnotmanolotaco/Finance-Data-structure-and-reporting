@@ -425,49 +425,6 @@ st.markdown(f"""
         color: #dddcdc !important;
     }}
     
-    /* ========== TARJETAS EN BARRA LATERAL ========== */
-    /* Fondo de las tarjetas - #01bba7 */
-    [data-testid="stSidebar"] .metric-card,
-    [data-testid="stSidebar"] .file-card,
-    [data-testid="stSidebar"] [data-testid="stMetric"] {{
-        background-color: #01bba7 !important;
-        border-radius: {st.session_state.bordes}px !important;
-        border: none !important;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.15) !important;
-    }}
-    
-    /* Valores principales de las tarjetas */
-    [data-testid="stSidebar"] .metric-card .metric-value,
-    [data-testid="stSidebar"] .file-card .metric-value {{
-        color: #ffffff !important;
-        font-weight: 700 !important;
-        font-size: 1.8rem !important;
-    }}
-    
-    /* Etiquetas de las tarjetas */
-    [data-testid="stSidebar"] .metric-card .metric-label,
-    [data-testid="stSidebar"] .file-card .metric-label {{
-        color: rgba(255, 255, 255, 0.8) !important;
-        font-size: 0.75rem !important;
-    }}
-    
-    /* Títulos de archivos dentro de tarjetas */
-    [data-testid="stSidebar"] .file-card .file-title {{
-        color: #ffffff !important;
-        font-weight: 600 !important;
-    }}
-    
-    /* Estado de archivos dentro de tarjetas */
-    [data-testid="stSidebar"] .file-card .file-status {{
-        color: rgba(255, 255, 255, 0.8) !important;
-    }}
-    
-    /* Iconos dentro de tarjetas */
-    [data-testid="stSidebar"] .file-card .file-icon {{
-        color: #ffffff !important;
-        font-size: 2rem !important;
-    }}
-    
     /* Asegurar que los labels de file_uploader tengan el color correcto */
     [data-testid="stSidebar"] .stFileUploader label {{
         color: #dddcdc !important;
@@ -564,16 +521,27 @@ st.markdown(f"""
         transition: all 0.3s ease;
     }}
     
-    .metric-card {{
-        border-top: 4px solid {st.session_state.color_principal};
-    }}
-    
+    /* Tarjetas con estado "éxito" (archivo cargado) - fondo #01bba7 */
     .file-card-success {{
+        background-color: #01bba7 !important;
         border-left: 4px solid {st.session_state.color_principal};
     }}
     
+    /* Texto dentro de las tarjetas de éxito */
+    .file-card-success .file-icon,
+    .file-card-success .file-title,
+    .file-card-success .file-status {{
+        color: #ffffff !important;
+    }}
+    
+    /* Tarjetas pendientes */
     .file-card-pending {{
         border-left: 4px solid #cccccc;
+        background-color: #fafafa !important;
+    }}
+    
+    .metric-card {{
+        border-top: 4px solid {st.session_state.color_principal};
     }}
     
     .metric-value {{
@@ -816,7 +784,7 @@ with st.sidebar:
             st.caption(f"Descartados: {st.session_state.total_descatados}")
     
     st.caption("📌 Versión 6.0 | Colores fijos")
-    st.caption("🎨 Títulos barra: #01bba7 bold | Texto: #dddcdc | Tarjetas: fondo #01bba7, texto blanco")
+    st.caption("🎨 Títulos barra: #01bba7 bold | Texto: #dddcdc | Tarjetas éxito: fondo #01bba7, texto blanco")
 
 # ========== ÁREA PRINCIPAL CON BANNER ==========
 
@@ -1000,7 +968,7 @@ st.markdown("""
 <div class="footer">
     <span>⚖️ Procesador de Clientes | AR Collect</span>
     <span style="margin: 0 1rem">•</span>
-    <span>🎨 Títulos barra: #01bba7 bold | Texto: #dddcdc | Tarjetas: fondo #01bba7, texto blanco</span>
+    <span>🎨 Títulos barra: #01bba7 bold | Texto: #dddcdc | Tarjetas éxito: fondo #01bba7, texto blanco</span>
     <span style="margin: 0 1rem">•</span>
     <span>📊 Versión 6.0</span>
 </div>
