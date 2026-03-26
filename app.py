@@ -949,7 +949,7 @@ st.markdown("---")
 # Botón de procesamiento
 if ar_file and case_file and closed_file:
     if st.button(" PROCESAR ARCHIVOS", type="primary", use_container_width=True):
-        with st.spinner("Procesando archivos..."):
+        with st.spinner("🔄 Procesando archivos..."):
             try:
                 filtrados, descartados, log = process_data_with_files(
                     ar_file, case_file, closed_file, allow_soft
