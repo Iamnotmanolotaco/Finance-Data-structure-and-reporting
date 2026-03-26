@@ -384,7 +384,7 @@ def process_data_with_files(AR_file, cl_file, cc_file, allow_soft=True):
     
     return filtrados_rows, descartados_rows, log_rows
 
-# ========== CSS PERSONALIZADO COMPLETO ==========
+# ========== CSS PERSONALIZADO - COLORES FIJOS PARA BARRA LATERAL ==========
 st.markdown(f"""
 <style>
     /* Importar fuente */
@@ -427,7 +427,7 @@ st.markdown(f"""
     }}
     
     /* ========== FILE UPLOADER EN BARRA LATERAL ========== */
-    /* Área de drag and drop */
+    /* Área de drag and drop - fondo gris oscuro fijo */
     [data-testid="stSidebar"] .stFileUploader {{
         background-color: #393939 !important;
         border-radius: {st.session_state.bordes}px !important;
