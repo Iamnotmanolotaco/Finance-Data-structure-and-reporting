@@ -22,24 +22,20 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
+# ========== CONFIGURACIÓN DE IMÁGENES FIJAS (URL RAW DE GITHUB) ==========
+# VERIFICADO: Pega estas URLs en tu navegador para confirmar que funcionan
+BANNER_URL = "https://raw.githubusercontent.com/Iamnotmanolotaco/Finance-Data-structure-and-reporting/main/assets/image.png"
+LOGO_URL = "https://raw.githubusercontent.com/Iamnotmanolotaco/Finance-Data-structure-and-reporting/main/assets/image.png"
+
 # ========== CONTRASEÑA PARA EDITOR ==========
 EDITOR_PASSWORD = "manolotaco123"
 PASSWORD_HASH = hashlib.sha256(EDITOR_PASSWORD.encode()).hexdigest()
-
-# ========== CONFIGURACIÓN DE IMÁGENES (CAMBIA ESTAS URLS) ==========
-# Sube tus imágenes a GitHub y pega las URLs raw aquí
-BANNER_URL = "https://raw.githubusercontent.com/TU-USUARIO/TU-REPO/main/assets/banner.jpg"
-LOGO_URL = "https://github.com/Iamnotmanolotaco/Finance-Data-structure-and-reporting/blob/main/assets/image.png?raw=true"
 
 # ========== INICIALIZAR VARIABLES DE SESIÓN ==========
 if 'modo_editor' not in st.session_state:
     st.session_state.modo_editor = False
 if 'password_correcta' not in st.session_state:
     st.session_state.password_correcta = False
-if 'logo_base64' not in st.session_state:
-    st.session_state.logo_base64 = None
-if 'banner_base64' not in st.session_state:
-    st.session_state.banner_base64 = None
 
 # ========== COLORES PRINCIPALES ==========
 if 'color_principal' not in st.session_state:
@@ -71,14 +67,12 @@ if 'sombra_tarjetas' not in st.session_state:
 if 'fuente_principal' not in st.session_state:
     st.session_state.fuente_principal = "'Inter', 'Segoe UI', sans-serif"
 
-# ========== FUNCIONES PARA GUARDAR/CARGAR IMÁGENES ==========
+# ========== FUNCIONES PARA GUARDAR CONFIGURACIÓN ==========
 CONFIG_FILE = "app_config.json"
 
 def guardar_configuracion():
-    """Guarda toda la configuración en un archivo JSON"""
+    """Guarda la configuración de colores en un archivo JSON"""
     config = {
-        'logo_base64': st.session_state.logo_base64,
-        'banner_base64': st.session_state.banner_base64,
         'color_principal': st.session_state.color_principal,
         'color_fondo': st.session_state.color_fondo,
         'color_sidebar': st.session_state.color_sidebar,
@@ -112,14 +106,11 @@ def cargar_configuracion():
 cargar_configuracion()
 
 def mostrar_banner():
-    """Muestra el banner superior"""
-    if st.session_state.banner_base64:
-        try:
-            st.image(f"data:image/png;base64,{st.session_state.banner_base64}", use_container_width=True)
-        except:
-            st.markdown("---")
-    else:
-        # Banner por defecto
+    """Muestra el banner superior desde URL fija"""
+    try:
+        st.image(BANNER_URL, use_container_width=True)
+    except:
+        # Fallback si no carga la imagen
         st.markdown(f"""
         <div style="
             background: linear-gradient(135deg, {st.session_state.color_principal} 0%, #b00a22 100%);
@@ -128,19 +119,16 @@ def mostrar_banner():
             margin-bottom: 1rem;
             text-align: center;
         ">
-            <h1 style="color: white; margin: 0; font-size: 2rem;">⚖️ Procesador de Clientes</h1>
-            <p style="color: rgba(255,255,255,0.9); margin: 0.5rem 0 0 0;">AR Collect - Análisis Automático</p>
+            <h1 style="color: white; margin: 0;">⚖️ Procesador de Clientes</h1>
+            <p style="color: rgba(255,255,255,0.9);">AR Collect - Análisis Automático</p>
         </div>
         """, unsafe_allow_html=True)
 
 def mostrar_logo(tamaño=80):
-    """Muestra el logo en la barra lateral"""
-    if st.session_state.logo_base64:
-        try:
-            st.image(f"data:image/png;base64,{st.session_state.logo_base64}", width=tamaño)
-        except:
-            st.markdown(f"<h1 style='font-size: {tamaño//4}px; color: {st.session_state.color_texto_sidebar_titulo}'>⚖️</h1>", unsafe_allow_html=True)
-    else:
+    """Muestra el logo desde URL fija"""
+    try:
+        st.image(LOGO_URL, width=tamaño)
+    except:
         st.markdown(f"<h1 style='font-size: {tamaño//4}px; color: {st.session_state.color_texto_sidebar_titulo}'>⚖️</h1>", unsafe_allow_html=True)
 
 def verificar_password(password):
@@ -433,16 +421,13 @@ def process_data_with_files(AR_file, cl_file, cc_file, allow_soft=True):
 # ========== CSS PERSONALIZADO COMPLETO ==========
 st.markdown(f"""
 <style>
-    /* Importar fuente */
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
     
-    /* Estilos globales */
     .stApp {{
         background-color: {st.session_state.color_fondo};
         font-family: {st.session_state.fuente_principal};
     }}
     
-    /* Barra lateral */
     [data-testid="stSidebar"] {{
         background-color: {st.session_state.color_sidebar};
     }}
@@ -465,7 +450,6 @@ st.markdown(f"""
         color: {st.session_state.color_texto_sidebar};
     }}
     
-    /* Títulos principales */
     h1 {{
         color: {st.session_state.color_texto_titulo};
         font-size: 2.5rem;
@@ -478,12 +462,10 @@ st.markdown(f"""
         font-family: {st.session_state.fuente_principal};
     }}
     
-    /* Texto normal */
     p, li, .stMarkdown, .stCaption {{
         color: {st.session_state.color_texto_principal};
     }}
     
-    /* Botón principal */
     .stButton button {{
         background-color: {st.session_state.color_principal};
         color: white;
@@ -499,7 +481,6 @@ st.markdown(f"""
         box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     }}
     
-    /* Botón secundario */
     .stDownloadButton button {{
         background-color: #2c2c2c;
         color: white;
@@ -511,7 +492,6 @@ st.markdown(f"""
         transform: translateY(-2px);
     }}
     
-    /* Tarjetas/métricas */
     .metric-card {{
         background-color: {st.session_state.color_card};
         border-radius: {st.session_state.bordes}px;
@@ -541,7 +521,6 @@ st.markdown(f"""
         letter-spacing: 0.5px;
     }}
     
-    /* Tarjetas de archivos */
     .file-card {{
         background-color: {st.session_state.color_card};
         border-radius: {st.session_state.bordes}px;
@@ -576,7 +555,6 @@ st.markdown(f"""
         margin-top: 0.25rem;
     }}
     
-    /* Tabs */
     .stTabs [data-baseweb="tab-list"] {{
         gap: 0.5rem;
         background-color: #f0f0f0;
@@ -596,7 +574,6 @@ st.markdown(f"""
         color: white;
     }}
     
-    /* Banners */
     .success-banner {{
         background-color: {st.session_state.color_principal}10;
         border-left: 4px solid {st.session_state.color_principal};
@@ -615,7 +592,6 @@ st.markdown(f"""
         color: #555555;
     }}
     
-    /* Expander */
     .streamlit-expanderHeader {{
         background-color: #f0f0f0;
         border-radius: {st.session_state.bordes}px;
@@ -623,18 +599,15 @@ st.markdown(f"""
         color: {st.session_state.color_texto_principal};
     }}
     
-    /* DataFrames */
     [data-testid="stDataFrame"] {{
         border: 1px solid #eaeaea;
         border-radius: {st.session_state.bordes}px;
     }}
     
-    /* Spinner */
     .stSpinner > div {{
         border-color: {st.session_state.color_principal} !important;
     }}
     
-    /* Footer */
     .footer {{
         text-align: center;
         padding: 1rem;
@@ -646,7 +619,7 @@ st.markdown(f"""
 </style>
 """, unsafe_allow_html=True)
 
-# ========== DIAGNÓSTICO EN BARRA LATERAL ==========
+# ========== BARRA LATERAL ==========
 with st.sidebar:
     mostrar_logo(70)
     st.markdown("### ⚖️ AR Collect")
@@ -737,29 +710,20 @@ with st.sidebar:
                 guardar_configuracion()
                 st.rerun()
             
-            st.markdown("**🖼️ Imágenes**")
+            st.markdown("**🖼️ Imágenes Fijas**")
+            st.caption("Logo y banner cargados desde GitHub")
+            try:
+                st.image(LOGO_URL, width=80, caption="Logo actual")
+            except:
+                st.caption("No se pudo cargar el logo")
+            try:
+                st.image(BANNER_URL, use_container_width=True, caption="Banner actual")
+            except:
+                st.caption("No se pudo cargar el banner")
+            st.code(BANNER_URL, language="text")
             
-            # Subir logo
-            logo_file = st.file_uploader("Logo (barra lateral)", type=['png', 'jpg'], key="logo_admin")
-            if logo_file:
-                logo_base64 = base64.b64encode(logo_file.read()).decode()
-                st.session_state.logo_base64 = logo_base64
-                guardar_configuracion()
-                st.image(logo_file, width=100)
-                st.success("✅ Logo guardado")
-                st.rerun()
+            st.markdown("---")
             
-            # Subir banner
-            banner_file = st.file_uploader("Banner superior", type=['png', 'jpg'], key="banner_admin")
-            if banner_file:
-                banner_base64 = base64.b64encode(banner_file.read()).decode()
-                st.session_state.banner_base64 = banner_base64
-                guardar_configuracion()
-                st.image(banner_file, use_container_width=True)
-                st.success("✅ Banner guardado")
-                st.rerun()
-            
-            # Botones para resetear
             col1, col2 = st.columns(2)
             with col1:
                 if st.button("🔄 Resetear colores"):
@@ -774,15 +738,6 @@ with st.sidebar:
                     st.session_state.bordes = 12
                     guardar_configuracion()
                     st.rerun()
-            
-            with col2:
-                if st.button("🗑️ Eliminar imágenes"):
-                    st.session_state.logo_base64 = None
-                    st.session_state.banner_base64 = None
-                    guardar_configuracion()
-                    st.rerun()
-            
-            st.markdown("---")
             
             if st.button("🚪 Salir modo editor"):
                 st.session_state.password_correcta = False
@@ -813,11 +768,7 @@ mostrar_banner()
 # Título y subtítulo
 col_logo, col_title = st.columns([1, 5])
 with col_logo:
-    if st.session_state.logo_base64:
-        try:
-            st.image(f"data:image/png;base64,{st.session_state.logo_base64}", width=60)
-        except:
-            st.markdown("⚖️")
+    mostrar_logo(60)
 with col_title:
     st.markdown("# Procesador de Clientes")
     st.markdown("### AR Collect - Análisis y Filtrado Automático")
