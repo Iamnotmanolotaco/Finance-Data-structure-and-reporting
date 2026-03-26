@@ -420,46 +420,76 @@ st.markdown(f"""
         font-weight: 700 !important;
     }}
     
-    /* ========== FORZAR TODO EL TEXTO NORMAL A #dddcdc ========== */
-    [data-testid="stSidebar"] *:not(h1):not(h2):not(h3):not(h4) {{
+    /* ========== TEXTO NORMAL EN BARRA LATERAL ========== */
+    [data-testid="stSidebar"] .stMarkdown,
+    [data-testid="stSidebar"] .stMarkdown p,
+    [data-testid="stSidebar"] .stCheckbox label,
+    [data-testid="stSidebar"] .stCaption,
+    [data-testid="stSidebar"] .stTextInput label,
+    [data-testid="stSidebar"] .stSelectbox label,
+    [data-testid="stSidebar"] .stNumberInput label,
+    [data-testid="stSidebar"] .stDateInput label,
+    [data-testid="stSidebar"] .stTimeInput label,
+    [data-testid="stSidebar"] .stTextArea label,
+    [data-testid="stSidebar"] .stSlider label,
+    [data-testid="stSidebar"] .stRadio label,
+    [data-testid="stSidebar"] .stMultiSelect label,
+    [data-testid="stSidebar"] .stForm label {{
         color: #dddcdc !important;
     }}
     
-    /* ========== TARJETAS DE ARCHIVOS EN BARRA LATERAL ========== */
-    /* Las tarjetas que muestran los archivos subidos */
-    [data-testid="stSidebar"] .stFileUploader div[data-testid="stMarkdownContainer"] {{
+    /* ========== FILE UPLOADER EN BARRA LATERAL ========== */
+    /* Área de drag and drop - fondo #01bba7 */
+    [data-testid="stSidebar"] .stFileUploader {{
+        background-color: #01bba7 !important;
+        border-radius: {st.session_state.bordes}px !important;
+        padding: 0.5rem !important;
+    }}
+    
+    /* Texto del drag and drop */
+    [data-testid="stSidebar"] .stFileUploader div[data-testid="stMarkdownContainer"] p {{
+        color: #ffffff !important;
+        font-weight: 500 !important;
+    }}
+    
+    /* Labels de file_uploader */
+    [data-testid="stSidebar"] .stFileUploader label {{
+        color: #ffffff !important;
+        font-weight: 500;
+        font-size: 0.9rem;
+    }}
+    
+    /* Texto de ayuda/información */
+    [data-testid="stSidebar"] .stFileUploader p {{
+        color: #ffffff !important;
+        font-size: 0.8rem;
+        opacity: 0.9;
+    }}
+    
+    /* Botón de "Browse files" */
+    [data-testid="stSidebar"] .stFileUploader button {{
+        border-radius: {st.session_state.bordes}px !important;
         background-color: #ffffff !important;
+        color: #1a1a1a !important;
+        border: 1px solid #dddddd !important;
+    }}
+    
+    [data-testid="stSidebar"] .stFileUploader button:hover {{
+        background-color: #f0f0f0 !important;
+        border-color: {st.session_state.color_principal} !important;
+    }}
+    
+    /* Nombre del archivo ya cargado - color de la barra lateral */
+    [data-testid="stSidebar"] .stFileUploader div[data-testid="stMarkdownContainer"] {{
+        background-color: #393939 !important;
         border-radius: {st.session_state.bordes}px !important;
         padding: 0.5rem !important;
         margin-top: 0.5rem !important;
     }}
     
     [data-testid="stSidebar"] .stFileUploader div[data-testid="stMarkdownContainer"] p {{
-        color: #1a1a1a !important;
+        color: #dddcdc !important;
         font-weight: 500 !important;
-    }}
-    
-    /* Asegurar que los labels de file_uploader tengan el color correcto */
-    [data-testid="stSidebar"] .stFileUploader label {{
-        color: #dddcdc !important;
-        font-weight: 500;
-    }}
-    
-    [data-testid="stSidebar"] .stFileUploader p {{
-        color: #dddcdc !important;
-    }}
-    
-    /* Botón de file_uploader */
-    [data-testid="stSidebar"] .stFileUploader button {{
-        border-radius: {st.session_state.bordes}px !important;
-        background-color: #4a4a4a !important;
-        color: white !important;
-        border: 1px solid #5a5a5a !important;
-    }}
-    
-    [data-testid="stSidebar"] .stFileUploader button:hover {{
-        border-color: {st.session_state.color_principal} !important;
-        background-color: #5a5a5a !important;
     }}
     
     /* Alertas en barra lateral */
@@ -485,17 +515,12 @@ st.markdown(f"""
         color: #dddcdc !important;
     }}
     
-    /* Checkbox en barra lateral */
-    [data-testid="stSidebar"] .stCheckbox label {{
-        color: #dddcdc !important;
-    }}
-    
     /* Separadores */
     [data-testid="stSidebar"] hr {{
         border-color: #5a5a5a !important;
     }}
     
-    /* ========== TARJETAS EN ÁREA PRINCIPAL - SIN LÍNEA ROJA ========== */
+    /* ========== TARJETAS EN ÁREA PRINCIPAL ========== */
     .metric-card,
     .file-card {{
         background-color: #dddcdc !important;
@@ -507,13 +532,11 @@ st.markdown(f"""
         border: none !important;
     }}
     
-    /* Eliminar la línea roja de las tarjetas de éxito */
     .file-card-success {{
         border-left: none !important;
         background-color: #dddcdc !important;
     }}
     
-    /* Tarjetas pendientes */
     .file-card-pending {{
         border-left: none !important;
         background-color: #fafafa !important;
@@ -569,7 +592,7 @@ st.markdown(f"""
         color: #1a1a1a;
     }}
     
-    /* ========== BOTÓN PRINCIPAL (ROJO #f60d2d) ========== */
+    /* ========== BOTÓN PRINCIPAL ========== */
     .stButton button {{
         background-color: {st.session_state.color_principal};
         color: white;
@@ -585,7 +608,7 @@ st.markdown(f"""
         box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     }}
     
-    /* ========== BOTÓN DE DESCARGA - VISIBLE EN AMBOS TEMAS ========== */
+    /* ========== BOTÓN DE DESCARGA ========== */
     .stDownloadButton button {{
         background-color: #2c2c2c !important;
         color: white !important;
@@ -598,11 +621,6 @@ st.markdown(f"""
         background-color: #3a3a3a !important;
         border-color: {st.session_state.color_principal} !important;
         transform: translateY(-2px);
-    }}
-    
-    .stDownloadButton button p,
-    .stDownloadButton button span {{
-        color: white !important;
     }}
     
     /* ========== TABS ========== */
@@ -673,7 +691,6 @@ st.markdown(f"""
         margin-top: 2rem;
     }}
     
-    /* Separadores */
     hr {{
         border-color: #eaeaea;
     }}
@@ -768,7 +785,6 @@ with st.sidebar:
             st.caption(f"Descartados: {st.session_state.total_descatados}")
     
     st.caption("📌 Versión 6.0 | Colores fijos")
-    st.caption("🎨 Títulos barra: #01bba7 bold | Texto: #dddcdc")
 
 # ========== ÁREA PRINCIPAL CON BANNER ==========
 
@@ -786,7 +802,7 @@ with col_title:
 
 st.markdown("---")
 
-# Tarjetas de estado - ÁREA PRINCIPAL (sin línea roja)
+# Tarjetas de estado - ÁREA PRINCIPAL
 col1, col2, col3 = st.columns(3)
 
 with col1:
@@ -951,8 +967,6 @@ st.markdown("---")
 st.markdown("""
 <div class="footer">
     <span>⚖️ Procesador de Clientes | AR Collect</span>
-    <span style="margin: 0 1rem">•</span>
-    <span>🎨 Títulos barra: #01bba7 bold | Texto: #dddcdc</span>
     <span style="margin: 0 1rem">•</span>
     <span>📊 Versión 6.0</span>
 </div>
