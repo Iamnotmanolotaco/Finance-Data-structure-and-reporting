@@ -479,12 +479,13 @@ st.markdown(f"""
         border-color: {st.session_state.color_principal} !important;
     }}
     
-    /* Nombre del archivo ya cargado - color de la barra lateral */
+    /* ========== NOMBRE DEL ARCHIVO YA CARGADO - MISMO COLOR QUE LA BARRA LATERAL ========== */
     [data-testid="stSidebar"] .stFileUploader div[data-testid="stMarkdownContainer"] {{
         background-color: #393939 !important;
         border-radius: {st.session_state.bordes}px !important;
         padding: 0.5rem !important;
         margin-top: 0.5rem !important;
+        border: 1px solid #5a5a5a !important;
     }}
     
     [data-testid="stSidebar"] .stFileUploader div[data-testid="stMarkdownContainer"] p {{
