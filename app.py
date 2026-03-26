@@ -384,7 +384,7 @@ def process_data_with_files(AR_file, cl_file, cc_file, allow_soft=True):
     
     return filtrados_rows, descartados_rows, log_rows
 
-# ========== CSS PERSONALIZADO CON COLORES FIJOS Y BARRA LATERAL LEGIBLE ==========
+# ========== CSS PERSONALIZADO CON COLORES FIJOS ==========
 st.markdown(f"""
 <style>
     /* Importar fuente */
@@ -421,6 +421,7 @@ st.markdown(f"""
     }}
     
     /* ========== TEXTO NORMAL EN BARRA LATERAL ========== */
+    /* Todo el texto que no sea título - color #dddcdc */
     [data-testid="stSidebar"] .stMarkdown,
     [data-testid="stSidebar"] .stMarkdown p,
     [data-testid="stSidebar"] .stCheckbox label,
@@ -436,6 +437,21 @@ st.markdown(f"""
     [data-testid="stSidebar"] .stMultiSelect label,
     [data-testid="stSidebar"] .stForm label {{
         color: #dddcdc !important;
+    }}
+    
+    /* ========== EXCEPCIÓN: TARJETAS EN BARRA LATERAL ========== */
+    /* Las tarjetas mantienen sus colores originales */
+    [data-testid="stSidebar"] .metric-card,
+    [data-testid="stSidebar"] .file-card,
+    [data-testid="stSidebar"] [data-testid="stMetric"] {{
+        color: inherit !important;
+    }}
+    
+    [data-testid="stSidebar"] .metric-card .metric-value,
+    [data-testid="stSidebar"] .metric-card .metric-label,
+    [data-testid="stSidebar"] .file-card .file-title,
+    [data-testid="stSidebar"] .file-card .file-status {{
+        color: inherit !important;
     }}
     
     /* ========== FILE UPLOADER EN BARRA LATERAL ========== */
