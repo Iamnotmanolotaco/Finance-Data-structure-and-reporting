@@ -384,7 +384,7 @@ def process_data_with_files(AR_file, cl_file, cc_file, allow_soft=True):
     
     return filtrados_rows, descartados_rows, log_rows
 
-# ========== CSS PERSONALIZADO CON BARRA LATERAL LEGIBLE ==========
+# ========== CSS PERSONALIZADO COMPLETO ==========
 st.markdown(f"""
 <style>
     /* Importar fuente */
@@ -421,17 +421,51 @@ st.markdown(f"""
     }}
     
     /* ========== FORZAR TODO EL TEXTO NORMAL A #dddcdc ========== */
-    /* Esto aplica a TODO excepto títulos */
     [data-testid="stSidebar"] *:not(h1):not(h2):not(h3):not(h4) {{
         color: #dddcdc !important;
     }}
     
-    /* Excepción para las tarjetas que deben mantener su color */
+    /* ========== TARJETAS EN BARRA LATERAL ========== */
+    /* Fondo de las tarjetas - #01bba7 */
     [data-testid="stSidebar"] .metric-card,
     [data-testid="stSidebar"] .file-card,
-    [data-testid="stSidebar"] .metric-card *,
-    [data-testid="stSidebar"] .file-card * {{
-        color: inherit !important;
+    [data-testid="stSidebar"] [data-testid="stMetric"] {{
+        background-color: #01bba7 !important;
+        border-radius: {st.session_state.bordes}px !important;
+        border: none !important;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.15) !important;
+    }}
+    
+    /* Valores principales de las tarjetas */
+    [data-testid="stSidebar"] .metric-card .metric-value,
+    [data-testid="stSidebar"] .file-card .metric-value {{
+        color: #ffffff !important;
+        font-weight: 700 !important;
+        font-size: 1.8rem !important;
+    }}
+    
+    /* Etiquetas de las tarjetas */
+    [data-testid="stSidebar"] .metric-card .metric-label,
+    [data-testid="stSidebar"] .file-card .metric-label {{
+        color: rgba(255, 255, 255, 0.8) !important;
+        font-size: 0.75rem !important;
+    }}
+    
+    /* Títulos de archivos dentro de tarjetas */
+    [data-testid="stSidebar"] .file-card .file-title {{
+        color: #ffffff !important;
+        font-weight: 600 !important;
+    }}
+    
+    /* Estado de archivos dentro de tarjetas */
+    [data-testid="stSidebar"] .file-card .file-status {{
+        color: rgba(255, 255, 255, 0.8) !important;
+    }}
+    
+    /* Iconos dentro de tarjetas */
+    [data-testid="stSidebar"] .file-card .file-icon {{
+        color: #ffffff !important;
+        font-size: 2rem !important;
     }}
     
     /* Asegurar que los labels de file_uploader tengan el color correcto */
@@ -782,7 +816,7 @@ with st.sidebar:
             st.caption(f"Descartados: {st.session_state.total_descatados}")
     
     st.caption("📌 Versión 6.0 | Colores fijos")
-    st.caption("🎨 Títulos barra: #01bba7 bold | Texto: #dddcdc")
+    st.caption("🎨 Títulos barra: #01bba7 bold | Texto: #dddcdc | Tarjetas: fondo #01bba7, texto blanco")
 
 # ========== ÁREA PRINCIPAL CON BANNER ==========
 
@@ -966,7 +1000,7 @@ st.markdown("""
 <div class="footer">
     <span>⚖️ Procesador de Clientes | AR Collect</span>
     <span style="margin: 0 1rem">•</span>
-    <span>🎨 Títulos barra: #01bba7 bold | Texto: #dddcdc</span>
+    <span>🎨 Títulos barra: #01bba7 bold | Texto: #dddcdc | Tarjetas: fondo #01bba7, texto blanco</span>
     <span style="margin: 0 1rem">•</span>
     <span>📊 Versión 6.0</span>
 </div>
