@@ -17,14 +17,14 @@ from PIL import Image
 # ========== CONFIGURACIÓN DE PÁGINA ==========
 st.set_page_config(
     page_title="Procesador de Clientes | AR Collect",
-    page_icon="https://raw.githubusercontent.com/Iamnotmanolotaco/Finance-Data-structure-and-reporting/main/assets/favicon.png",
+    page_icon="https://raw.githubusercontent.com/Iamnotmanolotaco/Finance-Data-structure-and-reporting/main/assets/favicon2.png",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
 # ========== CONFIGURACIÓN DE IMÁGENES FIJAS ==========
 BANNER_URL = "https://raw.githubusercontent.com/Iamnotmanolotaco/Finance-Data-structure-and-reporting/main/assets/banner7.png"
-LOGO_URL = "https://raw.githubusercontent.com/Iamnotmanolotaco/Finance-Data-structure-and-reporting/main/assets/image2.png"
+LOGO_URL = "https://raw.githubusercontent.com/Iamnotmanolotaco/Finance-Data-structure-and-reporting/main/assets/image3.png"
 
 # ========== CONTRASEÑA PARA EDITOR ==========
 EDITOR_PASSWORD = "manolotaco123"
