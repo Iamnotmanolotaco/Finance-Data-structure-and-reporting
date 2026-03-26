@@ -36,7 +36,7 @@ if 'modo_editor' not in st.session_state:
 if 'password_correcta' not in st.session_state:
     st.session_state.password_correcta = False
 
-# ========== COLORES PRINCIPALES (SOLO EL COLOR ACENTO) ==========
+# ========== COLORES PRINCIPALES ==========
 if 'color_principal' not in st.session_state:
     st.session_state.color_principal = "#f60d2d"
 if 'bordes' not in st.session_state:
@@ -50,7 +50,6 @@ if 'fuente_principal' not in st.session_state:
 CONFIG_FILE = "app_config.json"
 
 def guardar_configuracion():
-    """Guarda la configuración de colores en un archivo JSON"""
     config = {
         'color_principal': st.session_state.color_principal,
         'bordes': st.session_state.bordes
@@ -62,7 +61,6 @@ def guardar_configuracion():
         pass
 
 def cargar_configuracion():
-    """Carga la configuración desde archivo JSON"""
     try:
         if os.path.exists(CONFIG_FILE):
             with open(CONFIG_FILE, 'r') as f:
@@ -74,15 +72,12 @@ def cargar_configuracion():
     except:
         pass
 
-# Cargar configuración al iniciar
 cargar_configuracion()
 
 def mostrar_banner():
-    """Muestra el banner superior desde URL fija"""
     try:
         st.image(BANNER_URL, use_container_width=True)
     except:
-        # Fallback si no carga la imagen
         st.markdown(f"""
         <div style="
             background: linear-gradient(135deg, {st.session_state.color_principal} 0%, #b00a22 100%);
@@ -97,11 +92,10 @@ def mostrar_banner():
         """, unsafe_allow_html=True)
 
 def mostrar_logo(tamaño=80):
-    """Muestra el logo desde URL fija"""
     try:
         st.image(LOGO_URL, width=tamaño)
     except:
-        st.markdown(f"<h1 style='font-size: {tamaño//4}px; color: var(--text-color);'>⚖️</h1>", unsafe_allow_html=True)
+        st.markdown(f"<h1 style='font-size: {tamaño//4}px; color: #dddcdc;'>⚖️</h1>", unsafe_allow_html=True)
 
 def verificar_password(password):
     return hashlib.sha256(password.encode()).hexdigest() == PASSWORD_HASH
@@ -390,7 +384,7 @@ def process_data_with_files(AR_file, cl_file, cc_file, allow_soft=True):
     
     return filtrados_rows, descartados_rows, log_rows
 
-# ========== CSS PERSONALIZADO CON VARIABLES NATIVAS DE STREAMLIT ==========
+# ========== CSS PERSONALIZADO CON COLORES ESPECÍFICOS ==========
 st.markdown(f"""
 <style>
     /* Importar fuente */
@@ -401,137 +395,50 @@ st.markdown(f"""
         font-family: {st.session_state.fuente_principal};
     }}
     
-    /* ========== BARRA LATERAL - RESPETA EL TEMA DE STREAMLIT ========== */
-    [data-testid="stSidebar"] .stMarkdown {{
-        color: var(--text-color);
+    /* ========== COLORES PRINCIPALES ========== */
+    /* Fondo de la página principal */
+    .stApp {{
+        background-color: #feffff !important;
+    }}
+    
+    /* Barra lateral - MISMO COLOR PARA AMBOS TEMAS (#393939) */
+    [data-testid="stSidebar"] {{
+        background-color: #393939 !important;
+    }}
+    
+    /* Textos de la barra lateral */
+    [data-testid="stSidebar"] .stMarkdown,
+    [data-testid="stSidebar"] .stCheckbox label,
+    [data-testid="stSidebar"] p,
+    [data-testid="stSidebar"] li {{
+        color: #dddcdc !important;
     }}
     
     [data-testid="stSidebar"] h1, 
     [data-testid="stSidebar"] h2, 
     [data-testid="stSidebar"] h3 {{
-        color: var(--text-color);
+        color: #dddcdc !important;
     }}
     
-    /* Checkbox en sidebar */
-    [data-testid="stSidebar"] .stCheckbox label {{
-        color: var(--text-color);
+    [data-testid="stSidebar"] hr {{
+        border-color: #555555 !important;
     }}
     
-    /* ========== FILE UPLOADER EN SIDEBAR ========== */
-    [data-testid="stSidebar"] .stFileUploader label {{
-        color: var(--text-color) !important;
-        font-weight: 500;
-        font-size: 0.9rem;
-    }}
-    
-    [data-testid="stSidebar"] .stFileUploader p {{
-        color: var(--text-color) !important;
-        font-size: 0.8rem;
-        opacity: 0.8;
-    }}
-    
-    [data-testid="stSidebar"] .stFileUploader div[data-testid="stMarkdownContainer"] p {{
-        color: var(--text-color) !important;
-        opacity: 0.7;
-    }}
-    
-    [data-testid="stSidebar"] .stFileUploader div[data-testid="stMarkdownContainer"] {{
-        color: var(--text-color) !important;
-        background-color: transparent !important;
-    }}
-    
-    [data-testid="stSidebar"] .stFileUploader div[data-testid="stMarkdownContainer"] p {{
-        color: var(--text-color) !important;
-        font-weight: 500;
-    }}
-    
-    [data-testid="stSidebar"] .stAlert {{
-        background-color: var(--secondary-background-color) !important;
-        color: var(--text-color) !important;
-        border-left-color: {st.session_state.color_principal} !important;
-    }}
-    
-    [data-testid="stSidebar"] .stAlert div {{
-        color: var(--text-color) !important;
-    }}
-    
-    [data-testid="stSidebar"] .stFileUploader button {{
-        color: var(--text-color) !important;
-        background-color: var(--secondary-background-color) !important;
-        border: 1px solid var(--border-color) !important;
-        border-radius: {st.session_state.bordes}px !important;
-    }}
-    
-    [data-testid="stSidebar"] .stFileUploader button:hover {{
-        background-color: var(--primary-background-color) !important;
-        border-color: {st.session_state.color_principal} !important;
-    }}
-    
-    /* Títulos principales */
-    h1 {{
-        color: var(--text-color);
-        font-size: 2.5rem;
-        font-weight: 700;
-        font-family: {st.session_state.fuente_principal};
-    }}
-    
-    h2, h3, h4 {{
-        color: var(--text-color);
-        font-family: {st.session_state.fuente_principal};
-    }}
-    
-    p, li, .stMarkdown, .stCaption {{
-        color: var(--text-color);
-    }}
-    
-    /* Botón principal (color personalizado) */
-    .stButton button {{
-        background-color: {st.session_state.color_principal};
-        color: white;
-        font-weight: 600;
-        border-radius: {st.session_state.bordes}px;
-        border: none;
-        transition: all 0.3s ease;
-    }}
-    
-    .stButton button:hover {{
-        background-color: {st.session_state.color_principal}cc;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    }}
-    
-    /* Botón de descarga */
-    .stDownloadButton button {{
-        background-color: #2c2c2c !important;
-        color: white !important;
-        border-radius: {st.session_state.bordes}px !important;
-        border: 1px solid #444444 !important;
-        transition: all 0.3s ease;
-    }}
-    
-    .stDownloadButton button:hover {{
-        background-color: #3a3a3a !important;
-        border-color: {st.session_state.color_principal} !important;
-        transform: translateY(-2px);
-    }}
-    
-    .stDownloadButton button p,
-    .stDownloadButton button span {{
-        color: white !important;
-    }}
-    
-    /* Tarjetas/métricas */
-    .metric-card {{
-        background-color: var(--background-color);
+    /* Tarjetas de la página principal */
+    .metric-card, .file-card {{
+        background-color: #dddcdc !important;
         border-radius: {st.session_state.bordes}px;
         padding: 1.2rem;
         box-shadow: {st.session_state.sombra_tarjetas};
         text-align: center;
-        border-top: 4px solid {st.session_state.color_principal};
         transition: all 0.3s ease;
     }}
     
-    .metric-card:hover {{
+    .file-card {{
+        padding: 1rem;
+    }}
+    
+    .metric-card:hover, .file-card:hover {{
         transform: translateY(-3px);
         box-shadow: 0 6px 16px rgba(0,0,0,0.12);
     }}
@@ -539,27 +446,26 @@ st.markdown(f"""
     .metric-value {{
         font-size: 2.2rem;
         font-weight: 700;
-        color: var(--text-color);
+        color: #1a1a1a;
     }}
     
     .metric-label {{
         font-size: 0.85rem;
-        color: var(--text-color);
-        opacity: 0.7;
+        color: #666666;
         margin-top: 0.5rem;
         text-transform: uppercase;
         letter-spacing: 0.5px;
     }}
     
-    /* Tarjetas de archivos */
-    .file-card {{
-        background-color: var(--background-color);
-        border-radius: {st.session_state.bordes}px;
-        padding: 1rem;
-        text-align: center;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-        border: 1px solid var(--border-color);
-        transition: all 0.3s ease;
+    .file-title {{
+        font-weight: 600;
+        color: #1a1a1a;
+    }}
+    
+    .file-status {{
+        font-size: 0.8rem;
+        color: #666666;
+        margin-top: 0.25rem;
     }}
     
     .file-card-success {{
@@ -567,30 +473,131 @@ st.markdown(f"""
     }}
     
     .file-card-pending {{
-        border-left: 4px solid #cccccc;
-        background-color: var(--background-color);
+        border-left: 4px solid #999999;
     }}
     
-    .file-icon {{
-        font-size: 2rem;
+    /* ========== FILE UPLOADER EN SIDEBAR ========== */
+    [data-testid="stSidebar"] .stFileUploader label {{
+        color: #dddcdc !important;
+        font-weight: 500;
+        font-size: 0.9rem;
     }}
     
-    .file-title {{
-        font-weight: 600;
-        color: var(--text-color);
-    }}
-    
-    .file-status {{
+    [data-testid="stSidebar"] .stFileUploader p {{
+        color: #dddcdc !important;
         font-size: 0.8rem;
-        color: var(--text-color);
-        opacity: 0.7;
-        margin-top: 0.25rem;
+        opacity: 0.8;
     }}
     
-    /* Tabs */
+    [data-testid="stSidebar"] .stFileUploader div[data-testid="stMarkdownContainer"] p {{
+        color: #dddcdc !important;
+        opacity: 0.7;
+    }}
+    
+    [data-testid="stSidebar"] .stFileUploader div[data-testid="stMarkdownContainer"] {{
+        color: #dddcdc !important;
+    }}
+    
+    [data-testid="stSidebar"] .stFileUploader div[data-testid="stMarkdownContainer"] p {{
+        color: #dddcdc !important;
+        font-weight: 500;
+    }}
+    
+    [data-testid="stSidebar"] .stAlert {{
+        background-color: #4a4a4a !important;
+        color: #dddcdc !important;
+        border-left-color: {st.session_state.color_principal} !important;
+    }}
+    
+    [data-testid="stSidebar"] .stAlert div {{
+        color: #dddcdc !important;
+    }}
+    
+    [data-testid="stSidebar"] .stFileUploader button {{
+        color: #dddcdc !important;
+        background-color: #4a4a4a !important;
+        border: 1px solid #666666 !important;
+        border-radius: {st.session_state.bordes}px !important;
+    }}
+    
+    [data-testid="stSidebar"] .stFileUploader button:hover {{
+        background-color: #555555 !important;
+        border-color: {st.session_state.color_principal} !important;
+    }}
+    
+    /* ========== BOTONES Y ELEMENTOS ROJOS ========== */
+    /* Botón principal */
+    .stButton button {{
+        background-color: {st.session_state.color_principal} !important;
+        color: white !important;
+        font-weight: 600;
+        border-radius: {st.session_state.bordes}px;
+        border: none;
+        transition: all 0.3s ease;
+    }}
+    
+    .stButton button:hover {{
+        background-color: #d40c27 !important;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(246, 13, 45, 0.3);
+    }}
+    
+    /* Botón de descarga */
+    .stDownloadButton button {{
+        background-color: {st.session_state.color_principal} !important;
+        color: white !important;
+        border-radius: {st.session_state.bordes}px !important;
+        border: none !important;
+        transition: all 0.3s ease;
+    }}
+    
+    .stDownloadButton button:hover {{
+        background-color: #d40c27 !important;
+        transform: translateY(-2px);
+    }}
+    
+    /* Tabs seleccionados */
+    .stTabs [aria-selected="true"] {{
+        background-color: {st.session_state.color_principal} !important;
+        color: white !important;
+    }}
+    
+    /* Bordes de éxito */
+    .success-banner {{
+        background-color: {st.session_state.color_principal}10;
+        border-left: 4px solid {st.session_state.color_principal};
+        padding: 1rem;
+        border-radius: {st.session_state.bordes}px;
+        margin: 1rem 0;
+        color: #1a1a1a;
+    }}
+    
+    /* Spinner */
+    .stSpinner > div {{
+        border-color: {st.session_state.color_principal} !important;
+    }}
+    
+    /* ========== TÍTULOS Y TEXTOS PRINCIPALES ========== */
+    h1 {{
+        color: #1a1a1a;
+        font-size: 2.5rem;
+        font-weight: 700;
+        font-family: {st.session_state.fuente_principal};
+    }}
+    
+    h2, h3, h4 {{
+        color: #333333;
+        font-family: {st.session_state.fuente_principal};
+    }}
+    
+    p, li, .stMarkdown, .stCaption {{
+        color: #333333;
+    }}
+    
+    /* Tabs no seleccionados */
     .stTabs [data-baseweb="tab-list"] {{
         gap: 0.5rem;
-        background-color: var(--secondary-background-color);
+        background-color: #eaeaea;
         border-radius: {st.session_state.bordes}px;
         padding: 0.5rem;
     }}
@@ -599,60 +606,41 @@ st.markdown(f"""
         border-radius: {st.session_state.bordes - 4}px;
         padding: 0.5rem 1.2rem;
         font-weight: 500;
-        color: var(--text-color);
-    }}
-    
-    .stTabs [aria-selected="true"] {{
-        background-color: {st.session_state.color_principal};
-        color: white;
-    }}
-    
-    /* Banners */
-    .success-banner {{
-        background-color: {st.session_state.color_principal}10;
-        border-left: 4px solid {st.session_state.color_principal};
-        padding: 1rem;
-        border-radius: {st.session_state.bordes}px;
-        margin: 1rem 0;
-        color: var(--text-color);
-    }}
-    
-    .info-banner {{
-        background-color: var(--secondary-background-color);
-        border-left: 4px solid #888888;
-        padding: 1rem;
-        border-radius: {st.session_state.bordes}px;
-        margin: 1rem 0;
-        color: var(--text-color);
+        color: #666666;
     }}
     
     /* Expander */
     .streamlit-expanderHeader {{
-        background-color: var(--secondary-background-color);
+        background-color: #eaeaea;
         border-radius: {st.session_state.bordes}px;
         font-weight: 600;
-        color: var(--text-color);
+        color: #333333;
     }}
     
     /* DataFrames */
     [data-testid="stDataFrame"] {{
-        border: 1px solid var(--border-color);
+        border: 1px solid #dddddd;
         border-radius: {st.session_state.bordes}px;
+        background-color: white;
     }}
     
-    /* Spinner */
-    .stSpinner > div {{
-        border-color: {st.session_state.color_principal} !important;
+    /* Info banner */
+    .info-banner {{
+        background-color: #f5f5f5;
+        border-left: 4px solid #999999;
+        padding: 1rem;
+        border-radius: {st.session_state.bordes}px;
+        margin: 1rem 0;
+        color: #555555;
     }}
     
     /* Footer */
     .footer {{
         text-align: center;
         padding: 1rem;
-        color: var(--text-color);
-        opacity: 0.6;
+        color: #888888;
         font-size: 0.75rem;
-        border-top: 1px solid var(--border-color);
+        border-top: 1px solid #dddddd;
         margin-top: 2rem;
     }}
 </style>
@@ -693,7 +681,12 @@ with st.sidebar:
             st.success("✅ Modo editor activado")
             
             st.markdown("**🎨 Personalización**")
-            st.info("💡 Usa el botón ☀️/🌙 en la esquina superior derecha para cambiar el tema claro/oscuro")
+            st.info("💡 Los colores de la app están fijos según tu diseño:")
+            st.info("• Página principal: #feffff")
+            st.info("• Barra lateral: #393939 (fijo para ambos temas)")
+            st.info("• Tarjetas: #dddcdc")
+            st.info("• Texto barra lateral: #dddcdc")
+            st.info("• Color principal: #f60d2d")
             
             nuevo_color = st.color_picker("Color principal (botones)", st.session_state.color_principal)
             if nuevo_color != st.session_state.color_principal:
@@ -745,8 +738,8 @@ with st.sidebar:
             st.caption(f"Mantenidos: {st.session_state.total_filtrados}")
             st.caption(f"Descartados: {st.session_state.total_descatados}")
     
-    st.caption("📌 Versión 5.0 | Tema adaptable")
-    st.caption("🔒 Usa el botón ☀️/🌙 para cambiar el tema")
+    st.caption("📌 Versión 5.0 | Colores personalizados")
+    st.caption("🔒 Barra lateral #393939 | Texto #dddcdc")
 
 # ========== ÁREA PRINCIPAL CON BANNER ==========
 
@@ -930,9 +923,9 @@ st.markdown("""
 <div class="footer">
     <span>⚖️ Procesador de Clientes | AR Collect</span>
     <span style="margin: 0 1rem">•</span>
-    <span>🎨 Adaptable al tema de Streamlit</span>
+    <span>🎨 Diseño personalizado</span>
     <span style="margin: 0 1rem">•</span>
-    <span>🔒 Usa ☀️/🌙 para cambiar el tema</span>
+    <span>🔒 Barra lateral #393939</span>
     <span style="margin: 0 1rem">•</span>
     <span>📊 Versión 5.0</span>
 </div>
