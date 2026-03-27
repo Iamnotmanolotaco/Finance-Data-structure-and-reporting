@@ -973,9 +973,9 @@ else:
 st.markdown("---")
 st.markdown("""
 <div class="footer">
-    <span> Procesador de Clientes | AR Collect</span>
-    <span style="margin: 0 1rem">•</span>
     <span>Powered by Manolo Taco Guancha</span>
+    <span style="margin: 0 1rem">•</span>
+    <span> Procesador de Clientes | AR Collect</span>
     <span style="margin: 0 1rem">•</span>
       <span> Versión 6.0</span>
     
