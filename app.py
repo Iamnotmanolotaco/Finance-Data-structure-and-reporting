@@ -705,7 +705,7 @@ st.markdown(f"""
 # ========== BARRA LATERAL ==========
 with st.sidebar:
     mostrar_logo(70)
-    st.markdown("### ⚖️ AR Collect")
+    st.markdown("###  AR Collect")
     st.markdown("---")
     
     st.markdown("#### ⚙️ Configuración")
@@ -716,7 +716,7 @@ with st.sidebar:
     )
     
     st.markdown("---")
-    st.markdown("#### 📁 Subir archivos")
+    st.markdown("####  Subir archivos")
     
     ar_file = st.file_uploader("ARCollect_Age_Analysis.xlsx", type=['xlsx', 'xls'], key="ar")
     case_file = st.file_uploader("Case_Details.xlsx", type=['xlsx', 'xls'], key="case")
@@ -724,7 +724,7 @@ with st.sidebar:
     
     st.markdown("---")
     
-    with st.expander("🎨 Personalización (Administrador)", expanded=False):
+    with st.expander(" Personalización (Administrador)", expanded=False):
         if not st.session_state.password_correcta:
             password_input = st.text_input("Contraseña", type="password", placeholder="Contraseña de admin")
             if st.button("🔓 Acceder"):
@@ -736,7 +736,7 @@ with st.sidebar:
         else:
             st.success("✅ Modo editor activado")
             
-            st.markdown("**🎨 Personalización**")
+            st.markdown("** Personalización**")
             
             nuevo_color = st.color_picker("Color principal (botones)", st.session_state.color_principal)
             if nuevo_color != st.session_state.color_principal:
@@ -751,7 +751,7 @@ with st.sidebar:
                 st.rerun()
             
             st.markdown("---")
-            st.markdown("**🖼️ Imágenes Fijas**")
+            st.markdown("** Imágenes Fijas**")
             st.caption("Logo y banner cargados desde GitHub")
             try:
                 st.image(LOGO_URL, width=80, caption="Logo actual")
@@ -765,13 +765,13 @@ with st.sidebar:
             
             st.markdown("---")
             
-            if st.button("🔄 Resetear colores", use_container_width=True):
+            if st.button(" Resetear colores", use_container_width=True):
                 st.session_state.color_principal = "#f60d2d"
                 st.session_state.bordes = 12
                 guardar_configuracion()
                 st.rerun()
             
-            if st.button("🚪 Salir modo editor", use_container_width=True):
+            if st.button(" Salir modo editor", use_container_width=True):
                 st.session_state.password_correcta = False
                 st.rerun()
     
@@ -868,7 +868,7 @@ st.markdown("---")
 
 # Botón de procesamiento
 if ar_file and case_file and closed_file:
-    if st.button("🚀 PROCESAR ARCHIVOS", type="primary", use_container_width=True):
+    if st.button(" PROCESAR ARCHIVOS", type="primary", use_container_width=True):
         with st.spinner("Procesando archivos..."):
             try:
                 filtrados, descartados, log = process_data_with_files(
@@ -933,9 +933,9 @@ if ar_file and case_file and closed_file:
                 )
                 
                 st.markdown("---")
-                st.markdown("### 📋 Vista previa de resultados")
+                st.markdown("###  Vista previa de resultados")
                 
-                tab1, tab2, tab3 = st.tabs(["📌 MANTENIDOS", "🗑️ DESCARTADOS", "📝 LOG DE MATCHES"])
+                tab1, tab2, tab3 = st.tabs([" MANTENIDOS", " DESCARTADOS", " LOG DE MATCHES"])
                 
                 with tab1:
                     if filtrados:
@@ -971,10 +971,11 @@ else:
 st.markdown("---")
 st.markdown("""
 <div class="footer">
-    <span>⚖️ Procesador de Clientes | AR Collect</span>
+    <span> Procesador de Clientes | AR Collect</span>
     <span style="margin: 0 1rem">•</span>
-    <span>🎨 Títulos barra: #01bba7 bold | Texto: #b0b0b0</span>
+    <span> Versión 6.0</span>
+    <span> Powered by Manolo Taco Guancha</span>
     <span style="margin: 0 1rem">•</span>
-    <span>📊 Versión 6.0</span>
+    
 </div>
 """, unsafe_allow_html=True)
