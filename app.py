@@ -975,7 +975,7 @@ st.markdown("""
 <div class="footer">
     <span>Powered by Manolo Taco Guancha</span>
     <span style="margin: 0 1rem">•</span>
-    <span> Procesador de Clientes | AR Collect</span>
+    <span> Departamento de Finanzas</span>
     <span style="margin: 0 1rem">•</span>
       <span> Versión 6.0</span>
     
