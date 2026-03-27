@@ -86,7 +86,7 @@ def mostrar_banner():
             margin-bottom: 1rem;
             text-align: center;
         ">
-            <h1 style="color: white; margin: 0;">⚖️ Procesador de Clientes</h1>
+            <h1 style="color: white; margin: 0;"> Procesador de Clientes</h1>
             <p style="color: rgba(255,255,255,0.9);">AR Collect - Análisis Automático</p>
         </div>
         """, unsafe_allow_html=True)
