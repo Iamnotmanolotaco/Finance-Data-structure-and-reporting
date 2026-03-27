@@ -384,7 +384,7 @@ def process_data_with_files(AR_file, cl_file, cc_file, allow_soft=True):
     
     return filtrados_rows, descartados_rows, log_rows
 
-# ========== CSS PERSONALIZADO - DINÁMICO CON VARIABLES NATIVAS ==========
+# ========== CSS PERSONALIZADO ==========
 st.markdown(f"""
 <style>
     /* Importar fuente */
@@ -400,10 +400,11 @@ st.markdown(f"""
         background-color: #feffff !important;
     }}
     
-    /* ========== BARRA LATERAL - USANDO VARIABLES NATIVAS ========== */
-    /* Fondo de la barra lateral - usa el color de fondo secundario de Streamlit */
+    /* ========== BARRA LATERAL - COLORES FIJOS ========== */
+    
+    /* Fondo de la barra lateral - #393939 */
     [data-testid="stSidebar"] {{
-        background-color: var(--secondary-background-color) !important;
+        background-color: #393939 !important;
     }}
     
     /* ========== TÍTULOS EN BARRA LATERAL ========== */
@@ -419,81 +420,158 @@ st.markdown(f"""
         font-weight: 700 !important;
     }}
     
-    /* ========== TODO EL TEXTO NORMAL EN BARRA LATERAL ========== */
-    /* Usa el color de texto principal de Streamlit */
-    [data-testid="stSidebar"] *:not(h1):not(h2):not(h3):not(h4) {{
-        color: var(--text-color) !important;
+    /* ========== TEXTO NORMAL EN BARRA LATERAL - DINÁMICO ========== */
+    /* En tema oscuro: texto gris claro */
+    @media (prefers-color-scheme: dark) {{
+        [data-testid="stSidebar"] *:not(h1):not(h2):not(h3):not(h4) {{
+            color: #dddcdc !important;
+        }}
+    }}
+    
+    /* En tema claro: texto gris oscuro */
+    @media (prefers-color-scheme: light) {{
+        [data-testid="stSidebar"] *:not(h1):not(h2):not(h3):not(h4) {{
+            color: #1a1a1a !important;
+        }}
     }}
     
     /* ========== FILE UPLOADER EN BARRA LATERAL ========== */
-    /* Área de drag and drop - usa fondo de la barra lateral */
+    /* Área de drag and drop */
     [data-testid="stSidebar"] .stFileUploader {{
-        background-color: var(--secondary-background-color) !important;
+        background-color: #393939 !important;
         border-radius: {st.session_state.bordes}px !important;
         padding: 0.5rem !important;
-        border: 1px solid var(--border-color) !important;
+        border: 1px solid #5a5a5a !important;
     }}
     
-    /* Texto del drag and drop */
-    [data-testid="stSidebar"] .stFileUploader div[data-testid="stMarkdownContainer"] p {{
-        color: var(--text-color) !important;
-        font-weight: 500 !important;
+    /* Texto del drag and drop - DINÁMICO */
+    @media (prefers-color-scheme: dark) {{
+        [data-testid="stSidebar"] .stFileUploader div[data-testid="stMarkdownContainer"] p {{
+            color: #dddcdc !important;
+            font-weight: 500 !important;
+        }}
     }}
     
-    /* Labels de file_uploader */
+    @media (prefers-color-scheme: light) {{
+        [data-testid="stSidebar"] .stFileUploader div[data-testid="stMarkdownContainer"] p {{
+            color: #1a1a1a !important;
+            font-weight: 500 !important;
+        }}
+    }}
+    
+    /* Labels de file_uploader - DINÁMICO */
     [data-testid="stSidebar"] .stFileUploader label {{
-        color: var(--text-color) !important;
         font-weight: 500;
         font-size: 0.9rem;
     }}
     
-    /* Texto de ayuda/información */
+    @media (prefers-color-scheme: dark) {{
+        [data-testid="stSidebar"] .stFileUploader label {{
+            color: #dddcdc !important;
+        }}
+    }}
+    
+    @media (prefers-color-scheme: light) {{
+        [data-testid="stSidebar"] .stFileUploader label {{
+            color: #1a1a1a !important;
+        }}
+    }}
+    
+    /* Texto de ayuda - DINÁMICO */
     [data-testid="stSidebar"] .stFileUploader p {{
-        color: var(--text-color) !important;
         font-size: 0.8rem;
         opacity: 0.8;
+    }}
+    
+    @media (prefers-color-scheme: dark) {{
+        [data-testid="stSidebar"] .stFileUploader p {{
+            color: #dddcdc !important;
+        }}
+    }}
+    
+    @media (prefers-color-scheme: light) {{
+        [data-testid="stSidebar"] .stFileUploader p {{
+            color: #1a1a1a !important;
+        }}
     }}
     
     /* Botón de "Browse files" */
     [data-testid="stSidebar"] .stFileUploader button {{
         border-radius: {st.session_state.bordes}px !important;
-        background-color: var(--background-color) !important;
-        color: var(--text-color) !important;
-        border: 1px solid var(--border-color) !important;
+        background-color: #4a4a4a !important;
+        border: 1px solid #5a5a5a !important;
+        color: white !important;
     }}
     
     [data-testid="stSidebar"] .stFileUploader button:hover {{
-        background-color: var(--secondary-background-color) !important;
+        background-color: #5a5a5a !important;
         border-color: {st.session_state.color_principal} !important;
     }}
     
-    /* Nombre del archivo ya cargado */
+    /* Nombre del archivo ya cargado - DINÁMICO */
     [data-testid="stSidebar"] .stFileUploader div[data-testid="stMarkdownContainer"] {{
-        background-color: var(--secondary-background-color) !important;
+        background-color: #393939 !important;
         border-radius: {st.session_state.bordes}px !important;
         padding: 0.5rem !important;
         margin-top: 0.5rem !important;
-        border: 1px solid var(--border-color) !important;
+        border: 1px solid #5a5a5a !important;
     }}
     
-    [data-testid="stSidebar"] .stFileUploader div[data-testid="stMarkdownContainer"] p {{
-        color: var(--text-color) !important;
-        font-weight: 500 !important;
+    @media (prefers-color-scheme: dark) {{
+        [data-testid="stSidebar"] .stFileUploader div[data-testid="stMarkdownContainer"] p {{
+            color: #dddcdc !important;
+            font-weight: 500 !important;
+        }}
+    }}
+    
+    @media (prefers-color-scheme: light) {{
+        [data-testid="stSidebar"] .stFileUploader div[data-testid="stMarkdownContainer"] p {{
+            color: #1a1a1a !important;
+            font-weight: 500 !important;
+        }}
     }}
     
     /* Alertas en barra lateral */
     [data-testid="stSidebar"] .stAlert {{
-        background-color: var(--secondary-background-color) !important;
-        color: var(--text-color) !important;
+        background-color: #4a4a4a !important;
         border-left-color: {st.session_state.color_principal} !important;
+    }}
+    
+    @media (prefers-color-scheme: dark) {{
+        [data-testid="stSidebar"] .stAlert {{
+            color: #dddcdc !important;
+        }}
+        [data-testid="stSidebar"] .stAlert div {{
+            color: #dddcdc !important;
+        }}
+    }}
+    
+    @media (prefers-color-scheme: light) {{
+        [data-testid="stSidebar"] .stAlert {{
+            color: #1a1a1a !important;
+        }}
+        [data-testid="stSidebar"] .stAlert div {{
+            color: #1a1a1a !important;
+        }}
     }}
     
     /* Expandors en barra lateral */
     [data-testid="stSidebar"] .streamlit-expanderHeader {{
-        color: var(--text-color) !important;
-        background-color: var(--secondary-background-color) !important;
+        background-color: #4a4a4a !important;
         font-weight: 500 !important;
         border-radius: {st.session_state.bordes}px !important;
+    }}
+    
+    @media (prefers-color-scheme: dark) {{
+        [data-testid="stSidebar"] .streamlit-expanderHeader {{
+            color: #dddcdc !important;
+        }}
+    }}
+    
+    @media (prefers-color-scheme: light) {{
+        [data-testid="stSidebar"] .streamlit-expanderHeader {{
+            color: #1a1a1a !important;
+        }}
     }}
     
     [data-testid="stSidebar"] .streamlit-expanderHeader:hover {{
@@ -501,17 +579,29 @@ st.markdown(f"""
     }}
     
     [data-testid="stSidebar"] .streamlit-expanderContent {{
-        color: var(--text-color) !important;
+        color: inherit !important;
     }}
     
     /* Checkbox en barra lateral */
     [data-testid="stSidebar"] .stCheckbox label {{
-        color: var(--text-color) !important;
+        font-weight: 500;
+    }}
+    
+    @media (prefers-color-scheme: dark) {{
+        [data-testid="stSidebar"] .stCheckbox label {{
+            color: #dddcdc !important;
+        }}
+    }}
+    
+    @media (prefers-color-scheme: light) {{
+        [data-testid="stSidebar"] .stCheckbox label {{
+            color: #1a1a1a !important;
+        }}
     }}
     
     /* Separadores */
     [data-testid="stSidebar"] hr {{
-        border-color: var(--border-color) !important;
+        border-color: #5a5a5a !important;
     }}
     
     /* ========== TARJETAS EN ÁREA PRINCIPAL ========== */
@@ -778,8 +868,7 @@ with st.sidebar:
             st.caption(f"Mantenidos: {st.session_state.total_filtrados}")
             st.caption(f"Descartados: {st.session_state.total_descatados}")
     
-    st.caption("📌 Versión 6.0 | Adaptable al tema")
-    st.caption("🎨 Usa el botón ☀️/🌙 para cambiar el tema")
+    st.caption("📌 Versión 6.0 | Colores fijos")
 
 # ========== ÁREA PRINCIPAL CON BANNER ==========
 
@@ -963,7 +1052,7 @@ st.markdown("""
 <div class="footer">
     <span>⚖️ Procesador de Clientes | AR Collect</span>
     <span style="margin: 0 1rem">•</span>
-    <span>🎨 Adaptable al tema de Streamlit</span>
+    <span>🎨 Títulos barra: #01bba7 bold | Texto adaptable al tema</span>
     <span style="margin: 0 1rem">•</span>
     <span>📊 Versión 6.0</span>
 </div>
