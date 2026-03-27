@@ -349,8 +349,9 @@ def process_data_with_files(AR_file, cl_file, cc_file, allow_soft=True):
         
         row_out = ar_row.to_dict()
         
+        # ========== CORRECCIÓN: Si no hay match, usar el nombre normalizado ==========
         if best_match_original == "":
-            row_out["Best_Match_cl_name"] = cliente
+            row_out["Best_Match_cl_name"] = norm_cliente
         else:
             row_out["Best_Match_cl_name"] = best_match_original
         
@@ -365,10 +366,11 @@ def process_data_with_files(AR_file, cl_file, cc_file, allow_soft=True):
             row_out["Motivo_descartado"] = "Cerrado confirmado"
             descartados_rows.append(row_out)
         
+        # ========== CORRECCIÓN EN EL LOG ==========
         log_rows.append({
             "Cliente_AR": cliente,
             "Nombre_Normalizado_AR": norm_cliente,
-            "Best_Match_cl_name": best_match_original if best_match_original else cliente,
+            "Best_Match_cl_name": best_match_original if best_match_original else norm_cliente,
             "Best_Match_cl_norm": best_match_norm if best_match_norm else norm_cliente,
             "Best_Match_Type": best_label,
             "Best_Match_OverlapTokens": best_inter,
@@ -925,7 +927,7 @@ if ar_file and case_file and closed_file:
                 output.seek(0)
                 
                 st.download_button(
-                    label="📥 DESCARGAR REPORTE EXCEL",
+                    label=" DESCARGAR REPORTE EXCEL",
                     data=output,
                     file_name=f"reporte_clientes_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx",
                     mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
@@ -974,7 +976,7 @@ st.markdown("""
     <span> Procesador de Clientes | AR Collect</span>
     <span style="margin: 0 1rem">•</span>
     <span> Versión 6.0</span>
-    <span> Powered by Manolo Taco Guancha</span>
+    <span>Powered by Manolo Taco Guancha</span>
     <span style="margin: 0 1rem">•</span>
     
 </div>
