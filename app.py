@@ -421,7 +421,7 @@ st.markdown(f"""
     }}
     
     /* ========== TEXTO NORMAL EN BARRA LATERAL - FIJO ========== */
-    /* Todo el texto que no sea título será #b0b0b0 (gris ligeramente más oscuro) */
+    /* Todo el texto que no sea título será #b0b0b0 */
     [data-testid="stSidebar"] *:not(h1):not(h2):not(h3):not(h4) {{
         color: #b0b0b0 !important;
     }}
@@ -607,8 +607,11 @@ st.markdown(f"""
         box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     }}
     
-    /* ========== BOTÓN DE DESCARGA ========== */
-    .stDownloadButton button {{
+    /* ========== BOTÓN DE DESCARGA - FORZADO CON GRIS CLARO ========== */
+    .stDownloadButton button,
+    .stDownloadButton button p,
+    .stDownloadButton button span,
+    button[kind="secondary"] {{
         background-color: #2c2c2c !important;
         color: #b0b0b0 !important;
         border-radius: {st.session_state.bordes}px !important;
@@ -616,8 +619,11 @@ st.markdown(f"""
         transition: all 0.3s ease;
     }}
     
-    .stDownloadButton button:hover {{
+    .stDownloadButton button:hover,
+    .stDownloadButton button:hover p,
+    .stDownloadButton button:hover span {{
         background-color: #3a3a3a !important;
+        color: #b0b0b0 !important;
         border-color: {st.session_state.color_principal} !important;
         transform: translateY(-2px);
     }}
