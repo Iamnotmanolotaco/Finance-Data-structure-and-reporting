@@ -977,7 +977,7 @@ st.markdown("""
     <span style="margin: 0 1rem">•</span>
     <span> Quality Control & Efficiency Department</span>
     <span style="margin: 0 1rem">•</span>
-      <span> Version 6.0 For Finance Department</span>
+      <span> Version 6.0 - Finance Department</span>
     
 </div>
 """, unsafe_allow_html=True)
