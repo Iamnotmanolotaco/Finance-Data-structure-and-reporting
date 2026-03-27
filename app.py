@@ -707,7 +707,7 @@ st.markdown(f"""
 # ========== BARRA LATERAL ==========
 with st.sidebar:
     mostrar_logo(70)
-    st.markdown("###  AR Collect")
+    st.markdown("###  Finance Automation")
     st.markdown("---")
     
     st.markdown("#### ⚙️ Configuración")
