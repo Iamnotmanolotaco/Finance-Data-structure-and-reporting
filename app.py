@@ -975,9 +975,9 @@ st.markdown("""
 <div class="footer">
     <span>Powered by Manolo Taco Guancha</span>
     <span style="margin: 0 1rem">•</span>
-    <span> Departamento de Finanzas</span>
+    <span> Quality Control & Efficiency Department</span>
     <span style="margin: 0 1rem">•</span>
-      <span> Versión 6.0</span>
+      <span> Versión 6.0 For Finance Department</span>
     
 </div>
 """, unsafe_allow_html=True)
