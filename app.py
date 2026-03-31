@@ -17,14 +17,14 @@ from PIL import Image
 # ========== CONFIGURACIÓN DE PÁGINA ==========
 st.set_page_config(
     page_title="Procesador de Clientes | AR Collect",
-    page_icon="https://raw.githubusercontent.com/Iamnotmanolotaco/Finance-Data-structure-and-reporting/main/assets/favicon4.png",
+    page_icon="https://raw.githubusercontent.com/Iamnotmanolotaco/Finance-Data-structure-and-reporting/main/assets/image.png",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
 # ========== CONFIGURACIÓN DE IMÁGENES FIJAS ==========
-BANNER_URL = "https://raw.githubusercontent.com/Iamnotmanolotaco/Finance-Data-structure-and-reporting/main/assets/banner7.png"
-LOGO_URL = "https://raw.githubusercontent.com/Iamnotmanolotaco/Finance-Data-structure-and-reporting/main/assets/image6.png"
+BANNER_URL = "https://raw.githubusercontent.com/Iamnotmanolotaco/Finance-Data-structure-and-reporting/main/assets/image.png"
+LOGO_URL = "https://raw.githubusercontent.com/Iamnotmanolotaco/Finance-Data-structure-and-reporting/main/assets/image.png"
 
 # ========== CONTRASEÑA PARA EDITOR ==========
 EDITOR_PASSWORD = "manolotaco123"
@@ -86,7 +86,7 @@ def mostrar_banner():
             margin-bottom: 1rem;
             text-align: center;
         ">
-            <h1 style="color: white; margin: 0;"> Procesador de Clientes</h1>
+            <h1 style="color: white; margin: 0;">⚖️ Procesador de Clientes</h1>
             <p style="color: rgba(255,255,255,0.9);">AR Collect - Análisis Automático</p>
         </div>
         """, unsafe_allow_html=True)
@@ -707,7 +707,7 @@ st.markdown(f"""
 # ========== BARRA LATERAL ==========
 with st.sidebar:
     mostrar_logo(70)
-        st.markdown("###  AR Collect")
+    st.markdown("###  AR Collect")
     st.markdown("---")
     
     st.markdown("#### ⚙️ Configuración")
@@ -753,7 +753,7 @@ with st.sidebar:
                 st.rerun()
             
             st.markdown("---")
-            st.markdown("** Imágenes Fijas**")
+            st.markdown("**🖼️ Imágenes Fijas**")
             st.caption("Logo y banner cargados desde GitHub")
             try:
                 st.image(LOGO_URL, width=80, caption="Logo actual")
@@ -767,13 +767,13 @@ with st.sidebar:
             
             st.markdown("---")
             
-            if st.button(" Resetear colores", use_container_width=True):
+            if st.button("🔄 Resetear colores", use_container_width=True):
                 st.session_state.color_principal = "#f60d2d"
                 st.session_state.bordes = 12
                 guardar_configuracion()
                 st.rerun()
             
-            if st.button(" Salir modo editor", use_container_width=True):
+            if st.button("🚪 Salir modo editor", use_container_width=True):
                 st.session_state.password_correcta = False
                 st.rerun()
     
@@ -973,10 +973,10 @@ else:
 st.markdown("---")
 st.markdown("""
 <div class="footer">
-    <span> Powered by Manolo Taco Guancha</span>
+    <span> Powered By Manolo Taco Guancha</span>
     <span style="margin: 0 1rem">•</span>
     <span> Quality Control & Efficiency Department</span>
     <span style="margin: 0 1rem">•</span>
-    <span> Versión 6.0 - Finance Department</span>
+    <span> Version 6.0 - Finance Department</span>
 </div>
 """, unsafe_allow_html=True)
